@@ -2,7 +2,7 @@ body {
     background-color: #E8E8E8;
 }
 
-#Login_upper_background {
+#Register_upper_background {
     background-color: #193C7D;
     width: 100%;
     height: 200px;
@@ -19,7 +19,7 @@ p {
     font-size: medium;
 }
 
-#Login_container {
+#Register_container {
     width: 600px;
     height: 30%;
     overflow: hidden;
@@ -52,7 +52,7 @@ p {
 
 }
 
-#Login_headline {
+#Register_headline {
     margin: 0px;
     padding: 5px;
     top: 0px;
@@ -64,7 +64,7 @@ p {
     font-weight: bold;
 }
 
-#Login_headline>span {
+#Register_headline>span {
     font-style: italic;
 }
 
@@ -116,70 +116,11 @@ input {
     color: white;
 }
 
-
-#social_net_container {
-    margin: 10px;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    /* font-weight: bold; */
-    width: 100%;
-}
-
 button span {
     font-weight: bold;
     font-size: large;
 }
 
-#social_net_container button {
-    border-color: rgb(59, 59, 59);
-    border-width: 1px;
-    border-style: solid;
-    width: 100%;
-
-}
-
-#social_net_container button:hover {
-    background-color: #E3E3E3;
-}
-
-#social_net_container button:active {
-    background-color: #cecece;
-}
-
-.mui-style-rtl-1onl4dq {
-    margin-top: 15px;
-    margin-bottom: 15px;
-    -webkit-flex-shrink: 0;
-    -ms-flex-negative: 0;
-    flex-shrink: 0;
-    border-width: 0;
-    border-style: solid;
-    border-color: rgba(0, 0, 0, 0.12);
-    border-bottom-width: thin;
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    white-space: nowrap;
-    text-align: center;
-    border: 0;
-    font-weight: 600;
-    width: 100%;
-}
-
-.mui-style-rtl-c1ovea {
-    display: inline-block;
-    padding-right: calc(8px * 1.2);
-    padding-left: calc(8px * 1.2);
-}
-
-.mui-style-rtl-1onl4dq::before, .mui-style-rtl-1onl4dq::after {
-    position: relative;
-    width: inherit;
-    border-top: thin solid rgba(0, 0, 0, 0.12) !important;
-    top: 50%;
-    content: "";
-    -webkit-transform: translateY(50%);
-    -moz-transform: translateY(50%);
-    -ms-transform: translateY(50%);
-    transform: translateY(50%);
+#Register_Button {
+    margin-bottom: 10px;
 }

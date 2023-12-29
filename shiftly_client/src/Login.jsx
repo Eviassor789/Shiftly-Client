@@ -3,6 +3,7 @@ import "./Login.css";
 function Login() {
   return (
     <>
+      <div id="Login_upper_background"></div>
       <div id="Login_container">
         <p id="Login_headline">
           Login to <span className="blue">shiftly</span>
@@ -20,11 +21,12 @@ function Login() {
             Next <i class="bi bi-arrow-right"></i>
           </button>
 
-          <div class="MuiDivider-root MuiDivider-fullWidth MuiDivider-withChildren mui-style-rtl-1onl4dq"
-            role="separator">
+          <div
+            class="MuiDivider-root MuiDivider-fullWidth MuiDivider-withChildren mui-style-rtl-1onl4dq"
+            role="separator"
+          >
             <span class="MuiDivider-wrapper mui-style-rtl-c1ovea">or</span>
           </div>
-
 
           <div id="social_net_container">
             <div>
@@ -53,7 +55,7 @@ function Login() {
                     fill="#1976d2"
                   />
                 </svg>
-                
+
                 <span> continue with Google</span>
               </button>
             </div>

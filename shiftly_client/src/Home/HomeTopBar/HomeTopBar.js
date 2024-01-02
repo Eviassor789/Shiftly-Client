@@ -7,11 +7,10 @@ function HomeTopBar () {
 
         <div id="HomeTopBar">
 
-        <button className="Subscription_card">Home</button>
-        <button className="Subscription_card">Generate</button>
-        <button id="UserDetailsBtn">U </button>
+        <button className="HomeTopBarButton BottomBorder">Home</button>
+        <button className="HomeTopBarButton">Generate</button>
+        <button id="UserDetailsBtn">U</button>
 
-        
         </div>
         
         </>

@@ -1,0 +1,78 @@
+#HomeTopBar {
+    background-color: #193C7D;
+    position: fixed;
+
+    top: 0%;
+
+    height: 10%;
+    width: 100%;
+
+    direction: ltr;
+}
+
+.Subscription_card {
+    position: relative;
+
+    font-size: x-large;
+    color: aqua;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+    height: 100%;
+
+    border-bottom: 5px;
+    border-top: 0px;
+    border-right: 0px;
+    border-left: 0px;
+
+    border-style: solid;
+    border-color: aqua;
+
+    /* transperent */
+    background-color: rgba(0, 0, 0, 0);
+
+    margin-right: 15px;
+    margin-left: 15px;
+
+
+}
+
+.Subscription_card:hover {
+    background-color:  #112c5e
+}
+
+.Subscription_card:active {
+    background-color:  #0b1b38
+}
+
+
+
+#UserDetailsBtn {
+    position: absolute;
+
+    height: 50px;
+    width: 50px;
+
+    right: 0px;
+    margin: auto;
+    margin-right: 20px;
+    top: 0px;
+    bottom: 0px;
+ 
+
+    border-style: solid;
+    border-color: rgb(14, 21, 21);
+    border-radius: 100%;
+
+    background-color: blueviolet;
+
+    font-size: xx-large;
+    font-family: sans-serif;
+}
+
+#UserDetailsBtn:hover {
+    background-color: rgb(105, 33, 173);
+}
+
+#UserDetailsBtn:active {
+    background-color: rgb(69, 21, 113);
+}

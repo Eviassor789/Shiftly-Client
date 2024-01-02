@@ -2,15 +2,18 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import Login from './Login';
-import Register from './Register'
+import Login from './Login/Login';
+import Register from './Register/Register'
+import Home from './Home/Home';
 import reportWebVitals from './reportWebVitals';
+import SchedulingTile from './Home/HistoryBox/SchedulingTile/SchedulingTile';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     {/* <Login /> */}
-    <Register />
+    {/*<Register />*/}
+    <Home/>
   </React.StrictMode>
 );
 

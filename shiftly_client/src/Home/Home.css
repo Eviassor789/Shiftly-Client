@@ -1,0 +1,15 @@
+#HistoryContainer {
+    background-color: brown;
+    position: relative;
+
+
+    width: 50%;
+
+    bottom: 0px;
+
+
+    left: 0px;
+    right: 0px;
+    margin: auto;
+
+}

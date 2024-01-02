@@ -5,7 +5,7 @@ function Register() {
     <>
       <div id="Register_upper_background"></div>
       <div id="Register_container">
-        <p id="Register_headline">Craete a new account</p>
+        <p id="Register_headline">Create a new account</p>
         <div className="input">
           <p className="blue">Username</p>
           <input id="Register_username_input"></input>

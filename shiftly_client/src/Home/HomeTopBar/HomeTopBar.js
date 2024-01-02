@@ -1,20 +1,20 @@
 import "./HomeTopBar.css";
 
+function HomeTopBar() {
 
-function HomeTopBar () {
-    return ( 
-        <>
-
-        <div id="HomeTopBar">
-
-        <button className="HomeTopBarButton BottomBorder">Home</button>
-        <button className="HomeTopBarButton">Generate</button>
+  return (
+    <>
+      <div id="HomeTopBar">
+        <button id="HomeButton" className="HomeTopBarButton">
+          Home
+        </button>
+        <button id="GenerateButton"className="HomeTopBarButton">
+          Generate
+        </button>
         <button id="UserDetailsBtn">U</button>
-
-        </div>
-        
-        </>
-     );
+      </div>
+    </>
+  );
 }
 
-export default HomeTopBar ;
+export default HomeTopBar;

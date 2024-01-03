@@ -15,8 +15,14 @@ function Generate() {
           (according to the contract), and their skills (up to 3 skills per
           employee).
         </p>
-          <UploadFile />
-          <ResizableWindow />
+        <UploadFile />
+
+        <div id="GenerateProgress">
+          <div className="elipse elipse-on"></div>
+          <div className="elipse"></div>
+          <div className="elipse"></div>
+        </div>
+        <ResizableWindow />
       </div>
     </>
   );

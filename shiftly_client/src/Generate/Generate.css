@@ -14,3 +14,32 @@
 #FirstWindowDetails {
     margin: 20px;
 }
+
+.elipse {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    border-radius: 20px;
+    margin-right: 10px;
+    margin-left: 10px;
+    background: #D4D4D4;
+}
+
+.elipse-on {
+    /* background: #0C5AA2; */
+    background: linear-gradient(45deg, #0a4c8a, #5aafff);
+    opacity: 0.9;
+
+    border-color:#90c9ff;
+    border-style: solid;
+    border-width: 0.2px;
+}
+
+#GenerateProgress {
+
+    margin-top: 55px;
+    position: relative;
+    height: 20px;
+    display: flex;
+    flex-direction: row;
+}

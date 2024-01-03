@@ -104,15 +104,17 @@ const UploadFile = () => {
           </div>
         )}
       </div>
-      {fileUploaded && (
-        <button
-          id="first_screen_btn"
-          onClick={handleNextClick}
-          className="next-button, btn, btn-primary"
-        >
-          Next
-        </button>
-      )}
+      <button
+        id="first_screen_btn"
+        className={
+          fileUploaded
+            ? "next-button btn btn-primary"
+            : "next-button btn btn-primary disable-button"
+        }
+        onClick={handleNextClick}
+      >
+        Next
+      </button>
     </div>
   );
 };

@@ -14,8 +14,10 @@ const ResizableWindow = () => {
       onClick={toggleWindow}
     >
       <div className="top-right-arrow"></div>
-      <div className="content">
-        <img src="logo192.png" alt="Image" />
+      <div className="content CenterDiv">
+        <img src="emp-det-1.png" alt="Image" draggable="false" />
+        <img src="emp-det-2.png" alt="Image" draggable="false" />
+
       </div>
     </div>
   );

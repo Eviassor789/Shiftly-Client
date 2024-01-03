@@ -1,6 +1,6 @@
  .window {
   position: relative;
-    width: 500px;
+    width: 600px;
     height: 50px;
     background-color: #e3e3e3;
     overflow: hidden;
@@ -10,8 +10,6 @@
     box-shadow: 0 0px 10px rgba(23, 23, 23, 0.598);
     border-radius: 18px;
 
-    margin-top: 30px;
-    margin-bottom: 100px;
     cursor: pointer;
 
     
@@ -30,17 +28,18 @@
   }
   
   .expanded {
-    height: 200px; /* Adjust the height as needed */
+    height: 250px; /* Adjust the height as needed */
   }
   
   .content {
     position: relative;
+    margin: 0px;
   }
   
   .content img {
-    margin-top: 25px;
+    margin-bottom: 10px;
     height: fit-content;
-    max-width: 450px;
-    max-height: 150px;
+    width: fit-content;
+    max-width: 600px;
   }
   

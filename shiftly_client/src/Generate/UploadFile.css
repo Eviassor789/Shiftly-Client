@@ -32,6 +32,14 @@
   margin-top: 20px;
 }
 
+.disable-button {
+  opacity: 0.2; /* Set the desired transparency level */
+  pointer-events: none; /* Disable pointer events, making the button unpressable */
+  background-color: #0E3275; /* Muted background color */
+  color: #c2c2c2; /* Muted text color */
+}
+
+
 p {
   margin: 200px;
 }

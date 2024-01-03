@@ -2,17 +2,29 @@ import "./HomeTopBar.css";
 
 function HomeTopBar(props) {
 
-  function concat(a, b) {
-    return a+b;
-  };
+
 
   return (
     <>
       <div id="HomeTopBar">
-        <button id="HomeButton" className={concat("HomeTopBarButton", props.page=="home"?" BottomBorder":"")}>
+        <button
+          id="HomeButton"
+          className={
+            props.page == "home"
+              ? "HomeTopBarButton BottomBorder"
+              : "HomeTopBarButton"
+          }
+        >
           Home
         </button>
-        <button id="GenerateButton" className={concat("HomeTopBarButton", props.page=="generate"?" BottomBorder":"")}>
+        <button
+          id="GenerateButton"
+          className={
+            props.page == "generate"
+              ? "HomeTopBarButton BottomBorder"
+              : "HomeTopBarButton"
+          }
+        >
           Generate
         </button>
         <button id="UserDetailsBtn">U</button>

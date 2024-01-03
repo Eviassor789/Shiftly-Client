@@ -51,9 +51,7 @@ const UploadFile = () => {
 
         // Update the flag to indicate that a file has been uploaded
         setFileUploaded(true);
-      } else if (
-        file.type ===
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+      } else if (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
         file.name.endsWith('.xlsx')
       ) {
         setFileName(file.name);
@@ -61,8 +59,6 @@ const UploadFile = () => {
         // Update the flag to indicate that a file has been uploaded
         setFileUploaded(true);
       } else {
-  
-
         // Update the flag to indicate that a file has been uploaded
         setFileUploaded(false);
         

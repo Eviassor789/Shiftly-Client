@@ -1,11 +1,12 @@
 import "./Generate.css"
 import UploadFile from "./UploadFile";
 import HomeTopBar from "../Home/HomeTopBar/HomeTopBar";
+import ResizableWindow from "./ResizableWindow";
 
 function Generate() {
   return (
     <>
-      <HomeTopBar page="generate"/>
+      <HomeTopBar page="generate" />
       <div className="CenterDiv">
         <h1>Employees Details</h1>
         <p id="FirstWindowDetails">
@@ -14,7 +15,8 @@ function Generate() {
           (according to the contract), and their skills (up to 3 skills per
           employee).
         </p>
-        <UploadFile />
+          <UploadFile />
+          <ResizableWindow />
       </div>
     </>
   );

@@ -1,6 +1,6 @@
 #HomeTopBar {
     background-color: #193C7D;
-    position: absolute;
+    position: relative;
     top: 0%;
     height: 70px;
     width: 100%;
@@ -18,7 +18,8 @@
 
     font-size: medium;
     color: #e8e8e8bd;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    /* font-family: Verdana, Geneva, Tahoma, sans-serif; */
+    font-family: 'Kreon', serif;
 
     height: 100%;
 

@@ -1,15 +1,89 @@
-#HistoryContainer {
-    background-color: brown;
+#welcomeBox {
+    
+}
+
+#welcomeBox span{
+    color: #193C7D;
+}
+
+.HomeBoxes{
+
     position: relative;
 
-
-    width: 50%;
-
-    bottom: 0px;
-
-
-    left: 0px;
     right: 0px;
+    left: 0px;
     margin: auto;
 
+    width: 600px;
+
+    font-size: larger;
+    font-weight: 500;
+    font-family: 'Kreon', serif;
+
+    border-radius: 8px;
+    border-color: rgba(0, 0, 0, 0);
+    border-style: solid;
+    border-width: 3px;
+
+    box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.25) ;
+
+    margin-top: 40px;
+
+    padding: 10px;
+
 }
+
+#HistoryContainer input{
+    display: flex;
+    z-index: 3;
+    position: relative;
+    min-height: 44px;
+    background: #ffffff;
+    border: 1px solid transparent;
+    box-shadow: 0 1px 3px rgb(23, 23, 23);
+    border-radius: 18px;
+    margin: 0 auto;
+    margin-bottom: 15px;
+    width: 100%;
+    font-size: large;
+    text-indent: 20px;
+
+    text-align: center;
+
+
+
+
+}
+
+.input-field {
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+}
+
+.input-icons i {
+    position: absolute;
+    z-index: 4;
+}
+
+.input-icons {
+    width: 60%;
+    margin-bottom: 10px;
+}
+ 
+.icon {
+    padding: 10px;
+    color: rgb(0, 0, 0);
+    min-width: 50px;
+    text-align: center;
+}
+
+#HistoryContainer{
+    align-content: center;
+
+    /* display: flex;
+    flex-direction: column;
+    align-items: center; */
+
+}
+

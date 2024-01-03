@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import XLSX from 'xlsx';
 import './UploadFile.css';
 
 const UploadFile = () => {
@@ -30,6 +29,7 @@ const UploadFile = () => {
     if (files.length > 0) {
       const file = files[0];
 
+      // Check if the file is a CSV file
       if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
         // Display preview for CSV files
         const reader = new FileReader();
@@ -37,25 +37,9 @@ const UploadFile = () => {
           setPreview(event.target.result);
         };
         reader.readAsText(file);
-      } else if (
-        file.type ===
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
-        file.name.endsWith('.xlsx')
-      ) {
-        // Read Excel (XLSX) files
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const data = new Uint8Array(event.target.result);
-          const workbook = XLSX.read(data, { type: 'array' });
-          const sheetName = workbook.SheetNames[0];
-          const sheet = workbook.Sheets[sheetName];
-          const csvData = XLSX.utils.sheet_to_csv(sheet, { FS: ',' });
-          setPreview(csvData);
-        };
-        reader.readAsArrayBuffer(file);
       } else {
         setPreview(null);
-        alert('Please upload a CSV or Excel file.');
+        alert('Please upload a CSV file.');
       }
 
       // Handle the uploaded files here
@@ -74,7 +58,7 @@ const UploadFile = () => {
       {preview ? (
         <pre className="preview-csv">{preview}</pre>
       ) : (
-        <p>Drag and drop your CSV or Excel file here</p>
+        <p>Drag and drop your CSV file here</p>
       )}
     </div>
   );

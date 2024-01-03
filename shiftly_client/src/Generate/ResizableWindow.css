@@ -29,6 +29,7 @@
   
   .expanded {
     height: 250px; /* Adjust the height as needed */
+    margin-bottom: 50px;
   }
   
   .content {

@@ -5,7 +5,7 @@ import HomeTopBar from "../Home/HomeTopBar/HomeTopBar";
 function Generate() {
   return (
     <>
-      <HomeTopBar />
+      <HomeTopBar page="generate"/>
       <div className="CenterDiv">
         <h1>Employees Details</h1>
         <p id="FirstWindowDetails">

@@ -1,6 +1,6 @@
 .upload-container {
-  width: 300px;
-  height: 200px;
+  width: 500px;
+  height: 300px;
   border: 2px dashed #ccc;
   border-radius: 8px;
   display: flex;
@@ -9,6 +9,8 @@
   text-align: center;
   cursor: pointer;
   transition: border 0.3s ease;
+  overflow: hidden;
+  background-color: rgb(245, 245, 245);
 }
 
 .upload-container.dragging {
@@ -24,6 +26,14 @@
   max-height: 100%;
   overflow: auto;
   white-space: pre-wrap;
+}
+
+#first_screen_btn {
+  margin-top: 20px;
+}
+
+p {
+  margin: 200px;
 }
 
 /* Add any additional styling as needed */

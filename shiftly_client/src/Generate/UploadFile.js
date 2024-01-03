@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+// import XLSX from 'xlsx';
 import './UploadFile.css';
+import UploadLogo from './UploadLogo'; 
 
 const UploadFile = () => {
   const [isDragging, setIsDragging] = useState(false);
+  const [fileUploaded, setFileUploaded] = useState(false);
+  const [fileName, setFileName] = useState('');
+  const fileInputRef = useRef(null);
   const [preview, setPreview] = useState(null);
 
   const handleDragEnter = (e) => {
@@ -25,40 +30,92 @@ const UploadFile = () => {
     setIsDragging(false);
 
     const files = e.dataTransfer.files;
+    handleFiles(files);
+  };
 
+  const handleClick = () => {
+    // Programmatically trigger the file input
+    fileInputRef.current.click();
+  };
+
+  const handleFileInputChange = (e) => {
+    const files = e.target.files;
+    handleFiles(files);
+  };
+
+  const handleFiles = (files) => {
     if (files.length > 0) {
       const file = files[0];
-
-      // Check if the file is a CSV file
       if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
-        // Display preview for CSV files
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          setPreview(event.target.result);
-        };
-        reader.readAsText(file);
-      } else {
-        setPreview(null);
-        alert('Please upload a CSV file.');
-      }
+        setFileName(file.name);
 
+        // Update the flag to indicate that a file has been uploaded
+        setFileUploaded(true);
+      } else if (
+        file.type ===
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+        file.name.endsWith('.xlsx')
+      ) {
+        setFileName(file.name);
+
+        // Update the flag to indicate that a file has been uploaded
+        setFileUploaded(true);
+      } else {
+  
+
+        // Update the flag to indicate that a file has been uploaded
+        setFileUploaded(false);
+        
+        alert("Please upload a CSV or Excel file.");
+      };
+      
       // Handle the uploaded files here
       console.log(files);
     }
   };
 
+  const handleNextClick = () => {
+    // Perform actions when the "Next" button is clicked
+    // You can navigate to the next step or perform any other actions
+    console.log('Next button clicked');
+  };
+
   return (
-    <div
-      className={`upload-container ${isDragging ? 'dragging' : ''}`}
-      onDragEnter={handleDragEnter}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
-    >
-      {preview ? (
-        <pre className="preview-csv">{preview}</pre>
-      ) : (
-        <p>Drag and drop your CSV file here</p>
+    <div className="CenterDiv">
+      <div
+        className={`upload-container ${isDragging ? "dragging" : ""}`}
+        onDragEnter={handleDragEnter}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        onClick={handleClick}
+      >
+        <input
+          type="file"
+          ref={fileInputRef}
+          style={{ display: "none" }}
+          onChange={handleFileInputChange}
+        />
+        {fileUploaded ? (
+          <div className="file-indicator">
+            <p>{fileName}</p>
+            <span>✔️</span>
+          </div>
+        ) : (
+          <div>
+            <p>Click or drag and drop your CSV or Excel file here </p>
+            <UploadLogo />
+          </div>
+        )}
+      </div>
+      {fileUploaded && (
+        <button
+          id="first_screen_btn"
+          onClick={handleNextClick}
+          className="next-button, btn, btn-primary"
+        >
+          Next
+        </button>
       )}
     </div>
   );

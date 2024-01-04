@@ -11,10 +11,6 @@
     height: fit-content;
 }
 
-#FirstWindowDetails {
-    /* margin: 20px; */
-}
-
 .elipse {
     position: relative;
     width: 20px;
@@ -26,7 +22,6 @@
 }
 
 .elipse-on {
-    /* background: #0C5AA2; */
     background: linear-gradient(45deg, #0a4c8a, #5aafff);
     opacity: 0.9;
 
@@ -36,7 +31,6 @@
 }
 
 #GenerateProgress {
-
     margin-top: 35px;
     position: relative;
     height: 20px;

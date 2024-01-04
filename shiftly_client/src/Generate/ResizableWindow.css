@@ -11,8 +11,6 @@
     border-radius: 18px;
 
     cursor: pointer;
-
-    
   }
 
   .top-right-arrow {
@@ -29,12 +27,11 @@
   
   .expanded {
     height: 250px; /* Adjust the height as needed */
-    margin-bottom: 50px;
   }
   
   .content {
     position: relative;
-    margin: 0px;
+    margin: 15px;
   }
   
   .content img {
@@ -43,4 +40,3 @@
     width: fit-content;
     max-width: 600px;
   }
-  

@@ -37,3 +37,62 @@
     display: flex;
     flex-direction: row;
 }
+
+.content-container {
+    display: flex;
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .content-container:not(:nth-child(3)) {
+    transition: transform 0.3s ease-in-out;
+  }
+
+.upload-screen {
+    flex: 1;
+    min-width: 100%;
+    overflow: hidden;
+  }
+  
+  .upload-screen.left {
+    transform: translateX(-100%);
+  }
+  
+  .upload-screen.main {
+    transform: translateX(0%);
+  }
+  
+  .upload-screen.right {
+    transform: translateX(100%);
+  }
+
+
+
+
+.generate-screen {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .upload-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.4s ease-in-out;
+
+  }
+
+.HomeTopBar {
+    position: relative;
+    /* display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px; */
+}
+
+button {
+    position: relative;
+}

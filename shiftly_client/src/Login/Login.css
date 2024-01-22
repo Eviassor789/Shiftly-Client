@@ -22,6 +22,8 @@ p {
     width: 600px;
     height: 30%;
     overflow: hidden;
+    
+    box-shadow: 0 0px 20px rgba(23, 23, 23, 0.598);
 
     background-color: #FFFFFF;
 
@@ -37,9 +39,9 @@ p {
     padding-right: 40px;
 
     border-color: black;
-    border-radius: 25px;
+    border-radius: 13px;
     border-style: solid;
-    border-width: 4px;
+    border-width: 0px;
 
 }
 
@@ -77,15 +79,15 @@ input {
     z-index: 3;
     position: relative;
     min-height: 44px;
-    background: #E3E3E3;
+    background: #fffefee9;
     border: 1px solid transparent;
-    box-shadow: 0 1px 3px rgba(23,23,23,0.24);
-    border-radius: 18px;
+    box-shadow: inset 0px 0.5px 10px rgba(112, 112, 112, 0.24);
+    border-radius: 8px;
     margin: 0 auto;
     margin-bottom: 15px;
     width: 100%;
     font-size: large;
-    text-indent: 20px;
+    text-indent: 15px;
 }
 
 .input p {

@@ -1,0 +1,51 @@
+.CenterDiv {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+    top: 20px;
+    right: 0px;
+    left: 0px;
+    width: 600px;
+    height: fit-content;
+}
+
+.elipse {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    border-radius: 20px;
+    margin-right: 10px;
+    margin-left: 10px;
+    background: #D4D4D4;
+    cursor: pointer;
+    transition: transform 0s ease-in-out;
+
+}
+
+.elipse-on {
+    background: linear-gradient(45deg, #0a4c8a, #5aafff);
+    opacity: 0.9;
+
+    border-color:#90c9ff;
+    border-style: solid;
+    border-width: 0.2px;
+}
+
+#GenerateProgress {
+    margin-top: 35px;
+    position: relative;
+    height: 20px;
+    display: flex;
+    flex-direction: row;
+}
+
+
+.upload-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+  }

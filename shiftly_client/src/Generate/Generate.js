@@ -1,29 +1,34 @@
 import "./Generate.css"
-import UploadFile from "./UploadFile";
 import HomeTopBar from "../Home/HomeTopBar/HomeTopBar";
-import ResizableWindow from "./ResizableWindow";
+import React, { useState } from 'react';
+import UploadScreen from "./UploadScreen";
 
 function Generate() {
+  const [currentStep, setCurrentStep] = useState(1);
+
+  const handleNext = () => {
+    setCurrentStep(currentStep + 1);
+  };
+
+  const handleBack = () => {
+    setCurrentStep(currentStep - 1);
+  };
+
+
   return (
     <>
-      <HomeTopBar page="generate" />
-      <div className="CenterDiv">
-        <h1>Employees Details</h1>
-        <p id="FirstWindowDetails">
-          The details of the employees include the ID numbers of the employees,
-          as well as the number of hours they are supposed to work per week
-          (according to the contract), and their skills (up to 3 skills per
-          employee).
-        </p>
-        <UploadFile />
-
-        <div id="GenerateProgress">
-          <div className="elipse elipse-on"></div>
-          <div className="elipse"></div>
-          <div className="elipse"></div>
-        </div>
-        <ResizableWindow />
+       <div className="content-container">
+        {[...Array(3)].map((_, index) => (
+          <UploadScreen key={index} step={index + 1} currentStep={currentStep} handleNext={handleNext} setCurrentStep={setCurrentStep} />
+        ))}
       </div>
+      <HomeTopBar page="generate" />
+      {/* <button onClick={handleNext} type="button" disabled={currentStep === 3} class="btn btn-primary">
+        next page
+      </button>
+      <button onClick={handleBack} type="button" disabled={currentStep === 1} class="btn btn-primary">
+        Back page
+      </button> */}
     </>
   );
 }

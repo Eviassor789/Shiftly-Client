@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import './UploadFile.css';
 import UploadLogo from './UploadLogo'; 
 
-const UploadFile = () => {
+const UploadFile = ({handleNext}) => {
   const [isDragging, setIsDragging] = useState(false);
   const [fileUploaded, setFileUploaded] = useState(false);
   const [fileName, setFileName] = useState('');
@@ -71,9 +71,7 @@ const UploadFile = () => {
   };
 
   const handleNextClick = () => {
-    // Perform actions when the "Next" button is clicked
-    // You can navigate to the next step or perform any other actions
-    console.log('Next button clicked');
+    handleNext();
   };
 
   return (
@@ -111,7 +109,7 @@ const UploadFile = () => {
             ? "next-button btn btn-primary"
             : "next-button btn btn-primary disable-button"
         }
-        onClick={handleNextClick}
+        onClick={() => handleNext()}
       >
         Next
       </button>

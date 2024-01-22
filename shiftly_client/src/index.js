@@ -13,7 +13,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     {/* <Login /> */}
-    {/*<Register />*/}
+    {/* <Register /> */}
     {/* <Home /> */}
     <Generate />
   </React.StrictMode>

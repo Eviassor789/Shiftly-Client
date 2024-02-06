@@ -28,12 +28,13 @@
     box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.25) ;
 
     margin-top: 40px;
+    
 
     padding: 10px;
 
 }
 
-#HistoryContainer input{
+#HomeMainBox input{
     display: flex;
     z-index: 3;
     position: relative;
@@ -46,9 +47,9 @@
     margin-bottom: 15px;
     width: 100%;
     font-size: large;
-    text-indent: 20px;
+    text-indent: 35px;
 
-    text-align: center;
+    /* text-align: center; */
 
 
 
@@ -58,7 +59,8 @@
 .input-field {
     width: 100%;
     padding: 10px;
-    text-align: center;
+
+
 }
 
 .input-icons i {
@@ -69,6 +71,12 @@
 .input-icons {
     width: 60%;
     margin-bottom: 10px;
+
+    left: 0px;
+    right: 0px;
+    margin: auto;
+    
+    margin-bottom: 10px;
 }
  
 .icon {
@@ -78,12 +86,18 @@
     text-align: center;
 }
 
-#HistoryContainer{
-    align-content: center;
+#HomeMainBox{
+    position: relative;
+    margin-bottom: 20px;
 
-    /* display: flex;
-    flex-direction: column;
-    align-items: center; */
 
+}
+
+#HistoryListContainer{
+    
+}
+
+#easterEgg {
+    color: #00000000;
 }
 

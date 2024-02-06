@@ -1,5 +1,6 @@
 import "./Home.css";
 import HomeTopBar from "./HomeTopBar/HomeTopBar";
+import SchedulingTile from "./SchedulingTile/SchedulingTile";
 
 function Home() {
   return (
@@ -16,17 +17,30 @@ function Home() {
         </p>
       </div>
 
-      <div id="HistoryContainer" className="HomeBoxes">
+      <div id="HomeMainBox" className="HomeBoxes">
         <div class="input-icons">
           <i class="bi bi-search icon"></i>
           <input
             id="History_input"
             class="input-field"
-            type="password"
             placeholder="Search Table"
           />
         </div>
+
+        <div id="HistoryListContainer"></div>
+        <SchedulingTile />
+        <SchedulingTile />
+        <SchedulingTile />
+        <SchedulingTile />
+        <SchedulingTile />
+        <SchedulingTile />
+        <SchedulingTile />
+        <SchedulingTile />
+        <SchedulingTile />
+        <SchedulingTile />
+
       </div>
+      <div id="easterEgg">easter egg</div>
     </>
   );
 }

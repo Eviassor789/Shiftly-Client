@@ -1,0 +1,47 @@
+.upload-container {
+  width: 600px;
+  height: 170px;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  transition: border 0.3s ease;
+  overflow: hidden;
+  background-color: rgb(245, 245, 245);
+}
+
+.upload-container.dragging {
+  border: 2px dashed #333;
+}
+
+.upload-container p {
+  margin: 0;
+}
+
+.preview-csv {
+  max-width: 100%;
+  max-height: 100%;
+  overflow: auto;
+  white-space: pre-wrap;
+}
+
+#first_screen_btn {
+  margin-top: 20px;
+}
+
+.disable-button {
+  opacity: 0.2; /* Set the desired transparency level */
+  pointer-events: none; /* Disable pointer events, making the button unpressable */
+  background-color: #0E3275; /* Muted background color */
+  color: #c2c2c2; /* Muted text color */
+}
+
+
+p {
+  /* margin: 200px; */
+}
+
+/* Add any additional styling as needed */

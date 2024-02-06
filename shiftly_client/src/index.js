@@ -5,6 +5,7 @@ import App from './App';
 import Login from './Login/Login';
 import Register from './Register/Register'
 import Home from './Home/Home';
+import Generate from './Generate/Generate';
 import reportWebVitals from './reportWebVitals';
 import SchedulingTile from './Home/HistoryBox/SchedulingTile/SchedulingTile';
 
@@ -12,8 +13,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     {/* <Login /> */}
-    {/*<Register />*/}
-    <Home/>
+    {/* <Register /> */}
+    {/* <Home /> */}
+    <Generate />
   </React.StrictMode>
 );
 

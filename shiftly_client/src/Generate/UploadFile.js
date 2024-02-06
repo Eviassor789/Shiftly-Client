@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-// import XLSX from 'xlsx';
 import './UploadFile.css';
 import UploadLogo from './UploadLogo'; 
 
@@ -8,7 +7,6 @@ const UploadFile = ({handleNext}) => {
   const [fileUploaded, setFileUploaded] = useState(false);
   const [fileName, setFileName] = useState('');
   const fileInputRef = useRef(null);
-  const [preview, setPreview] = useState(null);
 
   const handleDragEnter = (e) => {
     e.preventDefault();
@@ -70,9 +68,9 @@ const UploadFile = ({handleNext}) => {
     }
   };
 
-  const handleNextClick = () => {
-    handleNext();
-  };
+  // const handleNextClick = () => {
+  //   handleNext();
+  // };
 
   return (
     <div className="CenterDiv">

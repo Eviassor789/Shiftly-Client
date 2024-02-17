@@ -7,7 +7,6 @@ import Register from './Register/Register'
 import Home from './Home/Home';
 import Generate from './Generate/Generate';
 import reportWebVitals from './reportWebVitals';
-import SchedulingTile from './Home/HistoryBox/SchedulingTile/SchedulingTile';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

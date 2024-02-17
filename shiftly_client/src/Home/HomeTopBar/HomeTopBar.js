@@ -33,4 +33,4 @@ function HomeTopBar(props) {
   );
 }
 
-export default HomeTopBar;
+export default HomeTopBar ;

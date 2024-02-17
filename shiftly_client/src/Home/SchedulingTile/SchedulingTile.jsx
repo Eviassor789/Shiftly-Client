@@ -1,4 +1,6 @@
 import "./SchedulingTile.css";
+import React from 'react';
+
 
 function SchedulingTile() {
   return (

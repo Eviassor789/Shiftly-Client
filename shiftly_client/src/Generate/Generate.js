@@ -10,9 +10,9 @@ function Generate() {
     setCurrentStep(currentStep + 1);
   };
 
-  const handleBack = () => {
-    setCurrentStep(currentStep - 1);
-  };
+  // const handleBack = () => {
+  //   setCurrentStep(currentStep - 1);
+  // };
 
 
   return (

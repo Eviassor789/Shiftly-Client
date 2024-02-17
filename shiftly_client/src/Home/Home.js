@@ -1,6 +1,8 @@
 import "./Home.css";
 import HomeTopBar from "./HomeTopBar/HomeTopBar";
 import SchedulingTile from "./SchedulingTile/SchedulingTile";
+import React from 'react';
+
 
 function Home() {
   return (

@@ -91,7 +91,7 @@ const UploadFile = ({handleNext}) => {
         {fileUploaded ? (
           <div className="file-indicator">
             <p>{fileName}</p>
-            <span>✔️</span>
+            <span role="img" aria-label="Checkmark">✔️</span>
           </div>
         ) : (
           <div>

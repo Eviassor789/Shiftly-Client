@@ -1,4 +1,5 @@
 import "./HomeTopBar.css";
+import React from 'react';
 
 function HomeTopBar(props) {
 
@@ -10,7 +11,7 @@ function HomeTopBar(props) {
         <button
           id="HomeButton"
           className={
-            props.page == "home"
+            props.page === "home"
               ? "HomeTopBarButton BottomBorder"
               : "HomeTopBarButton"
           }
@@ -20,7 +21,7 @@ function HomeTopBar(props) {
         <button
           id="GenerateButton"
           className={
-            props.page == "generate"
+            props.page === "generate"
               ? "HomeTopBarButton BottomBorder"
               : "HomeTopBarButton"
           }

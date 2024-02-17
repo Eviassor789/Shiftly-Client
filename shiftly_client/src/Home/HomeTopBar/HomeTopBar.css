@@ -15,8 +15,7 @@
 
     font-size: medium;
     color: #e8e8e8bd;
-    /* font-family: Verdana, Geneva, Tahoma, sans-serif; */
-    font-family: 'Kreon', serif;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 
     height: 100%;
 
@@ -30,16 +29,15 @@
 
 
     margin-left: 30px;
+    padding: 10px;
 
 
 }
 
 .BottomBorder {
     border-bottom: 5px;
-    padding: 0px;
     border-color: white;
     border-style: solid;
-    padding: 10px;
 }
 
 .HomeTopBarButton:hover {

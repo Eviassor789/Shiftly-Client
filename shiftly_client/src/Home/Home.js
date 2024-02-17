@@ -7,40 +7,41 @@ import React from 'react';
 function Home() {
   return (
     <>
-      <HomeTopBar />
+      <HomeTopBar page="home" />
 
-      <div id="welcomeBox" className="HomeBoxes">
-        <p id="welcomeMessage">
-          Hi, User! Welcome back to <span>Shiftly</span>.
-        </p>
-        <p>
-          Tip: In the Settings you can change your preferences which can lead to
-          different results on your tables
-        </p>
-      </div>
-
-      <div id="HomeMainBox" className="HomeBoxes">
-        <div class="input-icons">
-          <i class="bi bi-search icon"></i>
-          <input
-            id="History_input"
-            class="input-field"
-            placeholder="Search Table"
-          />
+      <div className="CenterDiv">
+        <div id="welcomeBox" className="HomeBoxes">
+          <p id="welcomeMessage">
+            Hi, User! Welcome back to <span>Shiftly</span>.
+          </p>
+          <p>
+            Tip: In the Settings you can change your preferences which can lead
+            to different results on your tables
+          </p>
         </div>
 
-        <div id="HistoryListContainer"></div>
-        <SchedulingTile />
-        <SchedulingTile />
-        <SchedulingTile />
-        <SchedulingTile />
-        <SchedulingTile />
-        <SchedulingTile />
-        <SchedulingTile />
-        <SchedulingTile />
-        <SchedulingTile />
-        <SchedulingTile />
+        <div id="HomeMainBox" className="HomeBoxes">
+          <div class="input-icons">
+            <i class="bi bi-search icon"></i>
+            <input
+              id="History_input"
+              class="input-field"
+              placeholder="Search Table"
+            />
+          </div>
 
+          <div id="HistoryListContainer"></div>
+          <SchedulingTile />
+          <SchedulingTile />
+          <SchedulingTile />
+          <SchedulingTile />
+          <SchedulingTile />
+          <SchedulingTile />
+          <SchedulingTile />
+          <SchedulingTile />
+          <SchedulingTile />
+          <SchedulingTile />
+        </div>
       </div>
       <div id="easterEgg">easter egg</div>
     </>

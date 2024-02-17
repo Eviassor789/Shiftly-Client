@@ -1,8 +1,16 @@
 import "./Register.css";
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 
 function Register() {
+  const navigate = useNavigate();
+
+  const handleLoginClick = () => {
+    // Navigate to the login page
+    navigate('/');
+  };
   return (
     <>
       <div id="Register_upper_background"></div>
@@ -27,7 +35,10 @@ function Register() {
 
           <div>
             <p>
-              Already have an account? <span className="blue">Log in</span>
+              Already have an account?{" "}
+              <span className="blue" onClick={handleLoginClick}>
+                Log in
+              </span>
             </p>
           </div>
         </div>

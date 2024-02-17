@@ -11,6 +11,11 @@
     height: fit-content;
 }
 
+body {
+  overflow-x: hidden;
+}
+
+
 .elipse {
     position: relative;
     width: 20px;
@@ -41,6 +46,7 @@
 .content-container {
     display: flex;
     transition: transform 0.3s ease-in-out;
+    overflow: hidden;
   }
 
   .content-container:not(:nth-child(3)) {

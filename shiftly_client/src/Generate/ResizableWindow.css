@@ -1,0 +1,58 @@
+ .window {
+  position: relative;
+    width: 700px;
+    height: 50px;
+    background-color: #e3e3e3;
+    overflow: hidden;
+    transition: 0.3s;
+
+    border: 4px solid transparent;
+    box-shadow: 0 0px 10px rgba(23, 23, 23, 0.598);
+    border-radius: 18px;
+
+    cursor: pointer;
+  }
+
+  .top-right-arrow {
+    position: relative;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 12px solid #333;
+    width: 0;
+    height: 0;
+    left: 48%;
+    top: 15px;
+    transform: translateX(-48%);
+  }
+  
+  .expanded {
+    height: 350px;
+  }
+  
+  .content {
+    position: relative;
+    margin: 15px;
+  }
+  
+  .content img {
+    margin-bottom: 10px;
+    height: fit-content;
+    width: fit-content;
+    max-width: 700px;
+  }
+
+  .req-images {
+    margin-bottom: 10px;
+    height: fit-content;
+    width: fit-content;
+    max-width: 700px;
+    max-height: 200px;
+  }
+
+  .shft-images {
+    margin-bottom: 10px;
+    height: fit-content;
+    width: fit-content;
+    max-width: 700px;
+    max-height: 200px;
+  }

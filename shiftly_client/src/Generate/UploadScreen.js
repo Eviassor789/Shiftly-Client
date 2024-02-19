@@ -1,9 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './UploadScreen.css';
 import ResizableWindow from "./ResizableWindow";
 import UploadFile from "./UploadFile";
+import { useNavigate } from 'react-router-dom';
 
-const UploadScreen = ({ step, currentStep, handleNext, setCurrentStep }) => {
+const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFileUploaded }) => {
+
+  const navigate = useNavigate();
+
+  const handleNext = () => {
+
+    if (currentStep === 3) {
+      if(fileUploaded[0] === true && fileUploaded[1] === true) {
+        navigate("home")
+      } else {
+        alert("Please upload a the other files.");
+      }
+
+
+    } else {
+      setCurrentStep(currentStep + 1);
+      
+      
+    }
+  };
+
 
   const position = () => {
     if (step === currentStep) {
@@ -62,13 +83,28 @@ const UploadScreen = ({ step, currentStep, handleNext, setCurrentStep }) => {
       <div className={`upload-screen ${position()}`}>
         <div className="CenterDiv">
           {renderContent()}
-          <UploadFile handleNext={handleNext} id={'UploadFile ' + step} />
+          <UploadFile
+            id={"UploadFile_" + currentStep}
+            handleNext={handleNext}
+            fileUploaded={fileUploaded}
+            setFileUploaded={setFileUploaded}
+            currentStep={currentStep}
+          />
           <div id="GenerateProgress">
-            <div className={` ${step === 1 ? "elipse elipse-on" : "elipse"}`} onClick={() => setCurrentStep(1)}></div>
-            <div className={` ${step === 2 ? "elipse elipse-on" : "elipse"}`} onClick={() => setCurrentStep(2)}></div>
-            <div className={` ${step === 3 ? "elipse elipse-on" : "elipse"}`} onClick={() => setCurrentStep(3)}></div>
+            <div
+              className={` ${step === 1 ? "elipse elipse-on" : "elipse"}`}
+              onClick={() => setCurrentStep(1)}
+            ></div>
+            <div
+              className={` ${step === 2 ? "elipse elipse-on" : "elipse"}`}
+              onClick={() => setCurrentStep(2)}
+            ></div>
+            <div
+              className={` ${step === 3 ? "elipse elipse-on" : "elipse"}`}
+              onClick={() => setCurrentStep(3)}
+            ></div>
           </div>
-          <ResizableWindow step={step}/>
+          <ResizableWindow step={step} />
         </div>
       </div>
     </>

@@ -1,9 +1,11 @@
 import "./HomeTopBar.css";
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import SettingsPopup from "./SettingsPopup";
 
 function HomeTopBar(props) {
+
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -11,6 +13,10 @@ function HomeTopBar(props) {
     // You can add additional logic or conditions here if needed
     // For now, just navigate to the specified page
     navigate(`/${page}`);
+  };
+
+  const handleSettingsClick = () => {
+    setIsSettingsOpen(!isSettingsOpen);
   };
 
   return (
@@ -38,8 +44,9 @@ function HomeTopBar(props) {
         >
           Generate
         </button>
-        <button id="UserDetailsBtn">U</button>
+        <button id="UserDetailsBtn" onClick={handleSettingsClick}>U</button>
       </div>
+      {isSettingsOpen && <SettingsPopup onClose={() => setIsSettingsOpen(false)} />}
     </>
   );
 }

@@ -6,9 +6,9 @@ import UploadScreen from "./UploadScreen";
 function Generate() {
   const [currentStep, setCurrentStep] = useState(1);
 
-  const handleNext = () => {
-    setCurrentStep(currentStep + 1);
-  };
+
+  const [fileUploaded, setFileUploaded] = useState([false, false, false]);
+
 
   // const handleBack = () => {
   //   setCurrentStep(currentStep - 1);
@@ -17,9 +17,16 @@ function Generate() {
 
   return (
     <>
-       <div className="content-container">
+      <div className="content-container">
         {[...Array(3)].map((_, index) => (
-          <UploadScreen key={index} step={index + 1} currentStep={currentStep} handleNext={handleNext} setCurrentStep={setCurrentStep} />
+          <UploadScreen
+            key={index}
+            step={index + 1}
+            currentStep={currentStep}
+            setCurrentStep={setCurrentStep}
+            fileUploaded={fileUploaded}
+            setFileUploaded={setFileUploaded}
+          />
         ))}
       </div>
       <HomeTopBar page="generate" />

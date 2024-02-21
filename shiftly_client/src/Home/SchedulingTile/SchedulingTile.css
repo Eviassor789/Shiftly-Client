@@ -1,40 +1,73 @@
+
 #TileContainer {
     display: flex;
-
-    height: 50px;
-
-    background-color: rgb(161, 161, 245);
-
-    border-color: black;
+    align-items: center; /* Vertically center items */
+    height: 80px; /* Adjust height for better spacing */
+    background-color: #f0f0f0; /* Lighter background color */
+    border: 2px solid #ccc; /* Simplify border property */
     border-radius: 10px;
-    border-style: solid;
-    border-width: 2px;
-
     cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth background color transition */
+    margin-bottom: 10px; /* Add spacing between tiles */
 }
 
-#TileContainer span {
-    margin: 8px;
+#TileContainer:hover {
+    background-color: #e0e0e0; /* Darken background color on hover */
 }
 
 #TileContainer img {
-    height: 30px;
-    width: 40px;
-
-    margin: 8px;
+    height: 50px; /* Adjust image height */
+    width: 60px; /* Adjust image width */
+    margin: 0 10px; /* Add spacing around the image */
 }
 
-#TileContainer i {
-
-
-    margin: 8px;
+#TileContainer span {
+    flex-grow: 1; /* Expand to fill available space */
+    margin: 0 10px; /* Add spacing around text */
 }
 
 #TileContainer .icons {
-    position: relative;
-    right: 0px;
+    margin-right: 10px; /* Add spacing to the right of icons */
+}
 
-    /* top: 0px; */
-    bottom: 0px;
-    margin: auto;
+#TileContainer i {
+    margin: 0 5px; /* Add spacing around icons */
+    font-size: 20px; /* Adjust icon size */
+}
+
+#NameOfTable {
+    margin: 0 10px;
+    flex-grow: 1;
+    width: 200px;
+}
+
+#dateOfTable {
+    right: 10px; 
+}
+
+.icons {
+    display: flex;
+    align-items: center;
+}
+
+.icons button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+}
+
+.icons button:focus {
+    outline: none; /* Remove outline on focus */
+}
+
+.icons button i {
+    color: #ff6347; /* Red color for remove icon */
+    font-size: 20px;
+    transition: color 0.3s ease; /* Smooth color transition */
+}
+
+.icons button i:hover {
+    color: #cc0000; /* Darker red color on hover */
 }

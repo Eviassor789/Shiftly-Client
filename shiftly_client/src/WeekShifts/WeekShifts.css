@@ -1,0 +1,46 @@
+
+
+   .week-shifts {
+    margin: 20px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    position: relative;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  tr:hover {
+    background-color: #ddd;
+  }
+  
+  .during-shift {
+    position: relative;
+  }
+  
+  .shift {
+    position: absolute;
+    background-color: blue;
+    opacity: 0.5;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    /* margin: 0px; */
+    /* padding: 0px; */
+    /* margin-left: 50px; */
+  }
+  

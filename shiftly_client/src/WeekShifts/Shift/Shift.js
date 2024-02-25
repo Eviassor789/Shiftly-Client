@@ -1,6 +1,6 @@
 import React from "react";
 
-const Shift = ({ startHour, endHour, overlapNum, place }) => {
+const Shift = ({ startHour, endHour, overlapNum, place, color }) => {
   // Calculate the number of rows to span
   const startRow = parseInt(startHour.substring(0, 2), 10) - 7;
   const endRow = parseInt(endHour.substring(0, 2), 10) - 7;
@@ -14,6 +14,7 @@ const Shift = ({ startHour, endHour, overlapNum, place }) => {
         borderRadius: "20px",
         position: `absolute`,
         left: `${(100 / (overlapNum + 1)) * place}%`,
+        background: `${(color)}`
       }}
     ></div>
   );

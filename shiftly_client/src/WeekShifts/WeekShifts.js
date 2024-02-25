@@ -3,14 +3,17 @@ import Shift from "./Shift/Shift";
 import "./WeekShifts.css";
 
 const WeekShifts = () => {
-    let placed_shifted = []
+  const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
+
+  let placed_shifted = [],
+    counter = 0;
   const shifts = [
     {
-        day: "Sunday",
-        startHour: "10:00",
-        endHour: "17:00",
-        names: ["Alice", "Bob"],
-      },
+      day: "Sunday",
+      startHour: "10:00",
+      endHour: "17:00",
+      names: ["Alice", "Bob"],
+    },
     {
       day: "Sunday",
       startHour: "14:00",
@@ -30,10 +33,40 @@ const WeekShifts = () => {
       names: ["Charlie", "David"],
     },
     {
-      day: "Monday",
+      day: "Tuesday",
+      startHour: "10:00",
+      endHour: "19:00",
+      names: ["Charlie", "David"],
+    },
+    {
+      day: "Wednesday",
       startHour: "14:00",
       endHour: "16:00",
       names: ["AAA", "BBB"],
+    },
+    {
+      day: "Thursday",
+      startHour: "14:00",
+      endHour: "16:00",
+      names: ["AAA", "BBB"],
+    },
+    {
+      day: "Thursday",
+      startHour: "14:00",
+      endHour: "16:00",
+      names: ["AAA", "BBB"],
+    },
+    {
+        day: "Thursday",
+        startHour: "14:00",
+        endHour: "16:00",
+        names: ["AAA", "BBB"],
+      },
+    {
+      day: "Thursday",
+      startHour: "14:00",
+      endHour: "17:00",
+      names: ["AAAxxxx", "BBB"],
     },
     // Add more shifts as needed
   ];
@@ -101,21 +134,27 @@ const WeekShifts = () => {
                 "Thursday",
                 "Friday",
               ].map((day) => {
-                const shift = shifts.find(
-                  (s) =>
-                    s.day === day && hour == s.startHour && hour < s.endHour
+                const relevantShifts = shifts.filter(
+                  (s) => s.day === day && hour == s.startHour
                 );
-                
-                return (
-                  <td key={day + hour} className={shift ? "during-shift" : ""}>
-                    {shift && placed_shifted.push(shift) &&(
-                      <Shift
-                        startHour={shift.startHour}
-                        endHour={shift.endHour}
-                        overlapNum={getMaxOverlaps(shifts, shift)}
-                        place={getMaxOverlaps(placed_shifted, shift)}
 
-                      />
+                return (
+                  <td
+                    key={day + hour}
+                    className={relevantShifts.length > 0 ? "during-shift" : ""}
+                  >
+                    {relevantShifts.map(
+                      (shift, index) =>
+                        placed_shifted.push(shift) && (
+                          <Shift
+                            key={index}
+                            startHour={shift.startHour}
+                            endHour={shift.endHour}
+                            overlapNum={getMaxOverlaps(shifts, shift)}
+                            place={getMaxOverlaps(placed_shifted, shift)}
+                            color={color_list[counter++ % color_list.length]}
+                          />
+                        )
                     )}
                   </td>
                 );
@@ -129,4 +168,3 @@ const WeekShifts = () => {
 };
 
 export default WeekShifts;
-

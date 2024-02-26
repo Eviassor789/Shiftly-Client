@@ -28,6 +28,8 @@
     color: rgb(0, 0, 0);
     font-weight: bold;
     overflow: hidden; /* Hide overflow content */
+    overflow-y: auto; /* Enable vertical scrolling when needed */
+    height: 100%;
 
   }
   
@@ -37,6 +39,16 @@
     white-space: nowrap; /* Prevent line breaks */
     overflow: hidden; /* Hide overflow content */
     text-overflow: ellipsis; /* Display ellipsis (...) when text overflows */
+    
   }
   
+  /* Style for the list of names */
+.shift-names ul {
+    list-style-type: none; /* Remove bullets */
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Hide overflowing content */
+  }
+
+
   

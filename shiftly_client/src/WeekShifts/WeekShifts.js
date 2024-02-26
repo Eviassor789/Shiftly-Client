@@ -39,6 +39,12 @@ const WeekShifts = () => {
       names: ["Charlie", "David"],
     },
     {
+      day: "Tuesday",
+      startHour: "07:00",
+      endHour: "08:00",
+      names: ["Charlie", "David"],
+    },
+    {
       day: "Wednesday",
       startHour: "14:00",
       endHour: "16:00",
@@ -57,11 +63,11 @@ const WeekShifts = () => {
       names: ["AAA", "BBB"],
     },
     {
-        day: "Thursday",
-        startHour: "14:00",
-        endHour: "16:00",
-        names: ["AAA", "BBB"],
-      },
+      day: "Thursday",
+      startHour: "14:00",
+      endHour: "16:00",
+      names: ["AAA", "BBB"],
+    },
     {
       day: "Thursday",
       startHour: "14:00",
@@ -98,9 +104,23 @@ const WeekShifts = () => {
     const end1 = convertToMinutes(shift1.endHour);
     const start2 = convertToMinutes(shift2.startHour);
     const end2 = convertToMinutes(shift2.endHour);
+    if (start1 == 420 && shift1.day === shift2.day) {
+      console.log("start1: " + start1);
+      console.log("end1: " + end1);
+      console.log("start2: " + start2);
+      console.log("end2: " + end2);
+      console.log("shift1.day: " + shift1.day);
+      console.log("shift2.day: " + shift2.day);
+    }
 
     // Check if the shifts overlap in time
-    return (start1 < end2 || start2 < end1) && shift1.day == shift2.day;
+    return (
+      ((start1 >= start2 && start1 <= end2) ||
+        (end1 >= start2 && end1 <= end2) ||
+        (start2 >= start1 && start2 <= end1) ||
+        (end2 >= start1 && end2 <= end1)) &&
+      shift1.day === shift2.day
+    );
   }
 
   function convertToMinutes(time) {
@@ -135,7 +155,7 @@ const WeekShifts = () => {
                 "Friday",
               ].map((day) => {
                 const relevantShifts = shifts.filter(
-                  (s) => s.day === day && hour == s.startHour
+                  (s) => s.day === day && hour === s.startHour
                 );
 
                 return (

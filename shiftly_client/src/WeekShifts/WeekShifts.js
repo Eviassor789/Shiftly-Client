@@ -150,6 +150,7 @@ const WeekShifts = () => {
                             key={index}
                             startHour={shift.startHour}
                             endHour={shift.endHour}
+                            names={shift.names}
                             overlapNum={getMaxOverlaps(shifts, shift)}
                             place={getMaxOverlaps(placed_shifted, shift)}
                             color={color_list[counter++ % color_list.length]}

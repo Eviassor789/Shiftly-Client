@@ -1,46 +1,42 @@
+.week-shifts {
+  margin: 20px;
+}
 
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-left: 2px solid rgb(0, 0, 0);
+  /* Highlight the border between days with a blue line */
+  border: 2px solid rgb(0, 0, 0);
+  /* Add outer border to the table */
 
-   .week-shifts {
-    margin: 20px;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
-    position: relative;
-  }
-  
-  th {
-    background-color: #f2f2f2;
-  }
-  
-  tr:nth-child(even) {
-    background-color: #f2f2f2;
-  }
-  
-  tr:hover {
-    background-color: #ddd;
-  }
-  
-  .during-shift {
-    position: relative;
-  }
-  
-  .shift {
-    position: absolute;
-    background-color: blue;
-    opacity: 0.5;
-    height: 100%;
-    top: 0px;
-    left: 0px;
-    /* margin: 0px; */
-    /* padding: 0px; */
-    /* margin-left: 50px; */
-  }
-  
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+  position: relative;
+  border-left: 2px solid rgb(0, 0, 0);
+  /* Highlight the border between days with a blue line */
+
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.during-shift {
+  position: relative;
+}
+
+/* Style for border below first row */
+.week-shifts tr:nth-child(1) {
+  border-top: 2px solid rgb(0, 0, 0);
+  /* Add a blue border below the first row */
+}

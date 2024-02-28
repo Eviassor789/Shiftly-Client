@@ -31,8 +31,8 @@ tr:nth-child(even) {
   background-color: #f2f2f2;
 }
 
-.during-shift {
-  position: relative;
+th:first-child {
+  width: 160px; /* Adjust the width as per your preference */
 }
 
 /* Style for border below first row */

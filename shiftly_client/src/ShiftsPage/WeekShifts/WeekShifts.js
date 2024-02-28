@@ -48,19 +48,19 @@ const WeekShifts = () => {
       day: "Wednesday",
       startHour: "14:00",
       endHour: "16:00",
-      names: ["AAA", "BBB"],
+      names: ["AAA", "BBB", "CCC", "DDDDDDDDDDDD", "EEE", "FFF", "GGG", "HHH"],
     },
+    // {
+    //   day: "Thursday",
+    //   startHour: "14:00",
+    //   endHour: "16:00",
+    //   names: ["AAA", "BBB"],
+    // },
     {
       day: "Thursday",
       startHour: "14:00",
       endHour: "16:00",
-      names: ["AAA", "BBB"],
-    },
-    {
-      day: "Thursday",
-      startHour: "14:00",
-      endHour: "16:00",
-      names: ["AAA", "BBB"],
+      names: ["AAA", "BBB", "CCC", "DDDDDDDDDDDD", "EEE", "FFF", "GGG", "HHH"],
     },
     {
       day: "Thursday",
@@ -104,14 +104,6 @@ const WeekShifts = () => {
     const end1 = convertToMinutes(shift1.endHour);
     const start2 = convertToMinutes(shift2.startHour);
     const end2 = convertToMinutes(shift2.endHour);
-    if (start1 == 420 && shift1.day === shift2.day) {
-      console.log("start1: " + start1);
-      console.log("end1: " + end1);
-      console.log("start2: " + start2);
-      console.log("end2: " + end2);
-      console.log("shift1.day: " + shift1.day);
-      console.log("shift2.day: " + shift2.day);
-    }
 
     // Check if the shifts overlap in time
     return (
@@ -126,6 +118,11 @@ const WeekShifts = () => {
   function convertToMinutes(time) {
     const [hours, minutes] = time.split(":").map(Number);
     return hours * 60 + minutes;
+  }
+
+  function nextHour(time) {
+    const [hours, minutes] = time.split(":").map(Number);
+    return (hours + 1).toString() + ":00";
   }
 
   return (
@@ -145,7 +142,7 @@ const WeekShifts = () => {
         <tbody>
           {hours.map((hour) => (
             <tr key={hour}>
-              <td>{hour}</td>
+              <td>{hour + " - " + nextHour(hour)}</td>
               {[
                 "Sunday",
                 "Monday",
@@ -159,10 +156,7 @@ const WeekShifts = () => {
                 );
 
                 return (
-                  <td
-                    key={day + hour}
-                    className={relevantShifts.length > 0 ? "during-shift" : ""}
-                  >
+                  <td key={day + hour}>
                     {relevantShifts.map(
                       (shift, index) =>
                         placed_shifted.push(shift) && (

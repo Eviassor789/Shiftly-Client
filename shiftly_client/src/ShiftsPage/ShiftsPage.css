@@ -1,0 +1,77 @@
+
+.table-name {
+    margin-left: 10px;
+}
+
+.buttons {
+    display: flex;
+}
+
+.button {
+    background-color: #102C61;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+
+.profession-button {
+    background-color: transparent;
+    border: none;
+    padding: 10px;
+    text-align: center;
+    color: white;
+    cursor: pointer;
+
+
+}
+
+.profession-button.selected {
+    background-color: #31579F;
+}
+
+.profession-text {
+    white-space: nowrap;
+}
+
+
+.page-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Ensure full viewport height */
+}
+
+.top-panel {
+    background-color: #0C41A3;
+    color: #fff;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.main-container {
+    display: flex;
+    flex: 1;
+}
+
+
+.left-panel {
+    display: flex;
+    flex-direction: column;
+    background-color: #102C61;
+    color: #fff;
+    width: 200px; 
+    overflow-y: auto;
+}
+
+.main-panel {
+    flex: 1;
+    overflow: auto;
+    padding: 10px;
+    margin-left: 10px; /* Adjust this value to match the width of the left panel */
+    
+}

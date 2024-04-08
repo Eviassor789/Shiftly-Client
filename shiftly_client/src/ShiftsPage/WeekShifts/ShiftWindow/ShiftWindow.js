@@ -30,7 +30,6 @@ const ShiftWindow = ({
         </span>
         <span>Required: {requiredWorkers}</span>
         <i
-          className="close-button"
           onClick={onClose}
           class="bi bi-x-lg"
         ></i>

@@ -2,19 +2,31 @@ import React, { useState, useRef } from "react";
 import Shift from "./Shift/Shift";
 import "./WeekShifts.css";
 import ShiftWindow from "./ShiftWindow/ShiftWindow";
-import Modal from "./Modal/modal";
+// import Modal from "./Modal/modal";
 
 const WeekShifts = () => {
   const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
 
-  const [showModal, setShowModal] = useState(false);
+  const [shiftData, setShiftData] = useState({
+    names: [],
+    startHour: "",
+    endHour: "",
+    day: "",
+    showModal: false,
+  });
 
-  const handleShiftClick = () => {
-    setShowModal(true);
+  const handleShiftClick = (newData) => {
+    setShiftData(newData);
   };
 
   const handleCloseModal = () => {
-    setShowModal(false);
+    setShiftData({
+      names: [],
+      startHour: "",
+      endHour: "",
+      day: "",
+      showModal: false,
+    });
   };
 
   let placed_shifted = [],
@@ -133,6 +145,16 @@ const WeekShifts = () => {
     return (hours + 1).toString() + ":00";
   }
 
+  if (shiftData.showModal) {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", // Optional: Adds smooth scrolling behavior
+    });
+    document.body.classList.add("active-modal");
+  } else {
+    document.body.classList.remove("active-modal");
+  }
+
   return (
     <div className="week-shifts">
       <table>
@@ -168,16 +190,27 @@ const WeekShifts = () => {
                     {relevantShifts.map(
                       (shift, index) =>
                         placed_shifted.push(shift) && (
-                          <Shift
-                            key={index}
-                            startHour={shift.startHour}
-                            endHour={shift.endHour}
-                            names={shift.names}
-                            overlapNum={getMaxOverlaps(shifts, shift)}
-                            place={getMaxOverlaps(placed_shifted, shift)}
-                            color={color_list[counter++ % color_list.length]}
-                            clickFun={handleShiftClick}
-                          />
+                          <div
+                            onClick={() =>
+                              handleShiftClick({
+                                names: shift.names,
+                                startHour: shift.startHour,
+                                endHour: shift.endHour,
+                                day: day,
+                                showModal: true
+                              })
+                            }
+                          >
+                            <Shift
+                              key={index}
+                              startHour={shift.startHour}
+                              endHour={shift.endHour}
+                              names={shift.names}
+                              overlapNum={getMaxOverlaps(shifts, shift)}
+                              place={getMaxOverlaps(placed_shifted, shift)}
+                              color={color_list[counter++ % color_list.length]}
+                            />
+                          </div>
                         )
                     )}
                   </td>
@@ -188,17 +221,16 @@ const WeekShifts = () => {
         </tbody>
       </table>
 
-      {showModal && (
+      {shiftData.showModal && (
         <>
           <div className="overlay"></div>
           <div className="modal-content">
-            <h2>Hello Modal</h2>
             <ShiftWindow
-              day="Monday"
-              startTime="09:00"
-              endTime="17:00"
+              day={shiftData.day}
+              startTime={shiftData.startHour}
+              endTime={shiftData.endHour}
               requiredWorkers={8}
-              occupiedWorkers={["Alice", "Bob"]}
+              occupiedWorkers={shiftData.names}
               unoccupiedWorkers={["Charlie", "David"]}
               onClose={handleCloseModal}
             />
@@ -210,21 +242,3 @@ const WeekShifts = () => {
 };
 
 export default WeekShifts;
-
-// {showModal && (
-//   <>
-//     <div className="overlay"></div>
-//     <div className="modal-content">
-//       <h2>Hello Modal</h2>
-//       <ShiftWindow
-//         day="Monday"
-//         startTime="09:00"
-//         endTime="17:00"
-//         requiredWorkers={8}
-//         occupiedWorkers={["Alice", "Bob"]}
-//         unoccupiedWorkers={["Charlie", "David"]}
-//         onClose={toggleModal}
-//       />
-//     </div>
-//   </>
-// )}

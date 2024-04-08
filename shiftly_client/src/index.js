@@ -7,6 +7,8 @@ import Home from './Home/Home';
 import Generate from './Generate/Generate';
 import WeekShifts from './ShiftsPage/WeekShifts/WeekShifts';
 import ShiftsPage from './ShiftsPage/ShiftsPage';
+import ShiftWindow from './ShiftsPage/WeekShifts/ShiftWindow/ShiftWindow';
+import Modal from './ShiftsPage/WeekShifts/Modal/modal';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -18,6 +20,15 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/generate" element={<Generate />} />
         <Route path="/table" element={<WeekShifts />} />
         <Route path="/page" element={<ShiftsPage />} />
+        <Route path="/modal" element={<Modal />} />
+        <Route path="/win" element={<ShiftWindow
+          day="Monday"
+          startTime="09:00"
+          endTime="17:00"
+          requiredWorkers={8}
+          occupiedWorkers={['Alice', 'Bob']}
+          unoccupiedWorkers={['Charlie', 'David']}
+        />} />
       </Routes>
     </Router>
   </React.StrictMode>,

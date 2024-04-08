@@ -1,13 +1,25 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import Shift from "./Shift/Shift";
 import "./WeekShifts.css";
+import ShiftWindow from "./ShiftWindow/ShiftWindow";
+import Modal from "./Modal/modal";
 
 const WeekShifts = () => {
   const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
 
+  const [showModal, setShowModal] = useState(false);
+
+  const handleShiftClick = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
   let placed_shifted = [],
     counter = 0;
-  const shifts = [
+  const shifts_list = [
     {
       day: "Sunday",
       startHour: "10:00",
@@ -50,12 +62,6 @@ const WeekShifts = () => {
       endHour: "16:00",
       names: ["AAA", "BBB", "CCC", "DDDDDDDDDDDD", "EEE", "FFF", "GGG", "HHH"],
     },
-    // {
-    //   day: "Thursday",
-    //   startHour: "14:00",
-    //   endHour: "16:00",
-    //   names: ["AAA", "BBB"],
-    // },
     {
       day: "Thursday",
       startHour: "14:00",
@@ -76,6 +82,8 @@ const WeekShifts = () => {
     },
     // Add more shifts as needed
   ];
+
+  const [shifts, setIsDragging] = useState(shifts_list);
 
   // Generate array of hours from 07:00 to 20:00
   const hours = [];
@@ -168,6 +176,7 @@ const WeekShifts = () => {
                             overlapNum={getMaxOverlaps(shifts, shift)}
                             place={getMaxOverlaps(placed_shifted, shift)}
                             color={color_list[counter++ % color_list.length]}
+                            clickFun={handleShiftClick}
                           />
                         )
                     )}
@@ -178,8 +187,44 @@ const WeekShifts = () => {
           ))}
         </tbody>
       </table>
+
+      {showModal && (
+        <>
+          <div className="overlay"></div>
+          <div className="modal-content">
+            <h2>Hello Modal</h2>
+            <ShiftWindow
+              day="Monday"
+              startTime="09:00"
+              endTime="17:00"
+              requiredWorkers={8}
+              occupiedWorkers={["Alice", "Bob"]}
+              unoccupiedWorkers={["Charlie", "David"]}
+              onClose={handleCloseModal}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 };
 
 export default WeekShifts;
+
+// {showModal && (
+//   <>
+//     <div className="overlay"></div>
+//     <div className="modal-content">
+//       <h2>Hello Modal</h2>
+//       <ShiftWindow
+//         day="Monday"
+//         startTime="09:00"
+//         endTime="17:00"
+//         requiredWorkers={8}
+//         occupiedWorkers={["Alice", "Bob"]}
+//         unoccupiedWorkers={["Charlie", "David"]}
+//         onClose={toggleModal}
+//       />
+//     </div>
+//   </>
+// )}

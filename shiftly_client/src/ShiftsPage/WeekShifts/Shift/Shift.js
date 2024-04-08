@@ -1,7 +1,7 @@
 import React from "react";
 import "./Shift.css"
 
-const Shift = ({ startHour, endHour, overlapNum, place, color, names }) => {
+const Shift = ({ startHour, endHour, overlapNum, place, color, names, clickFun }) => {
   // Calculate the number of rows to span
   const startRow = parseInt(startHour.substring(0, 2), 10) - 7;
   const endRow = parseInt(endHour.substring(0, 2), 10) - 7;
@@ -9,6 +9,7 @@ const Shift = ({ startHour, endHour, overlapNum, place, color, names }) => {
   return (
     <div
       className="shift"
+      onClick={clickFun}
       style={{
         height: `${(endRow - startRow) * 40}px`,
         width: `${100 / (overlapNum + 1)}%`,

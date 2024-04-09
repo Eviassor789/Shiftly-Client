@@ -7,6 +7,9 @@ const AddShiftWindow = ({
   setOther_shifts,
   shifts,
 }) => {
+
+  const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
+
   const handleAddShiftClick = (data) => {
     // Add the new shift to the shifts array
     var updatedShifts = [...shifts, data];
@@ -37,7 +40,8 @@ const AddShiftWindow = ({
                 day: shift.day,
                 startHour: shift.startHour,
                 endHour: shift.endHour,
-                names: []
+                names: [],
+                color: color_list[Math.floor(Math.random() * color_list.length)]
               })
             }
           >

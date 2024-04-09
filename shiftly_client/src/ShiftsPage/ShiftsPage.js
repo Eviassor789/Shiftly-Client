@@ -12,97 +12,121 @@ const ShiftsPage = () => {
     setSelectedProfession(profession);
   };
 
-  // const handleAddShiftClick = () => {
-  //   setshowShiftsModal(true);
-  // };
+  const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
+
+  //color_list[counter++ % color_list.length]
 
   const other_shiftsList = [
-    {day: "Monday",
-    startHour: "10:00",
-    endHour: "13:00"},
-    {day: "Monday",
-    startHour: "14:00",
-    endHour: "16:00"},
-    {day: "Wednesday",
-    startHour: "11:00",
-    endHour: "15:00"},
-    {day: "Thursday",
-    startHour: "07:00",
-    endHour: "12:00"},
-    {day: "Friday",
-    startHour: "08:00",
-    endHour: "18:00"},
-  ]
+    { day: "Monday", startHour: "10:00", endHour: "13:00" },
+    { day: "Monday", startHour: "14:00", endHour: "16:00" },
+    { day: "Wednesday", startHour: "11:00", endHour: "15:00" },
+    { day: "Thursday", startHour: "07:00", endHour: "12:00" },
+    { day: "Friday", startHour: "08:00", endHour: "18:00" },
+  ];
 
   const [other_shifts, setOther_shifts] = useState(other_shiftsList);
 
-
-  const shifts_list = [
+  var shifts_list = [
     {
       day: "Sunday",
       startHour: "10:00",
       endHour: "17:00",
       names: ["Alice", "Bob", "sss", "abcbd", "krook"],
+      color: false,
     },
     {
       day: "Sunday",
       startHour: "14:00",
       endHour: "17:00",
       names: ["Alice", "Bob", "trick"],
+      color: false,
     },
     {
       day: "Sunday",
       startHour: "08:00",
       endHour: "15:00",
       names: ["Alice", "Bob"],
+      color: false,
     },
     {
       day: "Tuesday",
       startHour: "10:00",
       endHour: "18:00",
       names: ["Charlie", "David"],
+      color: false,
     },
     {
       day: "Tuesday",
       startHour: "10:00",
       endHour: "19:00",
       names: ["Charlie", "David"],
+      color: false,
     },
     {
       day: "Tuesday",
       startHour: "07:00",
       endHour: "08:00",
       names: ["Charlie", "David"],
+      color: false,
     },
     {
       day: "Wednesday",
       startHour: "14:00",
       endHour: "16:00",
       names: ["AAA", "BBB", "CCC", "DDDDDDDDDDDD", "EEE", "FFF", "GGG", "HHH"],
+      color: false,
     },
     {
       day: "Thursday",
       startHour: "14:00",
       endHour: "16:00",
       names: ["AAA", "BBB", "CCC", "DDDDDDDDDDDD", "EEE", "FFF", "GGG", "HHH"],
+      color: false,
     },
     {
       day: "Thursday",
       startHour: "14:00",
       endHour: "16:00",
       names: ["AAA", "BBB"],
+      color: false,
     },
     {
       day: "Thursday",
       startHour: "14:00",
       endHour: "17:00",
       names: ["AAAxxxx", "BBB"],
+      color: false,
     },
     // Add more shifts as needed
   ];
 
-  const [shifts, setShifts] = useState(shifts_list);
+  const daysOfWeek = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
 
+  shifts_list.sort((a, b) => {
+    const dayIndexA = daysOfWeek.indexOf(a.day);
+    const dayIndexB = daysOfWeek.indexOf(b.day);
+
+    if (a.startHour !== b.startHour) {
+      return a.startHour.localeCompare(b.startHour); // Sort by day index
+    } else {
+      return dayIndexA - dayIndexB; // If day is the same, sort by start hour
+    }
+  });
+
+  let counter = 0;
+  shifts_list.forEach((shift) => {
+    shift.color = color_list[counter++ % color_list.length];
+  });
+
+  const [shifts, setShifts] = useState(shifts_list);
 
   return (
     <div class="page-container">
@@ -139,17 +163,16 @@ const ShiftsPage = () => {
         </div>
         <div class="main-panel">
           <WeekShifts shifts_list={shifts} />
-          <AddShiftWindow other_shifts={other_shifts} setShifts={setShifts} setOther_shifts={setOther_shifts} shifts={shifts}/>
+          <AddShiftWindow
+            other_shifts={other_shifts}
+            setShifts={setShifts}
+            setOther_shifts={setOther_shifts}
+            shifts={shifts}
+          />
         </div>
       </div>
-
-
-
     </div>
   );
 };
 
 export default ShiftsPage;
-
-
-

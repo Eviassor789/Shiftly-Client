@@ -3,9 +3,8 @@ import Shift from "./Shift/Shift";
 import "./WeekShifts.css";
 import ShiftWindow from "./ShiftWindow/ShiftWindow";
 
-const WeekShifts = ({shifts_list}) => {
+const WeekShifts = ({ shifts_list }) => {
   const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
-
 
   const [shiftData, setShiftData] = useState({
     names: [],
@@ -31,11 +30,6 @@ const WeekShifts = ({shifts_list}) => {
 
   let placed_shifted = [],
     counter = 0;
-  
-
-  // const [shifts, setIsDragging] = useState(shifts_list);
-  var shifts = shifts_list;
-  
 
   // Generate array of hours from 07:00 to 20:00
   const hours = [];
@@ -121,7 +115,7 @@ const WeekShifts = ({shifts_list}) => {
                 "Thursday",
                 "Friday",
               ].map((day) => {
-                const relevantShifts = shifts.filter(
+                const relevantShifts = shifts_list.filter(
                   (s) => s.day === day && hour === s.startHour
                 );
 
@@ -137,7 +131,7 @@ const WeekShifts = ({shifts_list}) => {
                                 startHour: shift.startHour,
                                 endHour: shift.endHour,
                                 day: day,
-                                showModal: true
+                                showModal: true,
                               })
                             }
                           >
@@ -146,9 +140,13 @@ const WeekShifts = ({shifts_list}) => {
                               startHour={shift.startHour}
                               endHour={shift.endHour}
                               names={shift.names}
-                              overlapNum={getMaxOverlaps(shifts, shift)}
+                              overlapNum={getMaxOverlaps(shifts_list, shift)}
                               place={getMaxOverlaps(placed_shifted, shift)}
-                              color={color_list[counter++ % color_list.length]}
+                              color={
+                                shift.color
+                                  ? shift.color
+                                  : color_list[counter++ % color_list.length]
+                              }
                             />
                           </div>
                         )

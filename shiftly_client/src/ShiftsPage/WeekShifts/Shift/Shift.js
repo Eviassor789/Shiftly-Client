@@ -9,7 +9,6 @@ const Shift = ({ startHour, endHour, overlapNum, place, color, names }) => {
   return (
     <div
       className="shift"
-      // onClick={clickFun}
       style={{
         height: `${(endRow - startRow) * 40}px`,
         width: `${100 / (overlapNum + 1)}%`,

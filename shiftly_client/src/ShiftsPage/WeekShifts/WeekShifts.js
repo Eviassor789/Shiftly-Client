@@ -6,6 +6,7 @@ import ShiftWindow from "./ShiftWindow/ShiftWindow";
 const WeekShifts = ({shifts_list}) => {
   const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
 
+
   const [shiftData, setShiftData] = useState({
     names: [],
     startHour: "",
@@ -32,7 +33,9 @@ const WeekShifts = ({shifts_list}) => {
     counter = 0;
   
 
-  const [shifts, setIsDragging] = useState(shifts_list);
+  // const [shifts, setIsDragging] = useState(shifts_list);
+  var shifts = shifts_list;
+  
 
   // Generate array of hours from 07:00 to 20:00
   const hours = [];

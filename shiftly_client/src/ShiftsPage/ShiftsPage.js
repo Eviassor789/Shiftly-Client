@@ -139,7 +139,7 @@ const ShiftsPage = () => {
         </div>
         <div class="main-panel">
           <WeekShifts shifts_list={shifts} />
-          <AddShiftWindow other_shifts={other_shifts} setShifts={setShifts} setOther_shifts={setOther_shifts}/>
+          <AddShiftWindow other_shifts={other_shifts} setShifts={setShifts} setOther_shifts={setOther_shifts} shifts={shifts}/>
         </div>
       </div>
 

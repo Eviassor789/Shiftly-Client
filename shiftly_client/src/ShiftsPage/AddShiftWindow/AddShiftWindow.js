@@ -1,13 +1,46 @@
 import React, { useState, useRef } from "react";
 import "./AddShiftWindow.css";
 
-const AddShiftWindow = ({ other_shifts, setShifts, setOther_shifts }) => {
+const AddShiftWindow = ({
+  other_shifts,
+  setShifts,
+  setOther_shifts,
+  shifts,
+}) => {
+  const handleAddShiftClick = (data) => {
+    // Add the new shift to the shifts array
+    var updatedShifts = [...shifts, data];
+    // Remove the new shift from the other_shifts array
+    var updatedOtherShifts = other_shifts.filter(
+      (shift) =>
+        shift.day !== data.day ||
+        shift.startHour !== data.startHour ||
+        shift.endHour !== data.endHour
+    );
+
+    // Update the state with the new shifts and other_shifts arrays
+    setShifts(updatedShifts);
+    setOther_shifts(updatedOtherShifts);
+  };
+
   return (
     <div className="shift-container">
       <div className="head">Additional shifts possible</div>
       <div className="shift_boxes">
         {other_shifts.map((shift, index) => (
-          <div key={index} className="shift-box">
+          <div
+            key={index}
+            className="shift-box"
+
+            onClick={() =>
+              handleAddShiftClick({
+                day: shift.day,
+                startHour: shift.startHour,
+                endHour: shift.endHour,
+                names: []
+              })
+            }
+          >
             <p>
               <strong>Day:</strong> {shift.day}
             </p>

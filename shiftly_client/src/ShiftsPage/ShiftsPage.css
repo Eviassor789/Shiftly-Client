@@ -75,3 +75,27 @@
     margin-left: 10px; /* Adjust this value to match the width of the left panel */
     
 }
+
+.main-panel>button{
+    left: 45%;
+    
+    bottom: 0px;
+    background-color: #094ecf;
+    color: rgb(255, 255, 255);
+    border: none;
+    border-radius: 5px;
+    padding: 3px 7px;
+    font-size: 17px;
+    cursor: pointer;
+    transition: background-color 0.1s;
+}
+
+.main-panel>button:hover{
+    background-color: #0842ad;
+}
+
+.main-panel>button:active{
+    background-color: #05348a;
+}
+
+

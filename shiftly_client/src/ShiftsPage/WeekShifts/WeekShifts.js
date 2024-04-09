@@ -2,9 +2,8 @@ import React, { useState, useRef } from "react";
 import Shift from "./Shift/Shift";
 import "./WeekShifts.css";
 import ShiftWindow from "./ShiftWindow/ShiftWindow";
-// import Modal from "./Modal/modal";
 
-const WeekShifts = () => {
+const WeekShifts = ({shifts_list}) => {
   const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
 
   const [shiftData, setShiftData] = useState({
@@ -31,69 +30,7 @@ const WeekShifts = () => {
 
   let placed_shifted = [],
     counter = 0;
-  const shifts_list = [
-    {
-      day: "Sunday",
-      startHour: "10:00",
-      endHour: "17:00",
-      names: ["Alice", "Bob"],
-    },
-    {
-      day: "Sunday",
-      startHour: "14:00",
-      endHour: "17:00",
-      names: ["Alice", "Bob"],
-    },
-    {
-      day: "Sunday",
-      startHour: "08:00",
-      endHour: "15:00",
-      names: ["Alice", "Bob"],
-    },
-    {
-      day: "Tuesday",
-      startHour: "10:00",
-      endHour: "18:00",
-      names: ["Charlie", "David"],
-    },
-    {
-      day: "Tuesday",
-      startHour: "10:00",
-      endHour: "19:00",
-      names: ["Charlie", "David"],
-    },
-    {
-      day: "Tuesday",
-      startHour: "07:00",
-      endHour: "08:00",
-      names: ["Charlie", "David"],
-    },
-    {
-      day: "Wednesday",
-      startHour: "14:00",
-      endHour: "16:00",
-      names: ["AAA", "BBB", "CCC", "DDDDDDDDDDDD", "EEE", "FFF", "GGG", "HHH"],
-    },
-    {
-      day: "Thursday",
-      startHour: "14:00",
-      endHour: "16:00",
-      names: ["AAA", "BBB", "CCC", "DDDDDDDDDDDD", "EEE", "FFF", "GGG", "HHH"],
-    },
-    {
-      day: "Thursday",
-      startHour: "14:00",
-      endHour: "16:00",
-      names: ["AAA", "BBB"],
-    },
-    {
-      day: "Thursday",
-      startHour: "14:00",
-      endHour: "17:00",
-      names: ["AAAxxxx", "BBB"],
-    },
-    // Add more shifts as needed
-  ];
+  
 
   const [shifts, setIsDragging] = useState(shifts_list);
 

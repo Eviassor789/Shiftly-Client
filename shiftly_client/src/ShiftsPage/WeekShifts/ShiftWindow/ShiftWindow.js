@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import "./ShiftWindow.css";
 
 const ShiftWindow = ({
@@ -8,9 +8,21 @@ const ShiftWindow = ({
   requiredWorkers,
   unoccupiedWorkers,
   occupiedWorkers,
-  onClose
+  onClose,
 }) => {
-  
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const [workersList, setWorkersList] = useState(occupiedWorkers);
+  const [potencialWorkersList, setpotencialWorkersList] =
+    useState(unoccupiedWorkers);
+
+  const handleDeleteClick = () => {
+    setShowDeleteModal(true);
+  };
+
+  const handleCancleClick = () => {
+    setShowDeleteModal(false);
+  };
 
   function upHour(time, i) {
     const [hours, minutes] = time.split(":").map(Number);
@@ -29,10 +41,7 @@ const ShiftWindow = ({
           {startTime} - {endTime}
         </span>
         <span>Required: {requiredWorkers}</span>
-        <i
-          onClick={onClose}
-          class="bi bi-x-lg"
-        ></i>
+        <i onClick={onClose} class="bi bi-x-lg"></i>
       </div>
       <div className="content">
         <div className="main_section">
@@ -56,7 +65,7 @@ const ShiftWindow = ({
                 </svg>
               </div>
               <ul>
-                {unoccupiedWorkers.map((worker) => (
+                {potencialWorkersList.map((worker) => (
                   <li key={worker}>
                     {worker} <i class="bi bi-plus"></i>
                   </li>
@@ -123,7 +132,7 @@ const ShiftWindow = ({
                 </svg>
               </div>
               <ul>
-                {occupiedWorkers.map((worker) => (
+                {workersList.map((worker) => (
                   <li key={worker}>
                     {worker} <i class="bi bi-dash"></i>
                   </li>
@@ -131,8 +140,10 @@ const ShiftWindow = ({
               </ul>
             </div>
           </div>
-          <button className="delete-button">delete shift</button>
-          <div className="total-capacity">2/2</div>
+          <button className="delete-button" onClick={handleDeleteClick}>
+            delete shift
+          </button>
+          <div className="total-capacity">{workersList.length} / 8</div>
         </div>
         <div className="hourly-capacity">
           {Array.from(
@@ -150,6 +161,25 @@ const ShiftWindow = ({
           )}
         </div>
       </div>
+
+      {showDeleteModal && (
+        <>
+          <div className="overlayOne"></div>
+          <div className="modal-content">
+            <h3>delete shift?</h3>
+            <span>are you sure you want to delete the shift?</span>
+            <p>
+              it will delete all the workers from this shift, and remove it from
+              the board!
+            </p>
+
+            <div className="btns-sec">
+              <button className="del-tbn">delete</button>
+              <button className="cancel-btn" onClick={handleCancleClick}>cancle</button>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

@@ -9,6 +9,10 @@ const ShiftWindow = ({
   unoccupiedWorkers,
   occupiedWorkers,
   onClose,
+  shifts,
+  setShifts,
+  unselected_shifts,
+  setUnselected_shifts,
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -19,10 +23,36 @@ const ShiftWindow = ({
   const handleDeleteClick = () => {
     setShowDeleteModal(true);
   };
-
   const handleCancleClick = () => {
     setShowDeleteModal(false);
   };
+
+  const handleRealDeleteClick = () => {
+
+    var updatedUnselected_shifts = [...unselected_shifts, {
+      day: day,
+      startHour: startTime,
+      endHour: endTime,
+      names: [],
+      color: false,
+    }];
+    // Remove the new shift from the other_shifts array
+    var updatedShifts = shifts.filter(
+      (shift) =>
+        shift.day !== day ||
+        shift.startHour !== startTime ||
+        shift.endHour !== endTime
+    );
+
+    // Update the state with the new shifts and other_shifts arrays
+    setShifts(updatedShifts);
+    setUnselected_shifts(updatedUnselected_shifts);
+    setShowDeleteModal(false);
+    onClose();
+
+  };
+
+
 
   function upHour(time, i) {
     const [hours, minutes] = time.split(":").map(Number);
@@ -174,7 +204,7 @@ const ShiftWindow = ({
             </p>
 
             <div className="btns-sec">
-              <button className="del-tbn">delete</button>
+              <button className="del-tbn" onClick={handleRealDeleteClick}>delete</button>
               <button className="cancel-btn" onClick={handleCancleClick}>cancle</button>
             </div>
           </div>

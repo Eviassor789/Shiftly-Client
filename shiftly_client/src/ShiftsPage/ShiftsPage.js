@@ -16,7 +16,7 @@ const ShiftsPage = () => {
 
   //color_list[counter++ % color_list.length]
 
-  const other_shiftsList = [
+  const unselected_shiftsList = [
     { day: "Monday", startHour: "10:00", endHour: "13:00" },
     { day: "Monday", startHour: "14:00", endHour: "16:00" },
     { day: "Wednesday", startHour: "11:00", endHour: "15:00" },
@@ -24,7 +24,9 @@ const ShiftsPage = () => {
     { day: "Friday", startHour: "08:00", endHour: "18:00" },
   ];
 
-  const [other_shifts, setOther_shifts] = useState(other_shiftsList);
+  const [unselected_shifts, setUnselected_shifts] = useState(
+    unselected_shiftsList
+  );
 
   var shifts_list = [
     {
@@ -162,12 +164,17 @@ const ShiftsPage = () => {
           ))}{" "}
         </div>
         <div class="main-panel">
-          <WeekShifts shifts_list={shifts} />
-          <AddShiftWindow
-            other_shifts={other_shifts}
-            setShifts={setShifts}
-            setOther_shifts={setOther_shifts}
+          <WeekShifts
             shifts={shifts}
+            setShifts={setShifts}
+            unselected_shifts={unselected_shifts}
+            setUnselected_shifts={setUnselected_shifts}
+          />
+          <AddShiftWindow
+            shifts={shifts}
+            setShifts={setShifts}
+            unselected_shifts={unselected_shifts}
+            setUnselected_shifts={setUnselected_shifts}
           />
         </div>
       </div>

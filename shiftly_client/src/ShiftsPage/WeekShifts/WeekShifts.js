@@ -3,7 +3,12 @@ import Shift from "./Shift/Shift";
 import "./WeekShifts.css";
 import ShiftWindow from "./ShiftWindow/ShiftWindow";
 
-const WeekShifts = ({ shifts_list }) => {
+const WeekShifts = ({
+  shifts,
+  setShifts,
+  unselected_shifts,
+  setUnselected_shifts,
+}) => {
   const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
 
   const [shiftData, setShiftData] = useState({
@@ -115,7 +120,7 @@ const WeekShifts = ({ shifts_list }) => {
                 "Thursday",
                 "Friday",
               ].map((day) => {
-                const relevantShifts = shifts_list.filter(
+                const relevantShifts = shifts.filter(
                   (s) => s.day === day && hour === s.startHour
                 );
 
@@ -140,7 +145,7 @@ const WeekShifts = ({ shifts_list }) => {
                               startHour={shift.startHour}
                               endHour={shift.endHour}
                               names={shift.names}
-                              overlapNum={getMaxOverlaps(shifts_list, shift)}
+                              overlapNum={getMaxOverlaps(shifts, shift)}
                               place={getMaxOverlaps(placed_shifted, shift)}
                               color={
                                 shift.color
@@ -171,6 +176,10 @@ const WeekShifts = ({ shifts_list }) => {
               occupiedWorkers={shiftData.names}
               unoccupiedWorkers={["Charlie", "David"]}
               onClose={handleCloseModal}
+              shifts={shifts}
+              setShifts={setShifts}
+              unselected_shifts={unselected_shifts}
+              setUnselected_shifts={setUnselected_shifts}
             />
           </div>
         </>

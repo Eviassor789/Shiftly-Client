@@ -1,6 +1,6 @@
 .shift-window {
     position: fixed;
-    top: 50%;
+    top: 60%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 800px;
@@ -191,7 +191,7 @@ ul li button {
   }
   .modal-content {
     position: absolute;
-    top: 40%;
+    top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
     line-height: 1.4;

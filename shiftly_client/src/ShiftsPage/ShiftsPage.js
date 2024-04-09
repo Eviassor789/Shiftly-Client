@@ -7,15 +7,35 @@ const ShiftsPage = () => {
   const professions = ["Doctor", "Engineer", "Teacher", "Nurse"]; // Sample list of professions
 
   const [selectedProfession, setSelectedProfession] = useState(null);
-  const [showShiftsModal, setshowShiftsModal] = useState(false);
 
   const handleProfessionClick = (profession) => {
     setSelectedProfession(profession);
   };
 
-  const handleAddShiftClick = () => {
-    setshowShiftsModal(true);
-  };
+  // const handleAddShiftClick = () => {
+  //   setshowShiftsModal(true);
+  // };
+
+  const other_shiftsList = [
+    {day: "Monday",
+    startHour: "10:00",
+    endHour: "13:00"},
+    {day: "Monday",
+    startHour: "14:00",
+    endHour: "16:00"},
+    {day: "Wednesday",
+    startHour: "11:00",
+    endHour: "15:00"},
+    {day: "Thursday",
+    startHour: "07:00",
+    endHour: "12:00"},
+    {day: "Friday",
+    startHour: "08:00",
+    endHour: "18:00"},
+  ]
+
+  const [other_shifts, setOther_shifts] = useState(other_shiftsList);
+
 
   const shifts_list = [
     {
@@ -81,6 +101,9 @@ const ShiftsPage = () => {
     // Add more shifts as needed
   ];
 
+  const [shifts, setShifts] = useState(shifts_list);
+
+
   return (
     <div class="page-container">
       <div class="top-panel">
@@ -115,16 +138,12 @@ const ShiftsPage = () => {
           ))}{" "}
         </div>
         <div class="main-panel">
-          <WeekShifts shifts_list={shifts_list} />
-          <button onClick={handleAddShiftClick}>add shifts</button>
+          <WeekShifts shifts_list={shifts} />
+          <AddShiftWindow other_shifts={other_shifts} setShifts={setShifts} setOther_shifts={setOther_shifts}/>
         </div>
       </div>
 
-      {false && (
-        <>
-        <AddShiftWindow/>
-        </>
-      )}
+
 
     </div>
   );

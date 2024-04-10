@@ -29,6 +29,7 @@ const AddShiftWindow = ({
   return (
     <div className="shift-container">
       <div className="head">Additional shifts possible</div>
+      
       <div className="shift_boxes">
         {unselected_shifts.map((shift, index) => (
           <div

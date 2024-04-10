@@ -80,7 +80,7 @@ const ShiftsPage = () => {
     },
     {
       day: "Thursday",
-      startHour: "14:00",
+      startHour: "13:00",
       endHour: "16:00",
       names: ["AAA", "BBB", "CCC", "DDDDDDDDDDDD", "EEE", "FFF", "GGG", "HHH"],
       color: false,

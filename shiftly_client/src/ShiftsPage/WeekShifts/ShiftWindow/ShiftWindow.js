@@ -15,7 +15,6 @@ const ShiftWindow = ({
   setUnselected_shifts,
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-
   const [workersList, setWorkersList] = useState(occupiedWorkers);
   const [potencialWorkersList, setpotencialWorkersList] =
     useState(unoccupiedWorkers);
@@ -27,15 +26,35 @@ const ShiftWindow = ({
     setShowDeleteModal(false);
   };
 
-  const handleRealDeleteClick = () => {
+  const handlePlusClick = (name) => {
+    var updatedWorkersList = [...workersList, name];
+    var updatedPotencialWorkersList = potencialWorkersList.filter(
+      (worker) => worker !== name
+    );
 
-    var updatedUnselected_shifts = [...unselected_shifts, {
-      day: day,
-      startHour: startTime,
-      endHour: endTime,
-      names: [],
-      color: false,
-    }];
+    setWorkersList(updatedWorkersList);
+    setpotencialWorkersList(updatedPotencialWorkersList);
+  };
+
+  const handleMinusClick = (name) => {
+    var updatedPotencialWorkersList = [...potencialWorkersList, name];
+    var updatedWorkersList = workersList.filter((worker) => worker !== name);
+
+    setWorkersList(updatedWorkersList);
+    setpotencialWorkersList(updatedPotencialWorkersList);
+  };
+
+  const handleRealDeleteClick = () => {
+    var updatedUnselected_shifts = [
+      ...unselected_shifts,
+      {
+        day: day,
+        startHour: startTime,
+        endHour: endTime,
+        names: [],
+        color: false,
+      },
+    ];
     // Remove the new shift from the other_shifts array
     var updatedShifts = shifts.filter(
       (shift) =>
@@ -49,10 +68,7 @@ const ShiftWindow = ({
     setUnselected_shifts(updatedUnselected_shifts);
     setShowDeleteModal(false);
     onClose();
-
   };
-
-
 
   function upHour(time, i) {
     const [hours, minutes] = time.split(":").map(Number);
@@ -97,7 +113,11 @@ const ShiftWindow = ({
               <ul>
                 {potencialWorkersList.map((worker) => (
                   <li key={worker}>
-                    {worker} <i class="bi bi-plus"></i>
+                    {worker}{" "}
+                    <i
+                      class="bi bi-plus"
+                      onClick={() => handlePlusClick(worker)}
+                    ></i>
                   </li>
                 ))}
               </ul>
@@ -164,7 +184,11 @@ const ShiftWindow = ({
               <ul>
                 {workersList.map((worker) => (
                   <li key={worker}>
-                    {worker} <i class="bi bi-dash"></i>
+                    {worker}{" "}
+                    <i
+                      class="bi bi-dash"
+                      onClick={() => handleMinusClick(worker)}
+                    ></i>
                   </li>
                 ))}
               </ul>
@@ -204,8 +228,12 @@ const ShiftWindow = ({
             </p>
 
             <div className="btns-sec">
-              <button className="del-tbn" onClick={handleRealDeleteClick}>delete</button>
-              <button className="cancel-btn" onClick={handleCancleClick}>cancle</button>
+              <button className="del-tbn" onClick={handleRealDeleteClick}>
+                delete
+              </button>
+              <button className="cancel-btn" onClick={handleCancleClick}>
+                cancle
+              </button>
             </div>
           </div>
         </>

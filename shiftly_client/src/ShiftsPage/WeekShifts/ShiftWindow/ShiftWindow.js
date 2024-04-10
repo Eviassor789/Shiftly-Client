@@ -26,6 +26,41 @@ const ShiftWindow = ({
     setShowDeleteModal(false);
   };
 
+  const handleCloseClick = () => {
+    var updatedShifts = shifts.filter(
+      (shift) =>
+        shift.day !== day ||
+        shift.startHour !== startTime ||
+        shift.endHour !== endTime
+    );
+
+    var color;
+
+    shifts.forEach((shift) => {
+      if (
+        shift.day == day &&
+        shift.startHour == startTime &&
+        shift.endHour == endTime
+      ) {
+        color = shift.color;
+      }
+    });
+
+    updatedShifts = [
+      ...updatedShifts,
+      {
+        day: day,
+        startHour: startTime,
+        endHour: endTime,
+        names: workersList,
+        color: color,
+      },
+    ];
+
+    setShifts(updatedShifts);
+    onClose();
+  };
+
   const handlePlusClick = (name) => {
     var updatedWorkersList = [...workersList, name];
     var updatedPotencialWorkersList = potencialWorkersList.filter(
@@ -87,7 +122,7 @@ const ShiftWindow = ({
           {startTime} - {endTime}
         </span>
         <span>Required: {requiredWorkers}</span>
-        <i onClick={onClose} class="bi bi-x-lg"></i>
+        <i onClick={handleCloseClick} class="bi bi-x-lg"></i>
       </div>
       <div className="content">
         <div className="main_section">

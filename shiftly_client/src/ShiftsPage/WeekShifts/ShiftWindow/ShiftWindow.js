@@ -7,15 +7,15 @@ const ShiftWindow = ({
   endTime,
   requiredWorkers,
   unoccupiedWorkers,
-  occupiedWorkers,
   onClose,
   shifts,
   setShifts,
   unselected_shifts,
   setUnselected_shifts,
+  shiftData
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [workersList, setWorkersList] = useState(occupiedWorkers);
+  const [workersList, setWorkersList] = useState(shiftData.names);
   const [potencialWorkersList, setpotencialWorkersList] =
     useState(unoccupiedWorkers);
 
@@ -29,31 +29,32 @@ const ShiftWindow = ({
   const handleCloseClick = () => {
     var updatedShifts = shifts.filter(
       (shift) =>
-        shift.day !== day ||
-        shift.startHour !== startTime ||
-        shift.endHour !== endTime
+        shift.day !== shiftData.day ||
+        shift.startHour !== shiftData.startHour ||
+        shift.endHour !== shiftData.endHour
     );
 
-    var color;
+    var color = shiftData.color;
 
-    shifts.forEach((shift) => {
-      if (
-        shift.day == day &&
-        shift.startHour == startTime &&
-        shift.endHour == endTime
-      ) {
-        color = shift.color;
-      }
-    });
+    // shifts.forEach((shift) => {
+    //   if (
+    //     shift.day == day &&
+    //     shift.startHour == startTime &&
+    //     shift.endHour == endTime
+    //   ) {
+    //     color = shift.color;
+    //   }
+    // });
 
     updatedShifts = [
       ...updatedShifts,
       {
-        day: day,
-        startHour: startTime,
-        endHour: endTime,
+        day: shiftData.day,
+        startHour: shiftData.startHour,
+        endHour: shiftData.endHour,
         names: workersList,
-        color: color,
+        color: shiftData.color,
+        profession: shiftData.profession
       },
     ];
 
@@ -83,9 +84,9 @@ const ShiftWindow = ({
     var updatedUnselected_shifts = [
       ...unselected_shifts,
       {
-        day: day,
-        startHour: startTime,
-        endHour: endTime,
+        day: shiftData.day,
+        startHour: shiftData.startHour,
+        endHour: shiftData.endHour,
         names: [],
         color: false,
       },
@@ -93,9 +94,9 @@ const ShiftWindow = ({
     // Remove the new shift from the other_shifts array
     var updatedShifts = shifts.filter(
       (shift) =>
-        shift.day !== day ||
-        shift.startHour !== startTime ||
-        shift.endHour !== endTime
+        shift.day !== shiftData.day ||
+        shift.startHour !== shiftData.startHour ||
+        shift.endHour !== shiftData.endHour
     );
 
     // Update the state with the new shifts and other_shifts arrays
@@ -117,9 +118,9 @@ const ShiftWindow = ({
   return (
     <div className="shift-window">
       <div className="header">
-        <span>{day}, </span>
+        <span>{shiftData.day}, </span>
         <span>
-          {startTime} - {endTime}
+          {shiftData.startHour} - {shiftData.endHour}
         </span>
         <span>Required: {requiredWorkers}</span>
         <i onClick={handleCloseClick} class="bi bi-x-lg"></i>
@@ -238,12 +239,12 @@ const ShiftWindow = ({
           {Array.from(
             {
               length:
-                parseInt(endTime.substring(0, 2), 10) -
-                parseInt(startTime.substring(0, 2), 10),
+                parseInt(shiftData.endHour.substring(0, 2), 10) -
+                parseInt(shiftData.startHour.substring(0, 2), 10),
             },
             (_, i) => (
               <div key={i} className="hour">
-                {upHour(startTime, i)} - {upHour(startTime, i + 1)}
+                {upHour(shiftData.startHour, i)} - {upHour(shiftData.startHour, i + 1)}
                 <span className="capacity">7/8</span>
               </div>
             )

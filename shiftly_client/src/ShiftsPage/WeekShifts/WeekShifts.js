@@ -8,10 +8,13 @@ const WeekShifts = ({
   setShifts,
   unselected_shifts,
   setUnselected_shifts,
+  profession,
 }) => {
   const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
 
   const [shiftData, setShiftData] = useState({
+    profession:  profession ,
+    color: "",
     names: [],
     startHour: "",
     endHour: "",
@@ -25,6 +28,8 @@ const WeekShifts = ({
 
   const handleCloseModal = () => {
     setShiftData({
+      profession:  profession ,
+      color: "",
       names: [],
       startHour: "",
       endHour: "",
@@ -45,9 +50,13 @@ const WeekShifts = ({
   function getMaxOverlaps(shifts, currentShift) {
     let maxOverlaps = 0;
 
-    for (let i = 0; i < shifts.length; i++) {
-      if (shifts[i] !== currentShift) {
-        const overlaps = checkOverlap(currentShift, shifts[i]);
+    var professionShift = shifts.filter(
+      (shift) => shift.profession === profession
+    );
+
+    for (let i = 0; i < professionShift.length; i++) {
+      if (professionShift[i] !== currentShift) {
+        const overlaps = checkOverlap(currentShift, professionShift[i]);
         if (overlaps) {
           maxOverlaps++;
         }
@@ -121,7 +130,10 @@ const WeekShifts = ({
                 "Friday",
               ].map((day) => {
                 const relevantShifts = shifts.filter(
-                  (s) => s.day === day && hour === s.startHour
+                  (s) =>
+                    s.day === day &&
+                    hour === s.startHour &&
+                    profession === s.profession
                 );
 
                 return (
@@ -132,6 +144,8 @@ const WeekShifts = ({
                           <div
                             onClick={() =>
                               handleShiftClick({
+                                profession:  profession ,
+                                color: shift.color,
                                 names: shift.names,
                                 startHour: shift.startHour,
                                 endHour: shift.endHour,
@@ -169,11 +183,8 @@ const WeekShifts = ({
           <div className="overlay"></div>
           <div className="modal-content">
             <ShiftWindow
-              day={shiftData.day}
-              startTime={shiftData.startHour}
-              endTime={shiftData.endHour}
+              shiftData={shiftData}
               requiredWorkers={8}
-              occupiedWorkers={shiftData.names}
               unoccupiedWorkers={["Charlie", "David"]}
               onClose={handleCloseModal}
               shifts={shifts}

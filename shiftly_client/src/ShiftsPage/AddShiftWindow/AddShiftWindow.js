@@ -5,8 +5,8 @@ const AddShiftWindow = ({
   shifts,
   setShifts,
   unselected_shifts,
-
   setUnselected_shifts,
+  profession
 }) => {
   const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
 
@@ -14,7 +14,7 @@ const AddShiftWindow = ({
     // Add the new shift to the shifts array
     var updatedShifts = [...shifts, data];
     // Remove the new shift from the other_shifts array
-    var updatedOtherShifts = unselected_shifts.filter(
+    var updatedUnselectedShifts = unselected_shifts.filter(
       (shift) =>
         shift.day !== data.day ||
         shift.startHour !== data.startHour ||
@@ -23,7 +23,7 @@ const AddShiftWindow = ({
 
     // Update the state with the new shifts and other_shifts arrays
     setShifts(updatedShifts);
-    setUnselected_shifts(updatedOtherShifts);
+    setUnselected_shifts(updatedUnselectedShifts);
   };
 
   return (
@@ -43,6 +43,7 @@ const AddShiftWindow = ({
                 names: [],
                 color:
                   color_list[Math.floor(Math.random() * color_list.length)],
+                  profession: profession
               })
             }
           >

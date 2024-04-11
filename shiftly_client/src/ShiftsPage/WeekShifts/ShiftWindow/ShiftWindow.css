@@ -129,6 +129,15 @@ ul li button {
     right: 30px;
 }
 
+.insufficient{
+    color: #ad0202;
+    font-weight: bold;
+}
+
+.sufficient{
+    color: #028c20;
+}
+
 .header i{
     cursor: pointer;
     padding: 5px;

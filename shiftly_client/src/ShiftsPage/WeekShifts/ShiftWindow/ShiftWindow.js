@@ -2,9 +2,6 @@ import React, { useState, useRef } from "react";
 import "./ShiftWindow.css";
 
 const ShiftWindow = ({
-  day,
-  startTime,
-  endTime,
   requiredWorkers,
   unoccupiedWorkers,
   onClose,
@@ -12,7 +9,7 @@ const ShiftWindow = ({
   setShifts,
   unselected_shifts,
   setUnselected_shifts,
-  shiftData
+  shiftData,
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [workersList, setWorkersList] = useState(shiftData.names);
@@ -26,7 +23,7 @@ const ShiftWindow = ({
     setShowDeleteModal(false);
   };
 
-  const handleCloseClick = () => {
+  const updateShifts = (theworkersList) => {
     var updatedShifts = shifts.filter(
       (shift) =>
         shift.day !== shiftData.day ||
@@ -34,31 +31,23 @@ const ShiftWindow = ({
         shift.endHour !== shiftData.endHour
     );
 
-    var color = shiftData.color;
-
-    // shifts.forEach((shift) => {
-    //   if (
-    //     shift.day == day &&
-    //     shift.startHour == startTime &&
-    //     shift.endHour == endTime
-    //   ) {
-    //     color = shift.color;
-    //   }
-    // });
-
     updatedShifts = [
       ...updatedShifts,
       {
         day: shiftData.day,
         startHour: shiftData.startHour,
         endHour: shiftData.endHour,
-        names: workersList,
+        names: theworkersList,
         color: shiftData.color,
-        profession: shiftData.profession
+        profession: shiftData.profession,
       },
     ];
 
     setShifts(updatedShifts);
+  };
+
+  const handleCloseClick = () => {
+    updateShifts(workersList);
     onClose();
   };
 
@@ -70,6 +59,7 @@ const ShiftWindow = ({
 
     setWorkersList(updatedWorkersList);
     setpotencialWorkersList(updatedPotencialWorkersList);
+    updateShifts(updatedWorkersList);
   };
 
   const handleMinusClick = (name) => {
@@ -78,6 +68,7 @@ const ShiftWindow = ({
 
     setWorkersList(updatedWorkersList);
     setpotencialWorkersList(updatedPotencialWorkersList);
+    updateShifts(updatedWorkersList);
   };
 
   const handleRealDeleteClick = () => {
@@ -113,6 +104,22 @@ const ShiftWindow = ({
       ? (hourInString = "0" + (hours + i).toString() + ":00")
       : (hourInString = (hours + i).toString() + ":00");
     return hourInString;
+  }
+
+  function workersOnHour(time) {
+    var counter = 0;
+
+    shifts.forEach((shift) => {
+      if (
+        shift.day == shiftData.day &&
+        shift.startHour <= time &&
+        shift.endHour > time
+      ) {
+        counter += shift.names.length;
+      }
+    });
+
+    return counter;
   }
 
   return (
@@ -233,7 +240,9 @@ const ShiftWindow = ({
           <button className="delete-button" onClick={handleDeleteClick}>
             delete shift
           </button>
-          <div className="total-capacity">{workersList.length} / 8</div>
+          <div className="total-capacity">
+            {workersList.length} / {requiredWorkers}
+          </div>
         </div>
         <div className="hourly-capacity">
           {Array.from(
@@ -244,8 +253,17 @@ const ShiftWindow = ({
             },
             (_, i) => (
               <div key={i} className="hour">
-                {upHour(shiftData.startHour, i)} - {upHour(shiftData.startHour, i + 1)}
-                <span className="capacity">7/8</span>
+                {upHour(shiftData.startHour, i)} -{" "}
+                {upHour(shiftData.startHour, i + 1)}
+                <span
+                  className={
+                    workersOnHour(upHour(shiftData.startHour, i)) < 8
+                      ? "capacity insufficient"
+                      : "capacity sufficient"
+                  }
+                >
+                  {workersOnHour(upHour(shiftData.startHour, i))}/8
+                </span>
               </div>
             )
           )}

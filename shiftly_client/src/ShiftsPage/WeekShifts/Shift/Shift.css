@@ -31,6 +31,8 @@
     overflow: hidden; /* Hide overflow content */
     overflow-y: auto; /* Enable vertical scrolling when needed */
     height: 100%;
+    font-family: kreon;
+
 
   }
   
@@ -52,4 +54,22 @@
   }
 
 
-  
+/* scroll bar */
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #949494; 
+  border-radius: 10px;
+}
+ 
+::-webkit-scrollbar-thumb {
+  background: #453333; 
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #000000; 
+}

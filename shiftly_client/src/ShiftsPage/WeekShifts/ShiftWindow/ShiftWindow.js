@@ -1,20 +1,23 @@
 import React, { useState, useRef } from "react";
 import "./ShiftWindow.css";
+import workers_map from "../../../Data/Workers";
 
 const ShiftWindow = ({
   requiredWorkers,
-  unoccupiedWorkers,
   onClose,
   shifts,
   setShifts,
   unselected_shifts,
   setUnselected_shifts,
   shiftData,
+  workers,
+  setWorkers,
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [workersList, setWorkersList] = useState(shiftData.names);
-  const [potencialWorkersList, setpotencialWorkersList] =
-    useState(unoccupiedWorkers);
+  const [currIdList, setCurrIdList] = useState(shiftData.idList);
+  const [potencialIdWorkersList, setpotencialIdWorkersList] = useState(
+    getRelevantIdWorkers()
+  );
 
   const handleDeleteClick = () => {
     setShowDeleteModal(true);
@@ -23,7 +26,7 @@ const ShiftWindow = ({
     setShowDeleteModal(false);
   };
 
-  const updateShifts = (theworkersList) => {
+  const updateShifts = (theworkersIdList) => {
     var updatedShifts = shifts.filter(
       (shift) =>
         shift.day !== shiftData.day ||
@@ -37,7 +40,7 @@ const ShiftWindow = ({
         day: shiftData.day,
         startHour: shiftData.startHour,
         endHour: shiftData.endHour,
-        names: theworkersList,
+        idList: theworkersIdList,
         color: shiftData.color,
         profession: shiftData.profession,
       },
@@ -47,28 +50,44 @@ const ShiftWindow = ({
   };
 
   const handleCloseClick = () => {
-    updateShifts(workersList);
+    updateShifts(currIdList);
     onClose();
   };
 
-  const handlePlusClick = (name) => {
-    var updatedWorkersList = [...workersList, name];
-    var updatedPotencialWorkersList = potencialWorkersList.filter(
-      (worker) => worker !== name
+  const handlePlusClick = (id) => {
+    var updatedWorkersList = [...currIdList, id];
+    var updatedPotencialWorkersList = potencialIdWorkersList.filter(
+      (worker) => worker !== id
     );
 
-    setWorkersList(updatedWorkersList);
-    setpotencialWorkersList(updatedPotencialWorkersList);
+    setCurrIdList(updatedWorkersList);
+    setpotencialIdWorkersList(updatedPotencialWorkersList);
     updateShifts(updatedWorkersList);
+    workers_map[id].shifts = [
+      ...workers_map[id].shifts,
+      {
+        profession: shiftData.profession,
+        day: shiftData.day,
+        startHour: shiftData.startHour,
+        endHour: shiftData.endHour,
+      },
+    ];
   };
 
-  const handleMinusClick = (name) => {
-    var updatedPotencialWorkersList = [...potencialWorkersList, name];
-    var updatedWorkersList = workersList.filter((worker) => worker !== name);
+  const handleMinusClick = (id) => {
+    var updatedPotencialWorkersList = [...potencialIdWorkersList, id];
+    var updatedWorkersList = currIdList.filter((worker) => worker !== id);
 
-    setWorkersList(updatedWorkersList);
-    setpotencialWorkersList(updatedPotencialWorkersList);
+    setCurrIdList(updatedWorkersList);
+    setpotencialIdWorkersList(updatedPotencialWorkersList);
     updateShifts(updatedWorkersList);
+    workers_map[id].shifts = workers_map[id].shifts.filter(
+      (shift) =>
+        shift.profession !== shiftData.profession ||
+        shift.day !== shiftData.day ||
+        shift.startHour !== shiftData.startHour ||
+        shift.endHour !== shiftData.endHour
+    );
   };
 
   const handleRealDeleteClick = () => {
@@ -78,7 +97,7 @@ const ShiftWindow = ({
         day: shiftData.day,
         startHour: shiftData.startHour,
         endHour: shiftData.endHour,
-        names: [],
+        idList: [],
         color: false,
       },
     ];
@@ -96,6 +115,26 @@ const ShiftWindow = ({
     setShowDeleteModal(false);
     onClose();
   };
+
+  function getRelevantIdWorkers() {
+    console.log(workers_map);
+    return Object.values(workers)
+      .filter(
+        (person) =>
+          person.professions.includes(shiftData.profession) &&
+          person.days.includes(shiftData.day)
+        && !shiftData.idList.some((id) => person.ID === id)
+        && person.shifts.every(
+          (shift) =>
+            shift.day !== shiftData.day ||
+            shift.startHour > shiftData.endHour ||
+            shift.endHour < shiftData.startHour
+        )
+      )
+      .map((person) => person.ID);
+  }
+
+  console.log("relevant: " + getRelevantIdWorkers());
 
   function upHour(time, i) {
     const [hours, minutes] = time.split(":").map(Number);
@@ -115,7 +154,7 @@ const ShiftWindow = ({
         shift.startHour <= time &&
         shift.endHour > time
       ) {
-        counter += shift.names.length;
+        counter += shift.idList.length;
       }
     });
 
@@ -154,12 +193,12 @@ const ShiftWindow = ({
                 </svg>
               </div>
               <ul>
-                {potencialWorkersList.map((worker) => (
-                  <li key={worker}>
-                    {worker}{" "}
+                {potencialIdWorkersList.map((id) => (
+                  <li key={id}>
+                    {workers_map[id].name}{" "}
                     <i
                       class="bi bi-plus"
-                      onClick={() => handlePlusClick(worker)}
+                      onClick={() => handlePlusClick(id)}
                     ></i>
                   </li>
                 ))}
@@ -225,12 +264,12 @@ const ShiftWindow = ({
                 </svg>
               </div>
               <ul>
-                {workersList.map((worker) => (
-                  <li key={worker}>
-                    {worker}{" "}
+                {currIdList.map((id) => (
+                  <li key={id}>
+                    {workers_map[id].name}{" "}
                     <i
                       class="bi bi-dash"
-                      onClick={() => handleMinusClick(worker)}
+                      onClick={() => handleMinusClick(id)}
                     ></i>
                   </li>
                 ))}
@@ -241,7 +280,7 @@ const ShiftWindow = ({
             delete shift
           </button>
           <div className="total-capacity">
-            {workersList.length} / {requiredWorkers}
+            {currIdList.length} / {requiredWorkers}
           </div>
         </div>
         <div className="hourly-capacity">

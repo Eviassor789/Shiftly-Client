@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import WeekShifts from "./WeekShifts/WeekShifts";
 import "./ShiftsPage.css";
 import AddShiftWindow from "./AddShiftWindow/AddShiftWindow";
+import workers_map from "../Data/Workers";
 
 const ShiftsPage = () => {
   const professions = ["Doctor", "Engineer", "Teacher", "Nurse"]; // Sample list of professions
@@ -14,14 +15,37 @@ const ShiftsPage = () => {
 
   const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
 
-  //color_list[counter++ % color_list.length]
-
   const unselected_shiftsList = [
-    { profession: "Doctor", day: "Monday", startHour: "10:00", endHour: "13:00" },
-    { profession: "Doctor", day: "Monday", startHour: "14:00", endHour: "16:00" },
-    { profession: "Doctor", day: "Wednesday", startHour: "11:00", endHour: "15:00" },
-    { profession: "Doctor", day: "Thursday", startHour: "07:00", endHour: "12:00" },
-    { profession: "Doctor", day: "Friday", startHour: "08:00", endHour: "18:00" },
+    {
+      profession: "Doctor",
+      day: "Monday",
+      startHour: "10:00",
+      endHour: "13:00",
+    },
+    {
+      profession: "Doctor",
+      day: "Monday",
+      startHour: "14:00",
+      endHour: "16:00",
+    },
+    {
+      profession: "Doctor",
+      day: "Wednesday",
+      startHour: "11:00",
+      endHour: "15:00",
+    },
+    {
+      profession: "Doctor",
+      day: "Thursday",
+      startHour: "07:00",
+      endHour: "12:00",
+    },
+    {
+      profession: "Doctor",
+      day: "Friday",
+      startHour: "08:00",
+      endHour: "18:00",
+    },
   ];
 
   const [unselected_shifts, setUnselected_shifts] = useState(
@@ -34,7 +58,7 @@ const ShiftsPage = () => {
       day: "Sunday",
       startHour: "10:00",
       endHour: "17:00",
-      names: ["Alice", "Bob", "sss", "abcbd", "krook"],
+      idList: [],
       color: false,
     },
     {
@@ -42,7 +66,7 @@ const ShiftsPage = () => {
       day: "Sunday",
       startHour: "14:00",
       endHour: "17:00",
-      names: ["Alice", "Bob", "trick"],
+      idList: [],
       color: false,
     },
     {
@@ -50,7 +74,7 @@ const ShiftsPage = () => {
       day: "Sunday",
       startHour: "08:00",
       endHour: "15:00",
-      names: ["Alice", "Bob"],
+      idList: [],
       color: false,
     },
     {
@@ -58,7 +82,7 @@ const ShiftsPage = () => {
       day: "Tuesday",
       startHour: "10:00",
       endHour: "18:00",
-      names: ["Charlie", "David"],
+      idList: [],
       color: false,
     },
     {
@@ -66,7 +90,7 @@ const ShiftsPage = () => {
       day: "Tuesday",
       startHour: "10:00",
       endHour: "19:00",
-      names: ["Charlie", "David"],
+      idList: [],
       color: false,
     },
     {
@@ -74,7 +98,7 @@ const ShiftsPage = () => {
       day: "Tuesday",
       startHour: "07:00",
       endHour: "08:00",
-      names: ["Charlie", "David"],
+      idList: [],
       color: false,
     },
     {
@@ -82,7 +106,7 @@ const ShiftsPage = () => {
       day: "Wednesday",
       startHour: "14:00",
       endHour: "16:00",
-      names: ["AAA", "BBB", "CCC", "DDDDDDDDDDDD", "EEE", "FFF", "GGG", "HHH"],
+      idList: [],
       color: false,
     },
     {
@@ -90,7 +114,7 @@ const ShiftsPage = () => {
       day: "Thursday",
       startHour: "13:00",
       endHour: "16:00",
-      names: ["AAA", "BBB", "CCC", "DDDDDDDDDDDD", "EEE", "FFF", "GGG", "HHH"],
+      idList: [],
       color: false,
     },
     {
@@ -98,7 +122,7 @@ const ShiftsPage = () => {
       day: "Thursday",
       startHour: "14:00",
       endHour: "16:00",
-      names: ["AAA", "BBB"],
+      idList: [],
       color: false,
     },
     {
@@ -106,10 +130,9 @@ const ShiftsPage = () => {
       day: "Thursday",
       startHour: "14:00",
       endHour: "17:00",
-      names: ["AAAxxxx", "BBB"],
+      idList: [],
       color: false,
     },
-    // Add more shifts as needed
   ];
 
   const daysOfWeek = [
@@ -139,6 +162,7 @@ const ShiftsPage = () => {
   });
 
   const [shifts, setShifts] = useState(shifts_list);
+  const [workers, setWorkers] = useState(workers_map);
 
   return (
     <div class="page-container">
@@ -180,6 +204,8 @@ const ShiftsPage = () => {
             unselected_shifts={unselected_shifts}
             setUnselected_shifts={setUnselected_shifts}
             profession={selectedProfession}
+            workers={workers}
+            setWorkers={setWorkers}
           />
           <AddShiftWindow
             shifts={shifts}
@@ -187,6 +213,8 @@ const ShiftsPage = () => {
             unselected_shifts={unselected_shifts}
             setUnselected_shifts={setUnselected_shifts}
             profession={selectedProfession}
+            workers={workers}
+            setWorkers={setWorkers}
           />
         </div>
       </div>

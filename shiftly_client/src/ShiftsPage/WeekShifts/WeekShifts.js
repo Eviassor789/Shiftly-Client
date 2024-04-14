@@ -3,19 +3,22 @@ import Shift from "./Shift/Shift";
 import "./WeekShifts.css";
 import ShiftWindow from "./ShiftWindow/ShiftWindow";
 
+
 const WeekShifts = ({
   shifts,
   setShifts,
   unselected_shifts,
   setUnselected_shifts,
   profession,
+  workers,
+  setWorkers
 }) => {
   const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
 
   const [shiftData, setShiftData] = useState({
     profession:  profession ,
     color: "",
-    names: [],
+    idList: [],
     startHour: "",
     endHour: "",
     day: "",
@@ -30,7 +33,7 @@ const WeekShifts = ({
     setShiftData({
       profession:  profession ,
       color: "",
-      names: [],
+      idList: [],
       startHour: "",
       endHour: "",
       day: "",
@@ -146,7 +149,7 @@ const WeekShifts = ({
                               handleShiftClick({
                                 profession:  profession ,
                                 color: shift.color,
-                                names: shift.names,
+                                idList: shift.idList,
                                 startHour: shift.startHour,
                                 endHour: shift.endHour,
                                 day: day,
@@ -158,7 +161,7 @@ const WeekShifts = ({
                               key={index}
                               startHour={shift.startHour}
                               endHour={shift.endHour}
-                              names={shift.names}
+                              idList={shift.idList}
                               overlapNum={getMaxOverlaps(shifts, shift)}
                               place={getMaxOverlaps(placed_shifted, shift)}
                               color={
@@ -185,12 +188,14 @@ const WeekShifts = ({
             <ShiftWindow
               shiftData={shiftData}
               requiredWorkers={8}
-              unoccupiedWorkers={["Charlie", "David"]}
+              
               onClose={handleCloseModal}
               shifts={shifts}
               setShifts={setShifts}
               unselected_shifts={unselected_shifts}
               setUnselected_shifts={setUnselected_shifts}
+              workers={workers}
+              setWorkers={setWorkers}
             />
           </div>
         </>

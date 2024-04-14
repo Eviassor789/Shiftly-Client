@@ -6,7 +6,9 @@ const AddShiftWindow = ({
   setShifts,
   unselected_shifts,
   setUnselected_shifts,
-  profession
+  profession,
+  workers,
+  setWorkers
 }) => {
   const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
 

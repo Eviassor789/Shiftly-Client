@@ -46,6 +46,12 @@ const ShiftsPage = () => {
       startHour: "08:00",
       endHour: "18:00",
     },
+    {
+      profession: "Teacher",
+      day: "Friday",
+      startHour: "08:00",
+      endHour: "10:00",
+    },
   ];
 
   const [unselected_shifts, setUnselected_shifts] = useState(
@@ -144,6 +150,10 @@ const ShiftsPage = () => {
     "Friday",
     "Saturday",
   ];
+
+  function getRelevantUnselectedShifts() {
+    return unselected_shifts.filter((shift) => shift.profession !== selectedProfession)
+  }
 
   shifts_list.sort((a, b) => {
     const dayIndexA = daysOfWeek.indexOf(a.day);

@@ -91,6 +91,9 @@ const WeekShifts = ({
     return hours * 60 + minutes;
   }
 
+
+
+
   function nextHour(time) {
     const [hours, minutes] = time.split(":").map(Number);
     return (hours + 1).toString() + ":00";

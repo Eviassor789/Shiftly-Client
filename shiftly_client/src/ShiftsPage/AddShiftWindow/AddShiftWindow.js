@@ -28,12 +28,16 @@ const AddShiftWindow = ({
     setUnselected_shifts(updatedUnselectedShifts);
   };
 
+  function getRelevantUnselectedShifts() {
+    return unselected_shifts.filter((shift) => shift.profession === profession)
+  }
+
   return (
     <div className="shift-container">
       <div className="head">Additional shifts possible</div>
       
       <div className="shift_boxes">
-        {unselected_shifts.map((shift, index) => (
+        {getRelevantUnselectedShifts().map((shift, index) => (
           <div
             key={index}
             className="shift-box"
@@ -42,7 +46,7 @@ const AddShiftWindow = ({
                 day: shift.day,
                 startHour: shift.startHour,
                 endHour: shift.endHour,
-                names: [],
+                idList: [],
                 color:
                   color_list[Math.floor(Math.random() * color_list.length)],
                   profession: profession

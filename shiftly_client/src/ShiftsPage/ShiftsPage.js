@@ -151,9 +151,7 @@ const ShiftsPage = () => {
     "Saturday",
   ];
 
-  function getRelevantUnselectedShifts() {
-    return unselected_shifts.filter((shift) => shift.profession !== selectedProfession)
-  }
+
 
   shifts_list.sort((a, b) => {
     const dayIndexA = daysOfWeek.indexOf(a.day);

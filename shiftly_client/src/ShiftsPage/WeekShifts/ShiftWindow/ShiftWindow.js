@@ -90,10 +90,35 @@ const ShiftWindow = ({
     );
   };
 
+  function removeShiftFromTheWorkers() {
+    currIdList.forEach((id) => {
+      // Get the worker by ID
+      const worker = workers_map[id];
+      
+      if (worker) {
+        // Filter out the shift to remove from the worker's shifts
+        worker.shifts = worker.shifts.filter(
+          (shift) =>
+            shift.day !== shiftData.day ||
+            shift.startHour !== shiftData.startHour ||
+            shift.endHour !== shiftData.endHour ||
+            shift.profession !== shiftData.profession
+        );
+  
+        // Update the worker in the workers_map
+        workers_map[id] = worker;
+      }
+    });
+  
+
+
+  }
+
   const handleRealDeleteClick = () => {
     var updatedUnselected_shifts = [
       ...unselected_shifts,
       {
+        profession: shiftData.profession,
         day: shiftData.day,
         startHour: shiftData.startHour,
         endHour: shiftData.endHour,
@@ -110,6 +135,7 @@ const ShiftWindow = ({
     );
 
     // Update the state with the new shifts and other_shifts arrays
+    removeShiftFromTheWorkers()
     setShifts(updatedShifts);
     setUnselected_shifts(updatedUnselected_shifts);
     setShowDeleteModal(false);

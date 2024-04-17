@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import Shift from "./Shift/Shift";
 import "./WeekShifts.css";
 import ShiftWindow from "./ShiftWindow/ShiftWindow";
-
+import workers_map from "../../Data/Workers";
 
 const WeekShifts = ({
   shifts,
@@ -11,12 +11,14 @@ const WeekShifts = ({
   setUnselected_shifts,
   profession,
   workers,
-  setWorkers
+  setWorkers,
+  ispersonalSearch,
+  inputValue,
 }) => {
   const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
 
   const [shiftData, setShiftData] = useState({
-    profession:  profession ,
+    profession: profession,
     color: "",
     idList: [],
     startHour: "",
@@ -31,7 +33,7 @@ const WeekShifts = ({
 
   const handleCloseModal = () => {
     setShiftData({
-      profession:  profession ,
+      profession: profession,
       color: "",
       idList: [],
       startHour: "",
@@ -91,9 +93,6 @@ const WeekShifts = ({
     return hours * 60 + minutes;
   }
 
-
-
-
   function nextHour(time) {
     const [hours, minutes] = time.split(":").map(Number);
     return (hours + 1).toString() + ":00";
@@ -108,9 +107,13 @@ const WeekShifts = ({
   } else {
     document.body.classList.remove("active-modal");
   }
-
+  // className={personalSearch? "week-shifts personalSearch" : "week-shifts"}
   return (
-    <div className="week-shifts">
+    <div
+      className={
+        ispersonalSearch ? "week-shifts personalSearch" : "week-shifts"
+      }
+    >
       <table>
         <thead>
           <tr>
@@ -135,13 +138,22 @@ const WeekShifts = ({
                 "Thursday",
                 "Friday",
               ].map((day) => {
-                const relevantShifts = shifts.filter(
-                  (s) =>
-                    s.day === day &&
-                    hour === s.startHour &&
-                    profession === s.profession
-                );
-
+                var relevantShifts;
+                if (ispersonalSearch) {
+                  relevantShifts = shifts.filter(
+                    (s) =>
+                      s.day === day &&
+                      hour === s.startHour &&
+                      s.idList.some((id) => workers_map[id].name === inputValue)
+                  );
+                } else {
+                  relevantShifts = shifts.filter(
+                    (s) =>
+                      s.day === day &&
+                      hour === s.startHour &&
+                      profession === s.profession
+                  );
+                }
                 return (
                   <td key={day + hour}>
                     {relevantShifts.map(
@@ -150,7 +162,7 @@ const WeekShifts = ({
                           <div
                             onClick={() =>
                               handleShiftClick({
-                                profession:  profession ,
+                                profession: profession,
                                 color: shift.color,
                                 idList: shift.idList,
                                 startHour: shift.startHour,
@@ -172,6 +184,8 @@ const WeekShifts = ({
                                   ? shift.color
                                   : color_list[counter++ % color_list.length]
                               }
+                              ispersonalSearch={ispersonalSearch}
+                              profession={shift.profession}
                             />
                           </div>
                         )
@@ -190,8 +204,7 @@ const WeekShifts = ({
           <div className="modal-content">
             <ShiftWindow
               shiftData={shiftData}
-              requiredWorkers={8}
-              
+              requiredWorkers={3}
               onClose={handleCloseModal}
               shifts={shifts}
               setShifts={setShifts}

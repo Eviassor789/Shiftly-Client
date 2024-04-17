@@ -9,7 +9,19 @@ table {
   /* Highlight the border between days with a blue line */
   border: 2px solid rgb(0, 0, 0);
   /* Add outer border to the table */
+  
 
+}
+
+.personalSearch table{
+  width: 80%;
+  right: 0px;
+  left: 0px;
+  margin: auto;
+}
+
+.personalSearch td{
+  padding: 5px;
 }
 
 th,

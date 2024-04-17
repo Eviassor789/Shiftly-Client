@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import WeekShifts from "./WeekShifts/WeekShifts";
 import "./ShiftsPage.css";
 import AddShiftWindow from "./AddShiftWindow/AddShiftWindow";
@@ -8,9 +8,42 @@ const ShiftsPage = () => {
   const professions = ["Doctor", "Engineer", "Teacher", "Nurse"]; // Sample list of professions
 
   const [selectedProfession, setSelectedProfession] = useState(null);
+  const [ispersonalSearch, setPersonalSearch] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const [suggestionsList, setSuggestionsList] = useState([]);
 
   const handleProfessionClick = (profession) => {
     setSelectedProfession(profession);
+    setPersonalSearch(false);
+  };
+
+  const handlePersonalSearchClick = () => {
+    setSelectedProfession(null);
+    setPersonalSearch(true);
+  };
+
+  const handleInputChange = (event) => {
+    const value = event.target.value;
+    setInputValue(value);
+    if (value.length > 0) {
+      const filteredSuggestions = Object.values(workers_map)
+        .map((person) => person.name)
+        .filter((suggestion) =>
+          suggestion.toLowerCase().includes(value.toLowerCase())
+        );
+      setSuggestionsList(
+        filteredSuggestions.length > 0
+          ? filteredSuggestions
+          : ["No matches found"]
+      );
+    } else {
+      setSuggestionsList([]);
+    }
+  };
+
+  const handleSuggestionClick = (value) => {
+    setInputValue(value);
+    setSuggestionsList([]);
   };
 
   const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
@@ -151,8 +184,6 @@ const ShiftsPage = () => {
     "Saturday",
   ];
 
-
-
   shifts_list.sort((a, b) => {
     const dayIndexA = daysOfWeek.indexOf(a.day);
     const dayIndexB = daysOfWeek.indexOf(b.day);
@@ -177,6 +208,13 @@ const ShiftsPage = () => {
       <div class="top-panel">
         <div className="table-name">Your Table Name</div>
         <div className="buttons">
+          <button
+            className="button"
+            onClick={() => handlePersonalSearchClick()}
+          >
+            <i class="bi bi-clipboard2-check"></i>&nbsp;&nbsp;&nbsp;Personal
+            timetable
+          </button>
           <button className="button">
             <i class="bi bi-clipboard2-check"></i>&nbsp;&nbsp;&nbsp;Status
           </button>
@@ -206,6 +244,33 @@ const ShiftsPage = () => {
           ))}
         </div>
         <div class="main-panel">
+          {ispersonalSearch ? (
+            <div className="autocomplete-wrapper">
+              <input
+                type="text"
+                value={inputValue}
+                onChange={handleInputChange}
+                placeholder="Type Employee Name..."
+                aria-autocomplete="list"
+                aria-controls="autocomplete-list"
+              />
+              {suggestionsList.length > 0 && (
+                <ul className="suggestions-list">
+                  {suggestionsList.map((suggestion, index) => (
+                    <li
+                      key={index}
+                      onClick={() => handleSuggestionClick(suggestion)}
+                      role="option"
+                    >
+                      {suggestion}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ) : (
+            <div></div>
+          )}
           <WeekShifts
             shifts={shifts}
             setShifts={setShifts}
@@ -214,6 +279,9 @@ const ShiftsPage = () => {
             profession={selectedProfession}
             workers={workers}
             setWorkers={setWorkers}
+            ispersonalSearch={ispersonalSearch}
+            inputValue={inputValue}
+
           />
           <AddShiftWindow
             shifts={shifts}
@@ -223,6 +291,8 @@ const ShiftsPage = () => {
             profession={selectedProfession}
             workers={workers}
             setWorkers={setWorkers}
+            ispersonalSearch={ispersonalSearch}
+            inputValue={inputValue}
           />
         </div>
       </div>

@@ -322,12 +322,12 @@ const ShiftWindow = ({
                 {upHour(shiftData.startHour, i + 1)}
                 <span
                   className={
-                    workersOnHour(upHour(shiftData.startHour, i)) < 8
+                    workersOnHour(upHour(shiftData.startHour, i)) < 4
                       ? "capacity insufficient"
                       : "capacity sufficient"
                   }
                 >
-                  {workersOnHour(upHour(shiftData.startHour, i))}/8
+                  {workersOnHour(upHour(shiftData.startHour, i))}/4
                 </span>
               </div>
             )

@@ -2,7 +2,7 @@ import React from "react";
 import "./Shift.css"
 import workers_map from "../../../Data/Workers";
 
-const Shift = ({ startHour, endHour, overlapNum, place, color, idList }) => {
+const Shift = ({ startHour, endHour, overlapNum, place, color, idList, ispersonalSearch, profession }) => {
   // Calculate the number of rows to span
   const startRow = parseInt(startHour.substring(0, 2), 10) - 7;
   const endRow = parseInt(endHour.substring(0, 2), 10) - 7;
@@ -19,12 +19,12 @@ const Shift = ({ startHour, endHour, overlapNum, place, color, idList }) => {
         background: `${color}`,
       }}
     >
-      {/* Render the list of names within the shift */}
-      <ul className="shift-names">
-        {idList.map((id, index) => (
-          <li key={index}>{workers_map[id].name}</li>
-        ))}
-      </ul>
+    {ispersonalSearch? profession : <ul className="shift-names">
+    {idList.map((id, index) => (
+      <li key={index}>{workers_map[id].name}</li>
+    ))}
+  </ul>}
+      
     </div>
   );
 };

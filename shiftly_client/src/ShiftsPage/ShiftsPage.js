@@ -212,7 +212,7 @@ const ShiftsPage = () => {
             className="button"
             onClick={() => handlePersonalSearchClick()}
           >
-            <i class="bi bi-clipboard2-check"></i>&nbsp;&nbsp;&nbsp;Personal
+          <i class="bi bi-person-circle"></i>&nbsp;&nbsp;&nbsp;Personal
             timetable
           </button>
           <button className="button">

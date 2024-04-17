@@ -1,0 +1,52 @@
+.shift-container {
+
+    flex-wrap: wrap;
+    justify-content: space-between;
+    
+    border-color: rgb(58, 55, 82);
+    border-style: solid;
+    border-radius: 15px;
+    border-width: 2px;
+    padding: 20px;
+    padding-top: 5px;
+
+    margin-left: 10%;
+    margin-right: 10%;
+  }
+  
+  .shift-box {
+    width: calc(25% - 20px); 
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 5px;
+  }
+
+
+
+  .shift-box:hover {
+    /* transform: translateY(-5px); 
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);  */
+    background-color: #ededed;
+    cursor: pointer;
+  }
+  
+  .shift-box:active {
+    transform: scale(0.95); /* Shrink the box slightly when active */
+  }
+  
+  .shift_boxes{
+    display: flex;
+    flex-wrap: wrap;
+    /* justify-content: space-between; */
+  }
+  
+  .shift-container>.head{
+    font-size: large;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    text-align: center;
+    margin: 10px;
+  }

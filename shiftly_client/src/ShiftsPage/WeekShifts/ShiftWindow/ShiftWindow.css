@@ -1,0 +1,286 @@
+.shift-window {
+    position: fixed;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    background-color: white;
+    border: 2px solid black;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+}
+
+.header {
+    display: flex;
+    background-color: #ffffff;
+    /* White background */
+    border-bottom: 2px solid #000000;
+    /* Black border */
+    border-radius: 8px 8px 0 0;
+    /* Rounded corners only at the top */
+
+}
+
+.header span {
+    color: #000000;
+    margin: 10px;
+    font-family: kreon;
+    font-weight: bold;
+}
+
+.header i {
+    margin: 10px;
+    position: absolute;
+    color: #000000;
+    right: 10px;
+}
+
+.content {
+    display: flex;
+    margin: 0px;
+}
+
+.main_section {
+    background-color: #E8E8E8;
+    border-radius: 0px 0px 0px 10px;
+    width: 70%;
+}
+
+.boxes-section{
+    display: flex;
+}
+
+.total-capacity{
+    bottom: 15px;
+    position: absolute;
+    right: 45%;
+    font-size: larger;
+    font-weight: bold;
+    
+
+}
+
+.left-box,
+.right-box {
+    margin: 30px;
+    padding: 20px;
+    padding-bottom: 50px;
+    border-radius: 15px;
+    background-color: #ffffff;
+    position: relative;
+    width: 200px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.svg-div {
+    align-self: center;
+}
+
+
+.section-header {
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.section-header i {
+    margin: 5px;
+}
+
+.section-header svg {
+    margin: 5px;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+ul i {
+    position: absolute;
+    right: 10px;
+}
+
+ul li {
+    /* margin-bottom: 5px; */
+    font-size: small;
+}
+
+ul li button {
+    margin-left: 5px;
+}
+
+.hourly-capacity {
+    width: fit-content;
+    border-left: 2px solid black;
+    padding: 10px;
+    padding-left: 15px;
+    font-family: kreon;
+
+}
+
+.hour {
+    margin-bottom: 10px;
+}
+
+.capacity {
+    position: absolute;
+    right: 30px;
+}
+
+.insufficient{
+    color: #ad0202;
+    font-weight: bold;
+}
+
+.sufficient{
+    color: #028c20;
+}
+
+.header i{
+    cursor: pointer;
+    padding: 5px;
+    margin: 3px;
+    transition: background-color 0.1s;
+
+}
+
+
+.header i:hover {
+    background-color: #f5cccc;
+    border: #000000;
+    border-radius: 3px;
+}
+
+.header i:active {
+    background-color: #8a8888;
+    transition: background-color 0.0s;
+
+}
+
+.delete-button {
+    position: relative;
+    bottom: 0px;
+    margin: 10px;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 3px 7px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.1s;
+    
+}
+
+.delete-button:hover {
+    background-color: #e60000;
+}
+
+.delete-button:active {
+    background-color: #c80202;
+}
+
+/* delete modal */
+
+.modal, .overlayOne {
+    
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+  }
+  
+  .overlayOne {
+    background: rgba(104, 105, 105, 0.5);
+  }
+  .modal-content {
+    z-index: 4;
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    line-height: 1.4;
+    background: #f1f1f1;
+    padding: 14px 28px;
+    border-radius: 3px;
+    max-width: 600px;
+    min-width: 300px;
+  }
+  
+  .btns-sec{
+    display: flex;
+  }
+
+  .btns-sec button{
+    position: relative;
+    bottom: 0px;
+    margin: 10px;
+    
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 3px 7px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.1s;
+  }
+
+  .del-tbn{
+    background-color: #fb3737;
+  }
+
+  .del-tbn:hover{
+    background-color: #da1c1c;
+  }
+
+  .del-tbn:active{
+    background-color: #ad0202;
+  }
+
+  .cancel-btn{
+    background-color: #8ec257;
+  }
+
+  .cancel-btn:hover{
+    background-color: #74ad37;
+  }
+
+  .cancel-btn:active{
+    background-color: #5a9020;
+  }
+
+
+
+
+ul i {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+/* 
+    border-radius: 3px;
+    border-width: 1px; */
+}
+
+ul i:hover {
+    background-color: #f5cccc;
+    border-radius: 3px;
+    /* border-color: #000000;
+    border-style: solid;
+    border-width: 1px; */
+}
+
+ul i:active {
+    background-color: #d3b1b1;
+    border-radius: 3px;
+    /* border-color: #000000;
+    border-style: solid;
+    border-width: 1px; */
+}
+
+

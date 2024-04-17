@@ -1,0 +1,79 @@
+  .shift {
+    position: relative;
+    background-color: blue;
+    opacity: 0.6;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    z-index: 1; /* Ensure the Shift component is above other content */
+
+    box-shadow:  rgba(0, 0, 0, 0.22) 0px 15px 12px;
+
+    color: #000000;
+    font-size: x-large;
+    font-weight: bold;
+    
+  }
+
+  .shift:hover{
+    box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+  }
+
+  .shift:active {
+    box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
+  }
+  
+
+  .shift-names {
+    position: relative;
+    top: 0; /* Align the list to the top */
+    left: 0; /* Align the list to the left */
+    list-style-type: none; /* Remove bullets from the list */
+    padding: 0;
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    overflow: hidden; /* Hide overflow content */
+    overflow-y: auto; /* Enable vertical scrolling when needed */
+    height: 100%;
+    font-family: kreon;
+
+
+  }
+  
+  .shift-names li {
+    margin: 5px;
+    padding: 0;
+    white-space: nowrap; /* Prevent line breaks */
+    overflow: hidden; /* Hide overflow content */
+    text-overflow: ellipsis; /* Display ellipsis (...) when text overflows */
+    
+  }
+  
+  /* Style for the list of names */
+.shift-names ul {
+    list-style-type: none; /* Remove bullets */
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Hide overflowing content */
+  }
+
+
+/* scroll bar */
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #949494; 
+  border-radius: 10px;
+}
+ 
+::-webkit-scrollbar-thumb {
+  background: #453333; 
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #000000; 
+}

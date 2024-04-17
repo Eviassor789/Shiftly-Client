@@ -162,7 +162,7 @@ const WeekShifts = ({
                           <div
                             onClick={() =>
                               handleShiftClick({
-                                profession: profession,
+                                profession: shift.profession,
                                 color: shift.color,
                                 idList: shift.idList,
                                 startHour: shift.startHour,

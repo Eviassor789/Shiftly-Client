@@ -5,6 +5,11 @@ import UploadLogo from './UploadLogo';
 
 // {handleNext, fileUploaded, setFileUploaded}
 const UploadFile = (props) => {
+  // const csv = require('csv-parser');
+  // const fs = require('fs');
+  // const xlsx = require('xlsx');
+
+
   const [isDragging, setIsDragging] = useState(false);
   const [fileName, setFileName] = useState('');
   const [render, setRender] = useState(false);
@@ -51,12 +56,13 @@ const UploadFile = (props) => {
   const handleFiles = (files) => {
     if (files.length > 0) {
       const file = files[0];
-      if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
+      if ((file.type === 'text/csv' || file.name.endsWith('.csv'))) {
         setFileName(file.name);
 
         // Update the flag to indicate that a file has been uploaded
         my_array = props.UploadFile;
         my_array[props.currentStep-1] = true;
+        props.filesList[(props.currentStep - 1)] = file;
         props.setFileUploaded(my_array);
 
       } else if (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
@@ -67,6 +73,7 @@ const UploadFile = (props) => {
         // Update the flag to indicate that a file has been uploaded
         my_array = props.fileUploaded;
         my_array[props.currentStep-1] = true;
+        props.filesList[(props.currentStep - 1)] = file;
         props.setFileUploaded(my_array);
         
 
@@ -82,8 +89,13 @@ const UploadFile = (props) => {
       setRender(!render);
       
       // Handle the uploaded files here
-      console.log(files);
-      console.log(props.fileUploaded)
+      // console.log("files: " + files);
+      // console.log("files uploaded: " + props.fileUploaded);
+      console.log("files list: ");
+      props.filesList.forEach(file => {
+        console.log(file.name);
+      });
+
 
     }
   };

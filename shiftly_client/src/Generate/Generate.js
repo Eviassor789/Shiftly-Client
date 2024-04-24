@@ -5,6 +5,7 @@ import UploadScreen from "./UploadScreen";
 
 function Generate() {
   const [currentStep, setCurrentStep] = useState(1);
+  const [filesList, SetFilesList] = useState([]);
 
 
   const [fileUploaded, setFileUploaded] = useState([false, false, false]);
@@ -26,6 +27,8 @@ function Generate() {
             setCurrentStep={setCurrentStep}
             fileUploaded={fileUploaded}
             setFileUploaded={setFileUploaded}
+            filesList = {filesList}
+            SetFilesList = {SetFilesList}
           />
         ))}
       </div>

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFileUploaded, filesList, SetFilesList }) => {
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const handleNext = () => {
 

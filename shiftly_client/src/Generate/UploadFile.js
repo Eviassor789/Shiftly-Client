@@ -1,21 +1,17 @@
 import React, { useState, useRef } from 'react';
 import './UploadFile.css';
 import UploadLogo from './UploadLogo'; 
-import * as buffer from 'buffer';
+import buffer from 'buffer';
 // import csv from 'csv-parser';
-
+import Papa from 'papaparse';
 
 
 // {handleNext, fileUploaded, setFileUploaded}
 const UploadFile = (props) => {
   
-  if (typeof window.Buffer === 'undefined') {
-    window.Buffer = buffer.Buffer;
-  }
-  
-  const csv = require('csv-parser');
-  const fs = require('fs');
   const xlsx = require('xlsx');
+  const fs = require('fs');
+
 
 
   const [isDragging, setIsDragging] = useState(false);
@@ -59,99 +55,97 @@ const UploadFile = (props) => {
     handleFiles(files);
   };
 
-  const parseCSVFileSync = (filePath) => {
-    const rows = [];
-    // Synchronously read the CSV file and parse its contents
-    fs.createReadStream(filePath)
-      .pipe(csv())
-      .on('data', (row) => {
-        // Process each row synchronously
-        rows.push(row);
-      })
-      .on('end', () => {
-        // All rows have been processed
-        console.log('All rows processed:', rows);
-      })
-      .on('error', (error) => {
-        // Handle any errors during parsing
-        console.error('Error parsing CSV file:', error);
-      });
   
-    // Note: The rows array will be populated asynchronously as the CSV file is being parsed
-    // The function will return before the parsing is complete
-    return rows;
-  };
+// Function to parse CSV file synchronously using Papa Parse
+const parseCSVFileSync = (filePath) => {
+  const fileData = fs.readFileSync(filePath, 'utf8');
+  const { data, errors } = Papa.parse(fileData);
+  if (errors.length > 0) {
+    console.error('Error parsing CSV file:', errors);
+    return [];
+  }
+  return data;
+};
+
+// Function to parse CSV data using Papa Parse
+const parseCSVData = (data) => {
+  Papa.parse(data, {
+    header: false,
+    complete: (result) => {
+      console.log('Parsed CSV rows:', result.data);
+      // Do something with the parsed rows
+    },
+    error: (error) => {
+      console.error('Error parsing CSV:', error);
+    }
+  });
+};
 
   const parseExcelFile = (file) => {
-    const workbook = xlsx.readFile(file.path);
-    const sheetName = workbook.SheetNames[0]; // Assuming the data is in the first sheet
-    const worksheet = workbook.Sheets[sheetName];
-    const rows = xlsx.utils.sheet_to_json(worksheet, { header: 1 });
+    const reader = new FileReader();
   
-    // If you want to skip the header row, remove the first element
-    // rows.shift();
+    reader.onload = (event) => {
+      const workbook = xlsx.read(event.target.result, { type: 'binary' });
+      const sheetName = workbook.SheetNames[0]; // Assuming the data is in the first sheet
+      const worksheet = workbook.Sheets[sheetName];
+      const rows = xlsx.utils.sheet_to_json(worksheet, { header: 1 });
   
-    return rows;
+      // If you want to skip the header row, remove the first element
+      // rows.shift();
+  
+      console.log(rows); // Array of rows
+      // Do something with the parsed rows
+    };
+  
+    reader.readAsBinaryString(file);
   };
-
+  
 
 
 
   const handleFiles = (files) => {
     if (files.length > 0) {
       const file = files[0];
-      if ((file.type === 'text/csv' || file.name.endsWith('.csv'))) {
+      if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
         setFileName(file.name);
-
+  
         // Update the flag to indicate that a file has been uploaded
-        my_array = props.UploadFile;
-        my_array[props.currentStep-1] = true;
-        props.filesList[(props.currentStep - 1)] = file;
+        my_array = props.fileUploaded;
+        my_array[props.currentStep - 1] = true;
+        props.filesList[props.currentStep - 1] = file;
         props.setFileUploaded(my_array);
-
-        if(file) {
-          const rows = parseCSVFileSync(file);
-          console.log('Rows:', rows); // This will likely log an empty array because parsing is asynchronous
+  
+        if (file) {
+          parseCSVData(file);
         }
-        
-
       } else if (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
         file.name.endsWith('.xlsx')
       ) {
         setFileName(file.name);
-
+  
         // Update the flag to indicate that a file has been uploaded
         my_array = props.fileUploaded;
-        my_array[props.currentStep-1] = true;
-        props.filesList[(props.currentStep - 1)] = file;
+        my_array[props.currentStep - 1] = true;
+        props.filesList[props.currentStep - 1] = file;
         props.setFileUploaded(my_array);
-
-        if(file) {
-          const rows = parseExcelFile(file);
-          console.log(rows); // Array of rows
+  
+        if (file) {
+          parseExcelFile(file);
         }
-        
-
       } else {
         // Update the flag to indicate that a file has been uploaded
         my_array = props.fileUploaded;
-        my_array[props.currentStep-1] = false;
-        console.log("my_array: " + props.fileUploaded)
+        my_array[props.currentStep - 1] = false;
         props.setFileUploaded(my_array);
         files = [];
         alert("Please upload a CSV or Excel file.");
       };
       setRender(!render);
-      
-      // Handle the uploaded files here
-      // console.log("files: " + files);
-      // console.log("files uploaded: " + props.fileUploaded);
+  
       console.log("files list: ");
       props.filesList.forEach(file => {
         console.log(file.name);
       });
-
-
     }
   };
 

@@ -72,6 +72,9 @@ p {
 .blue {
     color: #193C7D;
     font-weight: bold;
+}
+
+.pointer {
     cursor: pointer;
 }
 

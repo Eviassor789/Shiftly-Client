@@ -15,6 +15,11 @@
     background-color: #e0e0e0; /* Darken background color on hover */
 }
 
+#TileContainer:active {
+    background-color: #c5c3c3; /* Darken background color on hover */
+    transition: background-color 0.0s ease;
+}
+
 #TileContainer img {
     height: 50px; /* Adjust image height */
     width: 60px; /* Adjust image width */

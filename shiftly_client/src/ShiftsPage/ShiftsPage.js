@@ -54,36 +54,54 @@ const ShiftsPage = () => {
       day: "Monday",
       startHour: "10:00",
       endHour: "13:00",
+      idList: [],
+      color: false,
+      cost: 50
     },
     {
       profession: "Doctor",
       day: "Monday",
       startHour: "14:00",
       endHour: "16:00",
+      idList: [],
+      color: false,
+      cost: 50
     },
     {
       profession: "Doctor",
       day: "Wednesday",
       startHour: "11:00",
       endHour: "15:00",
+      idList: [],
+      color: false,
+      cost: 50
     },
     {
       profession: "Doctor",
       day: "Thursday",
       startHour: "07:00",
       endHour: "12:00",
+      idList: [],
+      color: false,
+      cost: 50
     },
     {
       profession: "Doctor",
       day: "Friday",
       startHour: "08:00",
       endHour: "18:00",
+      idList: [],
+      color: false,
+      cost: 50
     },
     {
       profession: "Teacher",
       day: "Friday",
       startHour: "08:00",
       endHour: "10:00",
+      idList: [],
+      color: false,
+      cost: 50
     },
   ];
 
@@ -99,6 +117,7 @@ const ShiftsPage = () => {
       endHour: "17:00",
       idList: [],
       color: false,
+      cost: 50
     },
     {
       profession: "Doctor",
@@ -107,6 +126,7 @@ const ShiftsPage = () => {
       endHour: "17:00",
       idList: [],
       color: false,
+      cost: 50
     },
     {
       profession: "Doctor",
@@ -115,6 +135,7 @@ const ShiftsPage = () => {
       endHour: "15:00",
       idList: [],
       color: false,
+      cost: 50
     },
     {
       profession: "Doctor",
@@ -123,6 +144,7 @@ const ShiftsPage = () => {
       endHour: "18:00",
       idList: [],
       color: false,
+      cost: 50
     },
     {
       profession: "Doctor",
@@ -131,6 +153,7 @@ const ShiftsPage = () => {
       endHour: "19:00",
       idList: [],
       color: false,
+      cost: 50
     },
     {
       profession: "Doctor",
@@ -139,6 +162,7 @@ const ShiftsPage = () => {
       endHour: "08:00",
       idList: [],
       color: false,
+      cost: 50
     },
     {
       profession: "Doctor",
@@ -147,6 +171,7 @@ const ShiftsPage = () => {
       endHour: "16:00",
       idList: [],
       color: false,
+      cost: 50
     },
     {
       profession: "Doctor",
@@ -155,6 +180,7 @@ const ShiftsPage = () => {
       endHour: "16:00",
       idList: [],
       color: false,
+      cost: 50
     },
     {
       profession: "Doctor",
@@ -163,6 +189,7 @@ const ShiftsPage = () => {
       endHour: "16:00",
       idList: [],
       color: false,
+      cost: 50
     },
     {
       profession: "Doctor",
@@ -171,6 +198,7 @@ const ShiftsPage = () => {
       endHour: "17:00",
       idList: [],
       color: false,
+      cost: 50
     },
   ];
 

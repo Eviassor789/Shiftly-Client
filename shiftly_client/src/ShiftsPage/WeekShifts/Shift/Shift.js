@@ -11,7 +11,7 @@ const Shift = ({ startHour, endHour, overlapNum, place, color, idList, ispersona
     <div
       className="shift"
       style={{
-        height: `${(endRow - startRow) * 40}px`,
+        height: `${(endRow - startRow) * (40 - ispersonalSearch*6)}px`,
         width: `${100 / (overlapNum + 1)}%`,
         borderRadius: "20px",
         position: `absolute`,

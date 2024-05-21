@@ -20,15 +20,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/generate" element={<Generate />} />
         <Route path="/table" element={<WeekShifts />} />
         <Route path="/page" element={<ShiftsPage />} />
-        <Route path="/modal" element={<Modal />} />
-        <Route path="/win" element={<ShiftWindow
-          day="Monday"
-          startTime="09:00"
-          endTime="17:00"
-          requiredWorkers={8}
-          occupiedWorkers={['Alice', 'Bob']}
-          unoccupiedWorkers={['Charlie', 'David']}
-        />} />
+        <Route path="/page/1" element={<ShiftsPage />} />
+        <Route path="/page/2" element={<ShiftsPage />} />
+        <Route path="/page/3" element={<ShiftsPage />} />
+        
+        
       </Routes>
     </Router>
   </React.StrictMode>,

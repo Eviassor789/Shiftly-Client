@@ -204,33 +204,33 @@ const ShiftsPage = () => {
   const [workers, setWorkers] = useState(workers_map);
 
   return (
-    <div class="page-container">
-      <div class="top-panel">
+    <div className="page-container">
+      <div className="top-panel">
         <div className="table-name">Your Table Name</div>
         <div className="buttons">
           <button
             className="button"
             onClick={() => handlePersonalSearchClick()}
           >
-          <i class="bi bi-person-circle"></i>&nbsp;&nbsp;&nbsp;Personal
+          <i className="bi bi-person-circle"></i>&nbsp;&nbsp;&nbsp;Personal
             timetable
           </button>
           <button className="button">
-            <i class="bi bi-clipboard2-check"></i>&nbsp;&nbsp;&nbsp;Status
+            <i className="bi bi-clipboard2-check"></i>&nbsp;&nbsp;&nbsp;Status
           </button>
           <button className="button">
-            <i class="bi bi-download"></i>&nbsp;&nbsp;&nbsp;Download
+            <i className="bi bi-download"></i>&nbsp;&nbsp;&nbsp;Download
           </button>
           <button className="button">
-            <i class="bi bi-floppy"></i>&nbsp;&nbsp;&nbsp;Save
+            <i className="bi bi-floppy"></i>&nbsp;&nbsp;&nbsp;Save
           </button>
           <button className="button">
-            <i class="bi bi-arrow-90deg-left"></i>&nbsp;&nbsp;&nbsp;Back
+            <i className="bi bi-arrow-90deg-left"></i>&nbsp;&nbsp;&nbsp;Back
           </button>
         </div>
       </div>
-      <div class="main-container">
-        <div class="left-panel">
+      <div className="main-container">
+        <div className="left-panel">
           {professions.map((profession, index) => (
             <button
               key={index}
@@ -243,7 +243,7 @@ const ShiftsPage = () => {
             </button>
           ))}
         </div>
-        <div class="main-panel">
+        <div className="main-panel">
           {ispersonalSearch ? (
             <div className="autocomplete-wrapper">
               <input

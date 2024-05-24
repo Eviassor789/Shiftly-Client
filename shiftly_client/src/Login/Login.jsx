@@ -1,16 +1,40 @@
 import "./Login.css";
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-
+import users from "../Data/Users";
 function Login() {
   const navigate = useNavigate();
 
-  const handleSignUpClick = () => {
-    // Navigate to the register screen
-    navigate('/register');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleButtonClick = (page) => {
+    navigate(`/${page}`);
   };
-  
+
+  const handleLogin = () => {
+    const user = users.find(
+      (user) => user.username === username && user.password === password
+    );
+
+    if (user) {
+      navigate("/home");
+    } else {
+      setErrorMessage("Invalid username or password");
+    }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleInputChange = (setter) => (event) => {
+    setter(event.target.value);
+    setErrorMessage("");
+  };
+
   return (
     <>
       <div id="Login_upper_background"></div>
@@ -20,29 +44,94 @@ function Login() {
         </p>
         <div className="input">
           <p className="blue">Username</p>
-          <input id="login_username_input"></input>
+          <input
+            id="login_username_input"
+            value={username}
+            onChange={handleInputChange(setUsername)}
+          />
         </div>
         <div className="input">
           <p className="blue">Password</p>
-          <input id="login_password_input" type="password"></input>
+          <div className="password-container">
+            <input
+              id="login_password_input"
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={handleInputChange(setPassword)}
+            />
+            <button
+              type="button"
+              className="toggle-password"
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? (
+                <>
+                  <svg
+                    aria-labelledby="eyeCrossedIconTitle"
+                    color="#000000"
+                    fill="none"
+                    height="35px"
+                    stroke="#000000"
+                    stroke-linecap="square"
+                    stroke-linejoin="miter"
+                    stroke-width="1"
+                    viewBox="0 0 24 24"
+                    width="35px"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <title id="eyeCrossedIconTitle" />
+                    <path d="M22 12C22 12 19 18 12 18C5 18 2 12 2 12C2 12 5 6 12 6C19 6 22 12 22 12Z" />
+                    <circle cx="12" cy="12" r="3" />
+                    <path d="M3 21L20 4" />
+                  </svg>
+                </>
+              ) : (
+                <>
+                  <svg
+                    aria-labelledby="eyeIconTitle"
+                    color="#000000"
+                    fill="none"
+                    height="35px"
+                    stroke="#000000"
+                    stroke-linecap="square"
+                    stroke-linejoin="miter"
+                    stroke-width="1"
+                    viewBox="0 0 24 24"
+                    width="35px"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <title id="eyeIconTitle" />
+                    <path d="M22 12C22 12 19 18 12 18C5 18 2 12 2 12C2 12 5 6 12 6C19 6 22 12 22 12Z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                </>
+              )}
+            </button>
+          </div>
         </div>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
         <div id="wrap_center">
-          <button id="Login_Button" type="button" class="btn btn-primary">
-            Next <i class="bi bi-arrow-right"></i>
+          <button
+            id="Login_Button"
+            type="button"
+            className="btn btn-primary"
+            onClick={handleLogin}
+          >
+            Next <i className="bi bi-arrow-right"></i>
           </button>
 
           <div
-            class="MuiDivider-root MuiDivider-fullWidth MuiDivider-withChildren mui-style-rtl-1onl4dq"
+            className="MuiDivider-root MuiDivider-fullWidth MuiDivider-withChildren mui-style-rtl-1onl4dq"
             role="separator"
           >
-            <span class="MuiDivider-wrapper mui-style-rtl-c1ovea">or</span>
+            <span className="MuiDivider-wrapper mui-style-rtl-c1ovea">or</span>
           </div>
 
           <div id="social_net_container">
             <div>
-              <button class="btn">
+              <button className="btn">
                 <svg
-                  enable-background="new 0 0 48 48"
+                  enableBackground="new 0 0 48 48"
                   height="30"
                   viewBox="0 0 48 48"
                   width="30"
@@ -65,15 +154,42 @@ function Login() {
                     fill="#1976d2"
                   />
                 </svg>
-
                 <span> continue with Google</span>
               </button>
             </div>
+
+            {/* <div>
+              <button className="btn">
+                <svg
+                  fill="none"
+                  height="48"
+                  viewBox="0 0 24 24"
+                  width="48"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="m23 12c0-6.07578-4.9242-11-11-11-6.07578 0-11 4.92422-11 11 0 5.4914 4.02187 10.0418 9.2812 10.8668v-7.6871h-2.79292v-3.1797h2.79292v-2.42344c0-2.75644 1.6415-4.27968 4.1551-4.27968 1.2032 0 2.4621.21484 2.4621.21484v2.70703h-1.3879c-1.3664 0-1.7917.84863-1.7917 1.71875v2.0625h3.0507l-.4877 3.1797h-2.563v7.6871c5.2593-.825 9.2812-5.3754 9.2812-10.8668z"
+                    fill="#1877f2"
+                  />
+                  <path
+                    d="m16.2818 15.1797.4877-3.1797h-3.0507v-2.0625c0-.87012.4253-1.71875 1.7917-1.71875h1.3879v-2.70703s-1.2589-.21484-2.4621-.21484c-2.5136 0-4.1551 1.52324-4.1551 4.27968v2.42344h-2.79292v3.1797h2.79292v7.6871c.5608.0881 1.1344.1332 1.7188.1332s1.158-.0451 1.7188-.1332v-7.6871z"
+                    fill="#fff"
+                  />
+                </svg>
+                <span> continue with Facebook</span>
+              </button>
+            </div> */}
           </div>
 
           <div>
             <p>
-            New To Shiftly? <span className="blue" onClick={handleSignUpClick}>Sign Up</span>
+              New To Shiftly?{" "}
+              <span
+                className="blue pointer"
+                onClick={() => handleButtonClick("register")}
+              >
+                Sign Up
+              </span>
             </p>
           </div>
         </div>

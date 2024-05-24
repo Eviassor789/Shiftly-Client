@@ -1,4 +1,4 @@
-import tables_map from "./TableArchive";
+// import tables_map from "./TableArchive";
 
 let users = [
     { username: "gon", password: "jajanken", tablesArr: [111, 112, 113]},

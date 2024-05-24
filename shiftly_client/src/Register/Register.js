@@ -29,7 +29,12 @@ function Register() {
           <input id="Register_verify_input" type="password"></input>
         </div>
         <div id="wrap_center">
-          <button id="Register_Button" type="button" class="btn btn-primary">
+          <button
+            id="Register_Button"
+            type="button"
+            class="btn btn-primary"
+            onClick={() => handleButtonClick("")}
+          >
             Next <i class="bi bi-arrow-right"></i>
           </button>
 

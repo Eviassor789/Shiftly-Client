@@ -3,6 +3,9 @@ import WeekShifts from "./WeekShifts/WeekShifts";
 import "./ShiftsPage.css";
 import AddShiftWindow from "./AddShiftWindow/AddShiftWindow";
 import workers_map from "../Data/Workers";
+import { useNavigate } from 'react-router-dom';
+import assignments from "../Data/Assignments";
+
 
 const ShiftsPage = () => {
   const professions = ["Doctor", "Engineer", "Teacher", "Nurse"]; // Sample list of professions
@@ -19,7 +22,7 @@ const ShiftsPage = () => {
 
   const handlePersonalSearchClick = () => {
     setSelectedProfession(null);
-    setPersonalSearch(true);
+    setPersonalSearch(!ispersonalSearch);
   };
 
   const handleInputChange = (event) => {
@@ -40,139 +43,151 @@ const ShiftsPage = () => {
       setSuggestionsList([]);
     }
   };
-
+  
   const handleSuggestionClick = (value) => {
     setInputValue(value);
     setSuggestionsList([]);
   };
+  
+  const navigate = useNavigate();
+
+  const handleSave = () => {
+    navigate(`/home`);
+  };
+
+  const handleBack = () => {
+    navigate(`/home`);
+  };
 
   const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
 
-  const unselected_shiftsList = [
-    {
-      profession: "Doctor",
-      day: "Monday",
-      startHour: "10:00",
-      endHour: "13:00",
-    },
-    {
-      profession: "Doctor",
-      day: "Monday",
-      startHour: "14:00",
-      endHour: "16:00",
-    },
-    {
-      profession: "Doctor",
-      day: "Wednesday",
-      startHour: "11:00",
-      endHour: "15:00",
-    },
-    {
-      profession: "Doctor",
-      day: "Thursday",
-      startHour: "07:00",
-      endHour: "12:00",
-    },
-    {
-      profession: "Doctor",
-      day: "Friday",
-      startHour: "08:00",
-      endHour: "18:00",
-    },
-    {
-      profession: "Teacher",
-      day: "Friday",
-      startHour: "08:00",
-      endHour: "10:00",
-    },
-  ];
+  const unselected_shiftsList = assignments[1].unselected_shiftsList;
+  // const unselected_shiftsList = [
+  //   {
+  //     profession: "Doctor",
+  //     day: "Monday",
+  //     startHour: "10:00",
+  //     endHour: "13:00",
+  //   },
+  //   {
+  //     profession: "Doctor",
+  //     day: "Monday",
+  //     startHour: "14:00",
+  //     endHour: "16:00",
+  //   },
+  //   {
+  //     profession: "Doctor",
+  //     day: "Wednesday",
+  //     startHour: "11:00",
+  //     endHour: "15:00",
+  //   },
+  //   {
+  //     profession: "Doctor",
+  //     day: "Thursday",
+  //     startHour: "07:00",
+  //     endHour: "12:00",
+  //   },
+  //   {
+  //     profession: "Doctor",
+  //     day: "Friday",
+  //     startHour: "08:00",
+  //     endHour: "18:00",
+  //   },
+  //   {
+  //     profession: "Teacher",
+  //     day: "Friday",
+  //     startHour: "08:00",
+  //     endHour: "10:00",
+  //   },
+  // ];
 
   const [unselected_shifts, setUnselected_shifts] = useState(
     unselected_shiftsList
   );
 
-  var shifts_list = [
-    {
-      profession: "Doctor",
-      day: "Sunday",
-      startHour: "10:00",
-      endHour: "17:00",
-      idList: [],
-      color: false,
-    },
-    {
-      profession: "Doctor",
-      day: "Sunday",
-      startHour: "14:00",
-      endHour: "17:00",
-      idList: [],
-      color: false,
-    },
-    {
-      profession: "Doctor",
-      day: "Sunday",
-      startHour: "08:00",
-      endHour: "15:00",
-      idList: [],
-      color: false,
-    },
-    {
-      profession: "Doctor",
-      day: "Tuesday",
-      startHour: "10:00",
-      endHour: "18:00",
-      idList: [],
-      color: false,
-    },
-    {
-      profession: "Doctor",
-      day: "Tuesday",
-      startHour: "10:00",
-      endHour: "19:00",
-      idList: [],
-      color: false,
-    },
-    {
-      profession: "Doctor",
-      day: "Tuesday",
-      startHour: "07:00",
-      endHour: "08:00",
-      idList: [],
-      color: false,
-    },
-    {
-      profession: "Doctor",
-      day: "Wednesday",
-      startHour: "14:00",
-      endHour: "16:00",
-      idList: [],
-      color: false,
-    },
-    {
-      profession: "Doctor",
-      day: "Thursday",
-      startHour: "13:00",
-      endHour: "16:00",
-      idList: [],
-      color: false,
-    },
-    {
-      profession: "Doctor",
-      day: "Thursday",
-      startHour: "14:00",
-      endHour: "16:00",
-      idList: [],
-      color: false,
-    },
-    {
-      profession: "Doctor",
-      day: "Thursday",
-      startHour: "14:00",
-      endHour: "17:00",
-      idList: [],
-      color: false,
-    },
-  ];
+  var shifts_list = assignments[1].shifts_list;
+  // var shifts_list = [
+  //   {
+  //     profession: "Doctor",
+  //     day: "Sunday",
+  //     startHour: "10:00",
+  //     endHour: "17:00",
+  //     idList: [33146],
+  //     color: false,
+  //   },
+  //   {
+  //     profession: "Doctor",
+  //     day: "Sunday",
+  //     startHour: "14:00",
+  //     endHour: "17:00",
+  //     idList: [],
+  //     color: false,
+  //   },
+  //   {
+  //     profession: "Doctor",
+  //     day: "Sunday",
+  //     startHour: "08:00",
+  //     endHour: "15:00",
+  //     idList: [],
+  //     color: false,
+  //   },
+  //   {
+  //     profession: "Doctor",
+  //     day: "Tuesday",
+  //     startHour: "10:00",
+  //     endHour: "18:00",
+  //     idList: [],
+  //     color: false,
+  //   },
+  //   {
+  //     profession: "Doctor",
+  //     day: "Tuesday",
+  //     startHour: "10:00",
+  //     endHour: "19:00",
+  //     idList: [],
+  //     color: false,
+  //   },
+  //   {
+  //     profession: "Doctor",
+  //     day: "Tuesday",
+  //     startHour: "07:00",
+  //     endHour: "08:00",
+  //     idList: [],
+  //     color: false,
+  //   },
+  //   {
+  //     profession: "Doctor",
+  //     day: "Wednesday",
+  //     startHour: "14:00",
+  //     endHour: "16:00",
+  //     idList: [],
+  //     color: false,
+  //   },
+  //   {
+  //     profession: "Doctor",
+  //     day: "Thursday",
+  //     startHour: "13:00",
+  //     endHour: "16:00",
+  //     idList: [],
+  //     color: false,
+  //   },
+  //   {
+  //     profession: "Doctor",
+  //     day: "Thursday",
+  //     startHour: "14:00",
+  //     endHour: "16:00",
+  //     idList: [],
+  //     color: false,
+  //   },
+  //   {
+  //     profession: "Doctor",
+  //     day: "Thursday",
+  //     startHour: "14:00",
+  //     endHour: "17:00",
+  //     idList: [],
+  //     color: false,
+  //   },
+  // ];
 
   const daysOfWeek = [
     "Sunday",
@@ -212,7 +227,7 @@ const ShiftsPage = () => {
             className="button"
             onClick={() => handlePersonalSearchClick()}
           >
-          <i className="bi bi-person-circle"></i>&nbsp;&nbsp;&nbsp;Personal
+            <i className="bi bi-person-circle"></i>&nbsp;&nbsp;&nbsp;Personal
             timetable
           </button>
           <button className="button">
@@ -221,10 +236,16 @@ const ShiftsPage = () => {
           <button className="button">
             <i className="bi bi-download"></i>&nbsp;&nbsp;&nbsp;Download
           </button>
-          <button className="button">
+          <button
+            className="button"
+            onClick={() => handleSave()}
+          >
             <i className="bi bi-floppy"></i>&nbsp;&nbsp;&nbsp;Save
           </button>
-          <button className="button">
+          <button
+            className="button"
+            onClick={() => handleBack()}
+          >
             <i className="bi bi-arrow-90deg-left"></i>&nbsp;&nbsp;&nbsp;Back
           </button>
         </div>
@@ -281,7 +302,6 @@ const ShiftsPage = () => {
             setWorkers={setWorkers}
             ispersonalSearch={ispersonalSearch}
             inputValue={inputValue}
-
           />
           <AddShiftWindow
             shifts={shifts}

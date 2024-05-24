@@ -29,7 +29,12 @@ function Login() {
           <input id="login_password_input" type="password"></input>
         </div>
         <div id="wrap_center">
-          <button id="Login_Button" type="button" className="btn btn-primary">
+          <button
+            id="Login_Button"
+            type="button"
+            className="btn btn-primary"
+            onClick={() => handleButtonClick("home")}
+          >
             Next <i className="bi bi-arrow-right"></i>
           </button>
 

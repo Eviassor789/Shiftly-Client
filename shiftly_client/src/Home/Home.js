@@ -2,78 +2,64 @@ import "./Home.css";
 import HomeTopBar from "./HomeTopBar/HomeTopBar";
 import SchedulingTile from "./SchedulingTile/SchedulingTile.jsx";
 import React, { useState } from "react";
+import tables_map from "../Data/TableArchive.js";
 
 function Home() {
-  // State variable to hold the input value
   const [filterValue, setFilterValue] = useState("");
-
-  const [tiles, setTiles] = useState([
-    { name: "week 13", date: "01/01/2024", starred: true },
-    { name: "week 14", date: "08/01/2024", starred: false },
-    { name: "week 15", date: "15/01/2024", starred: false },
-    { name: "week 16", date: "21/01/2024", starred: false },
-    { name: "week 19", date: "28/01/2024", starred: false },
-    { name: "week 19b", date: "28/01/2024", starred: true },
-    { name: "week 19c", date: "29/01/2024", starred: false },
-    { name: "week 30", date: "20/03/2024", starred: false },
-    { name: "a", date: "27/03/2024", starred: true },
-    { name: "aaaaaaabb", date: "29/03/2024", starred: false },
-  ]);
-
-  // State variables for sorting and filtering
-  const [sortOrder, setSortOrder] = useState("asc"); // "asc" or "desc"
+  const [tiles, setTiles] = useState(tables_map);
+  const [sortOrder, setSortOrder] = useState("asc");
   const [showStarredOnly, setShowStarredOnly] = useState(false);
 
-  // Function to handle ascending or descending sort
   const handleToggleSort = () => {
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
   };
 
-  // Function to handle showing only starred tiles
   const handleShowStarred = () => {
     setShowStarredOnly(!showStarredOnly);
   };
 
-  // Function to toggle the starred status of a tile
-  const toggleStarred = (nameToToggle) => {
-    setTiles(
-      tiles.map((tile) =>
-        tile.name === nameToToggle ? { ...tile, starred: !tile.starred } : tile
-      )
-    );
+  const toggleStarred = (idToToggle) => {
+    setTiles((prevTiles) => ({
+      ...prevTiles,
+      [idToToggle]: {
+        ...prevTiles[idToToggle],
+        starred: !prevTiles[idToToggle].starred,
+      },
+    }));
   };
 
-  // Event handler to update the filter value
   const handleInputChange = (event) => {
     setFilterValue(event.target.value);
   };
 
-  // Function to remove a tile by name
-  const removeTile = (nameToRemove) => {
-    setTiles(tiles.filter((tile) => tile.name !== nameToRemove));
+  const removeTile = (idToRemove) => {
+    setTiles((prevTiles) => {
+      const newTiles = { ...prevTiles };
+      delete newTiles[idToRemove];
+      return newTiles;
+    });
   };
 
-  // Filter and sort tiles based on current settings
-  const sortedTiles = tiles
-  .filter((tile) => !showStarredOnly || tile.starred)
+  const sortedTilesArray = Object.values(tiles)
+    .filter((tile) => !showStarredOnly || tile.starred)
     .sort((a, b) => {
-      if (sortOrder === "asc") {
-        return a.name.localeCompare(b.name);
-      } else if (sortOrder === "desc") {
-        return b.name.localeCompare(a.name);
-      }
-      return 0;
+      const dateA = new Date(a.date.split("/").reverse().join("-"));
+      const dateB = new Date(b.date.split("/").reverse().join("-"));
+      return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
     });
 
-  // Filtered  tiles based on input value
-  const filteredTiles = sortedTiles.filter((tile) =>
+  const filteredTiles = sortedTilesArray.filter((tile) =>
     tile.name.toLowerCase().includes(filterValue.toLowerCase())
   );
+
+  const navigateToDetailPage = (tileId) => {
+    // Implement the navigation logic here, e.g., using React Router
+    console.log("Navigating to detail page for tile ID:", tileId);
+  };
 
   return (
     <>
       <HomeTopBar page="home" />
-
       <div className="CenterDiv">
         <div id="welcomeBox" className="HomeBoxes">
           <p id="welcomeMessage">
@@ -81,10 +67,9 @@ function Home() {
           </p>
           <p>
             Tip: In the Settings you can change your preferences which can lead
-            to different results on your tables
+            to different results on your tables.
           </p>
         </div>
-
         <div id="HomeMainBox" className="HomeBoxes">
           <div className="input-icons">
             <i className="bi bi-search icon"></i>
@@ -96,25 +81,24 @@ function Home() {
               onChange={handleInputChange}
             />
           </div>
-
           <div id="HistoryListContainer"></div>
-          {/* Buttons for sorting and filtering */}
           <div className="sort-buttons">
-            <button onClick={handleToggleSort}> {sortOrder === "asc" ? "Ascending Sort" : "Descending Sort"}</button>
+            <button onClick={handleToggleSort}>
+              {sortOrder === "asc" ? "Order by Oldest First" : "Order by Newest First"}
+            </button>
             <button onClick={handleShowStarred}>
               {showStarredOnly ? "Show All Tiles" : "Show Starred Tiles Only"}
             </button>
           </div>
-
-          {/* Render filtered tiles */}
-          {filteredTiles.map((tile, index) => (
+          {filteredTiles.map((tile) => (
             <SchedulingTile
-              key={index}
+              key={tile.ID}
               name={tile.name}
               date={tile.date}
               starred={tile.starred}
-              onRemove={removeTile}
-              onToggleStar={toggleStarred}
+              onRemove={() => removeTile(tile.ID)}
+              onToggleStar={() => toggleStarred(tile.ID)}
+              onNavigate={() => navigateToDetailPage(tile.ID)}
             />
           ))}
         </div>

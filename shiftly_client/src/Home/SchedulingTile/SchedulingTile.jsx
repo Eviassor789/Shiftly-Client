@@ -23,6 +23,7 @@ function SchedulingTile(props) {
   const navigate = useNavigate();
 
   const handleTileClick = () => {
+    props.setCurrentTableID(props.ID);
     navigate(`/page`);
   };
 

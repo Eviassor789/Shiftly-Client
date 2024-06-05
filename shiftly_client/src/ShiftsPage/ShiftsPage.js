@@ -1,19 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import WeekShifts from "./WeekShifts/WeekShifts";
 import "./ShiftsPage.css";
 import AddShiftWindow from "./AddShiftWindow/AddShiftWindow";
 import workers_map from "../Data/Workers";
 import { useNavigate } from 'react-router-dom';
 import assignments from "../Data/Assignments";
+import users from "../Data/Users";
 
 
-const ShiftsPage = () => {
+const ShiftsPage = (props) => {
   const professions = ["Doctor", "Engineer", "Teacher", "Nurse"]; // Sample list of professions
 
   const [selectedProfession, setSelectedProfession] = useState(null);
   const [ispersonalSearch, setPersonalSearch] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [suggestionsList, setSuggestionsList] = useState([]);
+
+  const loggedUser = props.loggedUser;
+
+  useEffect(() => {
+    if (!users.get(loggedUser)) {
+      navigate(`/`);
+      return;
+    }
+});
 
   const handleProfessionClick = (profession) => {
     setSelectedProfession(profession);

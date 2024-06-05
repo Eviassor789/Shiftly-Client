@@ -1,17 +1,53 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import users from '../Data/Users';
-import "./Register.css";
+import User from '../User';
+import './Register.css';
 
 function Register() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [verifyPassword, setVerifyPassword] = useState("");
+  const [verifyPassword, setVerifyPassword] = useState('');
   const [showVerifyPassword, setShowVerifyPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(''); // Error message state
 
-  const handleInputChange = (event) => {
+  const navigate = useNavigate();
+
+  const handleButtonClick = (page) => {
+    navigate(`/${page}`);
+  };
+
+  const handleRegisteration = () => {
+    if (!users.get(username)) {
+      users.set(
+        username,
+        new User({
+          username: username,
+          password: password,
+          tablesArr: [],
+          picture: '',
+        })
+      );
+      handleButtonClick('');
+    } else {
+      setErrorMessage('Username already taken'); // Set error message
+    }
+  };
+
+  const handleUsernameChange = (event) => {
+    setUsername(event.target.value);
+    setErrorMessage(''); // Clear error message on input change
+  };
+
+  const handlePasswordChange = (event) => {
     setPassword(event.target.value);
+    setErrorMessage(''); // Clear error message on input change
+  };
+
+  const handleVerifyPasswordChange = (event) => {
+    setVerifyPassword(event.target.value);
+    setErrorMessage(''); // Clear error message on input change
   };
 
   const togglePasswordVisibility = () => {
@@ -20,32 +56,6 @@ function Register() {
 
   const toggleVerifyPasswordVisibility = () => {
     setShowVerifyPassword(!showVerifyPassword);
-  };
-
-  const navigate = useNavigate();
-
-  const handleButtonClick = (page) => {
-    // You can add additional logic or conditions here if needed
-    // For now, just navigate to the specified page
-    navigate(`/${page}`);
-  };
-
-  const handleRegisteration = () => {
-    users += {username: username, password: password, tablesArr: []};
-    console.log("users: " + users)
-    handleButtonClick("");
-  }
-
-  const handleUsernameChange = (event) => {
-    setUsername(event.target.value);
-  }
-
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
-
-  const handleVerifyPasswordChange = (event) => {
-    setVerifyPassword(event.target.value);
   };
 
   const usernameLengthValid = username.length >= 8;
@@ -63,14 +73,17 @@ function Register() {
             id="Register_username_input"
             value={username}
             onChange={handleUsernameChange}
-          ></input>
+          />
+          {errorMessage && (
+            <div className="error-message">{errorMessage}</div>
+          )}
         </div>
         <div className="input">
           <p className="blue">Password</p>
           <div className="password-container">
             <input
               id="Register_password_input"
-              type={showPassword ? "text" : "password"}
+              type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={handlePasswordChange}
             />
@@ -125,7 +138,7 @@ function Register() {
           <div className="password-container">
             <input
               id="Register_verify_input"
-              type={showVerifyPassword ? "text" : "password"}
+              type={showVerifyPassword ? 'text' : 'password'}
               value={verifyPassword}
               onChange={handleVerifyPasswordChange}
             />
@@ -189,10 +202,10 @@ function Register() {
             type="button"
             className={`btn btn-primary ${
               passwordsMatch && passwordLengthValid && usernameLengthValid
-                ? ""
-                : "disabled"
+                ? ''
+                : 'disabled'
             }`}
-            onClick={() => handleButtonClick("")}
+            onClick={handleRegisteration}
             disabled={
               !passwordsMatch || !passwordLengthValid || !usernameLengthValid
             }
@@ -201,11 +214,8 @@ function Register() {
           </button>
           <div>
             <p>
-              Already have an account?{" "}
-              <span
-                className="blue pointer"
-                onClick={() => handleRegisteration()}
-              >
+              Already have an account?{' '}
+              <span className="blue pointer" onClick={() => handleButtonClick('')}>
                 Log in
               </span>
             </p>

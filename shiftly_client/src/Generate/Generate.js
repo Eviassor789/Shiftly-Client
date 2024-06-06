@@ -44,7 +44,7 @@ function Generate(props) {
           />
         ))}
       </div>
-      <HomeTopBar page="generate" />
+      <HomeTopBar page="generate" loggedUser={props.loggedUser}/>
       {/* <button onClick={handleNext} type="button" disabled={currentStep === 3} class="btn btn-primary">
         next page
       </button>

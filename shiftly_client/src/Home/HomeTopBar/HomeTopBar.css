@@ -2,10 +2,11 @@
     background-color: #193C7D;
     position: relative;
     top: 0%;
-    height: 55px;
+    height: 60px;
     width: 100%;
     box-shadow: 0px 8px 20px 0px rgb(66, 66, 66);
     overflow: hidden;
+    padding-bottom: 7px;
     
 }
 
@@ -13,10 +14,10 @@
 .HomeTopBarButton {
     position: relative;
 
-    font-size: medium;
+    font-size: large;
     color: #e8e8e8bd;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-
+    
     height: 100%;
 
     border-bottom: 0px;

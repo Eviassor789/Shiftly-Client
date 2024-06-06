@@ -1,13 +1,19 @@
-let assignments = {
-  1: {
+import Assignment from "../Assignment";
+
+const assignments = new Map();
+
+assignments.set(
+  1,
+  new Assignment({
     ID: 1,
+    professions: ["Doctor", "Engineer", "Teacher", "Nurse"],
     shifts_list: [
       {
         profession: "Doctor",
         day: "Sunday",
         startHour: "10:00",
         endHour: "17:00",
-        idList: [33146],
+        idList: [],
         color: false,
       },
       {
@@ -121,9 +127,14 @@ let assignments = {
         endHour: "10:00",
       },
     ],
-  },
-  2: {
+  })
+);
+
+assignments.set(
+  2,
+  new Assignment({
     ID: 2,
+    professions: ["Doctor", "Engineer", "Teacher", "Nurse"],
     shifts_list: [
       {
         profession: "Doctor",
@@ -282,7 +293,7 @@ let assignments = {
         endHour: "12:00",
       },
     ],
-  },
-};
+  })
+);
 
 export default assignments;

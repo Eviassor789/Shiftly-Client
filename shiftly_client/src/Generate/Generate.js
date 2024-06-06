@@ -1,9 +1,12 @@
 import "./Generate.css"
 import HomeTopBar from "../Home/HomeTopBar/HomeTopBar";
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import UploadScreen from "./UploadScreen";
+import users from "../Data/Users";
+import { useNavigate } from "react-router-dom";
 
-function Generate() {
+
+function Generate(props) {
   const [currentStep, setCurrentStep] = useState(1);
   const [filesList, SetFilesList] = useState([]);
 
@@ -14,6 +17,15 @@ function Generate() {
   // const handleBack = () => {
   //   setCurrentStep(currentStep - 1);
   // };
+
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (!users.get(props.loggedUser)) {
+      navigate(`/`);
+      return;
+    }
+  });
 
 
   return (

@@ -11,6 +11,7 @@ function Home(props) {
   const [sortOrder, setSortOrder] = useState("asc");
   const [showStarredOnly, setShowStarredOnly] = useState(false);
   const [tiles, setTiles] = useState([]);
+  const [filteredTiles, setFilteredTiles] = useState([]);
   const navigate = useNavigate();
 
   const loggedUser = props.loggedUser;
@@ -22,9 +23,6 @@ function Home(props) {
     }
 
     const userTablesArr = users.get(loggedUser).tablesArr;
-    console.log("loggedUser:", users.get(loggedUser).tablesArr);
-    userTablesArr.forEach(element => {
-    });
     const userTiles = new Map();
     userTablesArr.forEach((tableId) => {
       if (tables_map.get(tableId)) {
@@ -33,6 +31,22 @@ function Home(props) {
     });
     setTiles(Array.from(userTiles.values()));
   }, [loggedUser, navigate]);
+
+  useEffect(() => {
+    const sortedTilesArray = tiles
+      .filter((tile) => !showStarredOnly || tile.starred)
+      .sort((a, b) => {
+        const dateA = new Date(a.date.split("/").reverse().join("-"));
+        const dateB = new Date(b.date.split("/").reverse().join("-"));
+        return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+      });
+
+    const filteredTilesArray = sortedTilesArray.filter((tile) =>
+      tile.name.toLowerCase().includes(filterValue.toLowerCase())
+    );
+
+    setFilteredTiles(filteredTilesArray);
+  }, [tiles, filterValue, sortOrder, showStarredOnly]);
 
   const handleToggleSort = () => {
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
@@ -63,19 +77,6 @@ function Home(props) {
   const navigateToDetailPage = (tileId) => {
     navigate(`/detail/${tileId}`);
   };
-
-  const sortedTilesArray = tiles.filter((tile) => !showStarredOnly || tile.starred)
-    .sort((a, b) => {
-      const dateA = new Date(a.date.split("/").reverse().join("-"));
-      const dateB = new Date(b.date.split("/").reverse().join("-"));
-      return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
-    });
-
-  const filteredTiles = sortedTilesArray.filter((tile) =>
-    tile.name.toLowerCase().includes(filterValue.toLowerCase())
-  );
-
-  console.log("Filtered Tiles:", filteredTiles);
 
   return (
     <>
@@ -116,6 +117,7 @@ function Home(props) {
             filteredTiles.map((tile) => (
               <SchedulingTile
                 key={tile.ID}
+                ID={tile.ID}  // Pass the ID prop here
                 name={tile.name}
                 date={tile.date}
                 starred={tile.starred}

@@ -9,7 +9,7 @@ tables_map.set(
     name: "week 13",
     date: "01/01/2024",
     starred: true,
-    assignment: [1],
+    assignment: 1,
   })
 );
 
@@ -20,7 +20,7 @@ tables_map.set(
     name: "week 14",
     date: "08/01/2024",
     starred: false,
-    assignment: [],
+    assignment: null,
   })
 );
 
@@ -31,7 +31,7 @@ tables_map.set(
     name: "sdsd",
     date: "15/01/2024",
     starred: false,
-    assignment: [],
+    assignment: null,
   })
 );
 
@@ -42,7 +42,7 @@ tables_map.set(
     name: "week 19",
     date: "28/01/2024",
     starred: true,
-    assignment: [2],
+    assignment: 2,
   })
 );
 
@@ -53,7 +53,7 @@ tables_map.set(
     name: "week 30",
     date: "20/03/2024",
     starred: false,
-    assignment: [],
+    assignment: null,
   })
 );
 
@@ -64,7 +64,7 @@ tables_map.set(
     name: "a",
     date: "27/03/2024",
     starred: true,
-    assignment: [],
+    assignment: null,
   })
 );
 
@@ -75,7 +75,7 @@ tables_map.set(
     name: "aaaaaaabb",
     date: "29/03/2024",
     starred: false,
-    assignment: [],
+    assignment: null,
   })
 );
 

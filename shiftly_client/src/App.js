@@ -11,6 +11,7 @@ import WeekShifts from './ShiftsPage/WeekShifts/WeekShifts';
 import ShiftsPage from './ShiftsPage/ShiftsPage';
 import ShiftWindow from './ShiftsPage/WeekShifts/ShiftWindow/ShiftWindow';
 import Modal from './ShiftsPage/WeekShifts/Modal/modal';
+import NotFoundPage from './NotFoundPage';
 
 
 function App() {
@@ -30,22 +31,8 @@ function App() {
         <Route path="/register" element={<Register loggedUser={loggedUser} setLoggedUser={setLoggedUser}/>} />
         <Route path="/home" element={<Home currentTableID={currentTableID} setCurrentTableID={setCurrentTableID} loggedUser={loggedUser} setLoggedUser={setLoggedUser}/>} />
         <Route path="/generate" element={<Generate loggedUser={loggedUser} setLoggedUser={setLoggedUser}/>} />
-        <Route path="/table" element={<WeekShifts loggedUser={loggedUser} setLoggedUser={setLoggedUser}/>} />
         <Route path="/page" element={<ShiftsPage currentTableID={currentTableID} setCurrentTableID={setCurrentTableID} loggedUser={loggedUser} setLoggedUser={setLoggedUser}/>} />
-        <Route path="/modal" element={<Modal />} />
-        <Route
-          path="/win"
-          element={
-            <ShiftWindow
-              day="Monday"
-              startTime="09:00"
-              endTime="17:00"
-              requiredWorkers={8}
-              occupiedWorkers={["Alice", "Bob"]}
-              unoccupiedWorkers={["Charlie", "David"]}
-            />
-          }
-        />
+        <Route path="*" element={<NotFoundPage/>} />
       </Routes>
     </Router>
   );

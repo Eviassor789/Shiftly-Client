@@ -4,26 +4,75 @@ import "./ShiftsPage.css";
 import AddShiftWindow from "./AddShiftWindow/AddShiftWindow";
 import workers_map from "../Data/Workers";
 import { useNavigate } from 'react-router-dom';
-import assignments from "../Data/Assignments";
 import users from "../Data/Users";
-
+import tables_map from "../Data/TableArchive";
+import assignments from "../Data/Assignments";
 
 const ShiftsPage = (props) => {
-  const professions = ["Doctor", "Engineer", "Teacher", "Nurse"]; // Sample list of professions
-
   const [selectedProfession, setSelectedProfession] = useState(null);
   const [ispersonalSearch, setPersonalSearch] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [suggestionsList, setSuggestionsList] = useState([]);
+  const [professions, setProfessions] = useState([]);
+  const [unselected_shifts, setUnselected_shifts] = useState([]);
+  const [shifts, setShifts] = useState([]);
+  const [workers, setWorkers] = useState(workers_map);
 
   const loggedUser = props.loggedUser;
+  const currentTableID = props.currentTableID;
+  const setCurrentTableID = props.setCurrentTableID;
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!users.get(loggedUser)) {
       navigate(`/`);
       return;
     }
-});
+    
+    let currentAssignmentID;
+    if (tables_map && tables_map.get(currentTableID)) {
+      currentAssignmentID = tables_map.get(currentTableID).assignment;
+
+      if (currentAssignmentID && assignments.get(currentAssignmentID)) {
+        const assignmentData = assignments.get(currentAssignmentID);
+        console.log("Assignment Data:", assignmentData);
+
+        setProfessions(assignmentData.professions || []);
+        setUnselected_shifts(assignmentData.unselected_shiftsList || []);
+        
+        const sortedShiftsList = assignmentData.shifts_list || [];
+        const daysOfWeek = [
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+        ];
+
+        sortedShiftsList.sort((a, b) => {
+          const dayIndexA = daysOfWeek.indexOf(a.day);
+          const dayIndexB = daysOfWeek.indexOf(b.day);
+
+          if (a.startHour !== b.startHour) {
+            return a.startHour.localeCompare(b.startHour); // Sort by day index
+          } else {
+            return dayIndexA - dayIndexB; // If day is the same, sort by start hour
+          }
+        });
+
+        const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
+        let counter = 0;
+        sortedShiftsList.forEach((shift) => {
+          shift.color = color_list[counter++ % color_list.length];
+        });
+
+        setShifts(sortedShiftsList);
+      }
+    }
+  }, [loggedUser, currentTableID, navigate]);
 
   const handleProfessionClick = (profession) => {
     setSelectedProfession(profession);
@@ -53,13 +102,11 @@ const ShiftsPage = (props) => {
       setSuggestionsList([]);
     }
   };
-  
+
   const handleSuggestionClick = (value) => {
     setInputValue(value);
     setSuggestionsList([]);
   };
-  
-  const navigate = useNavigate();
 
   const handleSave = () => {
     navigate(`/home`);
@@ -69,174 +116,12 @@ const ShiftsPage = (props) => {
     navigate(`/home`);
   };
 
-  const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
-
-  const unselected_shiftsList = assignments[1].unselected_shiftsList;
-  // const unselected_shiftsList = [
-  //   {
-  //     profession: "Doctor",
-  //     day: "Monday",
-  //     startHour: "10:00",
-  //     endHour: "13:00",
-  //   },
-  //   {
-  //     profession: "Doctor",
-  //     day: "Monday",
-  //     startHour: "14:00",
-  //     endHour: "16:00",
-  //   },
-  //   {
-  //     profession: "Doctor",
-  //     day: "Wednesday",
-  //     startHour: "11:00",
-  //     endHour: "15:00",
-  //   },
-  //   {
-  //     profession: "Doctor",
-  //     day: "Thursday",
-  //     startHour: "07:00",
-  //     endHour: "12:00",
-  //   },
-  //   {
-  //     profession: "Doctor",
-  //     day: "Friday",
-  //     startHour: "08:00",
-  //     endHour: "18:00",
-  //   },
-  //   {
-  //     profession: "Teacher",
-  //     day: "Friday",
-  //     startHour: "08:00",
-  //     endHour: "10:00",
-  //   },
-  // ];
-
-  const [unselected_shifts, setUnselected_shifts] = useState(
-    unselected_shiftsList
-  );
-
-  var shifts_list = assignments[1].shifts_list;
-  // var shifts_list = [
-  //   {
-  //     profession: "Doctor",
-  //     day: "Sunday",
-  //     startHour: "10:00",
-  //     endHour: "17:00",
-  //     idList: [33146],
-  //     color: false,
-  //   },
-  //   {
-  //     profession: "Doctor",
-  //     day: "Sunday",
-  //     startHour: "14:00",
-  //     endHour: "17:00",
-  //     idList: [],
-  //     color: false,
-  //   },
-  //   {
-  //     profession: "Doctor",
-  //     day: "Sunday",
-  //     startHour: "08:00",
-  //     endHour: "15:00",
-  //     idList: [],
-  //     color: false,
-  //   },
-  //   {
-  //     profession: "Doctor",
-  //     day: "Tuesday",
-  //     startHour: "10:00",
-  //     endHour: "18:00",
-  //     idList: [],
-  //     color: false,
-  //   },
-  //   {
-  //     profession: "Doctor",
-  //     day: "Tuesday",
-  //     startHour: "10:00",
-  //     endHour: "19:00",
-  //     idList: [],
-  //     color: false,
-  //   },
-  //   {
-  //     profession: "Doctor",
-  //     day: "Tuesday",
-  //     startHour: "07:00",
-  //     endHour: "08:00",
-  //     idList: [],
-  //     color: false,
-  //   },
-  //   {
-  //     profession: "Doctor",
-  //     day: "Wednesday",
-  //     startHour: "14:00",
-  //     endHour: "16:00",
-  //     idList: [],
-  //     color: false,
-  //   },
-  //   {
-  //     profession: "Doctor",
-  //     day: "Thursday",
-  //     startHour: "13:00",
-  //     endHour: "16:00",
-  //     idList: [],
-  //     color: false,
-  //   },
-  //   {
-  //     profession: "Doctor",
-  //     day: "Thursday",
-  //     startHour: "14:00",
-  //     endHour: "16:00",
-  //     idList: [],
-  //     color: false,
-  //   },
-  //   {
-  //     profession: "Doctor",
-  //     day: "Thursday",
-  //     startHour: "14:00",
-  //     endHour: "17:00",
-  //     idList: [],
-  //     color: false,
-  //   },
-  // ];
-
-  const daysOfWeek = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-
-  shifts_list.sort((a, b) => {
-    const dayIndexA = daysOfWeek.indexOf(a.day);
-    const dayIndexB = daysOfWeek.indexOf(b.day);
-
-    if (a.startHour !== b.startHour) {
-      return a.startHour.localeCompare(b.startHour); // Sort by day index
-    } else {
-      return dayIndexA - dayIndexB; // If day is the same, sort by start hour
-    }
-  });
-
-  let counter = 0;
-  shifts_list.forEach((shift) => {
-    shift.color = color_list[counter++ % color_list.length];
-  });
-
-  const [shifts, setShifts] = useState(shifts_list);
-  const [workers, setWorkers] = useState(workers_map);
-
   return (
     <div className="page-container">
       <div className="top-panel">
-        <div className="table-name">Your Table Name</div>
+        <div className="table-name">{tables_map.get(currentTableID) ? tables_map.get(currentTableID).name : "Empty Table"}</div>
         <div className="buttons">
-          <button
-            className="button"
-            onClick={() => handlePersonalSearchClick()}
-          >
+          <button className="button" onClick={handlePersonalSearchClick}>
             <i className="bi bi-person-circle"></i>&nbsp;&nbsp;&nbsp;Personal
             timetable
           </button>
@@ -246,16 +131,10 @@ const ShiftsPage = (props) => {
           <button className="button">
             <i className="bi bi-download"></i>&nbsp;&nbsp;&nbsp;Download
           </button>
-          <button
-            className="button"
-            onClick={() => handleSave()}
-          >
+          <button className="button" onClick={handleSave}>
             <i className="bi bi-floppy"></i>&nbsp;&nbsp;&nbsp;Save
           </button>
-          <button
-            className="button"
-            onClick={() => handleBack()}
-          >
+          <button className="button" onClick={handleBack}>
             <i className="bi bi-arrow-90deg-left"></i>&nbsp;&nbsp;&nbsp;Back
           </button>
         </div>

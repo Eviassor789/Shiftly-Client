@@ -11,13 +11,13 @@ function SchedulingTile(props) {
 
   const toggleStar = (e) => {
     e.stopPropagation(); // Prevent the click event from propagating to the tile's click event
-    props.onToggleStar(props.name);
+    props.onToggleStar(props.ID); // Pass the ID here
     setIsStarFilled(!isStarFilled);
   };
 
   const handleRemoveTile = (e) => {
     e.stopPropagation(); // Prevent the click event from propagating to the tile's click event
-    props.onRemove(props.name);
+    props.onRemove(props.ID); // Pass the ID here
   };
 
   const navigate = useNavigate();

@@ -38,6 +38,7 @@
     border-bottom: 5px;
     border-color: white;
     border-style: solid;
+    color: white;
 }
 
 .HomeTopBarButton:hover {

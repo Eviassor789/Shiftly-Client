@@ -1,16 +1,47 @@
 import "./Login.css";
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import users from "../Data/Users";
+import User from "../User";
 
+function Login(props) {
 
-function Login() {
   const navigate = useNavigate();
-
-  const handleSignUpClick = () => {
-    // Navigate to the register screen
-    navigate('/register');
-  };
+  props.setLoggedUser("");
   
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleButtonClick = (page) => {
+    navigate(`/${page}`);
+  };
+
+  const handleLogin = () => {
+    if (users.get(username) && users.get(username).password == password) {
+      props.setLoggedUser(username);
+      navigate("/home");
+    } else {
+      setErrorMessage("Invalid username or password");
+    }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleInputChange = (setter) => (event) => {
+    setter(event.target.value);
+    setErrorMessage("");
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter' && !errorMessage && username && password) {
+      handleLogin(event); // Call handleLogin on Enter key press
+    }
+  };
+
   return (
     <>
       <div id="Login_upper_background"></div>
@@ -20,29 +51,97 @@ function Login() {
         </p>
         <div className="input">
           <p className="blue">Username</p>
-          <input id="login_username_input"></input>
+          <input
+            id="login_username_input"
+            value={username}
+            onChange={handleInputChange(setUsername)}
+            onKeyDown={handleKeyDown}
+          />
         </div>
         <div className="input">
           <p className="blue">Password</p>
-          <input id="login_password_input" type="password"></input>
+          <div className="password-container">
+            <input
+              id="login_password_input"
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={handleInputChange(setPassword)}
+              onKeyDown={handleKeyDown}
+            />
+            <button
+              type="button"
+              className="toggle-password"
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? (
+                <>
+                  <svg
+                    aria-labelledby="eyeCrossedIconTitle"
+                    color="#000000"
+                    fill="none"
+                    height="35px"
+                    stroke="#000000"
+                    strokeLinecap="square"
+                    strokeLinejoin="miter"
+                    strokeWidth="1"
+                    viewBox="0 0 24 24"
+                    width="35px"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <title id="eyeCrossedIconTitle" />
+                    <path d="M22 12C22 12 19 18 12 18C5 18 2 12 2 12C2 12 5 6 12 6C19 6 22 12 22 12Z" />
+                    <circle cx="12" cy="12" r="3" />
+                    <path d="M3 21L20 4" />
+                  </svg>
+                </>
+              ) : (
+                <>
+                  <svg
+                    aria-labelledby="eyeIconTitle"
+                    color="#000000"
+                    fill="none"
+                    height="35px"
+                    stroke="#000000"
+                    strokeLinecap="square"
+                    strokeLinejoin="miter"
+                    strokeWidth="1"
+                    viewBox="0 0 24 24"
+                    width="35px"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <title id="eyeIconTitle" />
+                    <path d="M22 12C22 12 19 18 12 18C5 18 2 12 2 12C2 12 5 6 12 6C19 6 22 12 22 12Z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                </>
+              )}
+            </button>
+          </div>
         </div>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
         <div id="wrap_center">
-          <button id="Login_Button" type="button" class="btn btn-primary">
-            Next <i class="bi bi-arrow-right"></i>
+          <button
+            id="Login_Button"
+            type="button"
+            className="btn btn-primary"
+            disabled={!username || !password}
+            onClick={handleLogin}
+          >
+            Next <i className="bi bi-arrow-right"></i>
           </button>
 
           <div
-            class="MuiDivider-root MuiDivider-fullWidth MuiDivider-withChildren mui-style-rtl-1onl4dq"
+            className="MuiDivider-root MuiDivider-fullWidth MuiDivider-withChildren mui-style-rtl-1onl4dq"
             role="separator"
           >
-            <span class="MuiDivider-wrapper mui-style-rtl-c1ovea">or</span>
+            <span className="MuiDivider-wrapper mui-style-rtl-c1ovea">or</span>
           </div>
 
           <div id="social_net_container">
             <div>
-              <button class="btn">
+              <button className="btn">
                 <svg
-                  enable-background="new 0 0 48 48"
+                  enableBackground="new 0 0 48 48"
                   height="30"
                   viewBox="0 0 48 48"
                   width="30"
@@ -65,7 +164,6 @@ function Login() {
                     fill="#1976d2"
                   />
                 </svg>
-
                 <span> continue with Google</span>
               </button>
             </div>
@@ -73,7 +171,13 @@ function Login() {
 
           <div>
             <p>
-            New To Shiftly? <span className="blue" onClick={handleSignUpClick}>Sign Up</span>
+              New To Shiftly?{" "}
+              <span
+                className="blue pointer"
+                onClick={() => handleButtonClick("register")}
+              >
+                Sign Up
+              </span>
             </p>
           </div>
         </div>

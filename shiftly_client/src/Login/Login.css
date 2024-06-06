@@ -1,5 +1,6 @@
 body {
-    background-color: #E8E8E8;}
+    background-color: #E8E8E8;
+}
 
 #Login_upper_background {
     background-color: #193C7D;
@@ -22,27 +23,21 @@ p {
     width: 600px;
     height: 30%;
     overflow: hidden;
-    
     box-shadow: 0 0px 20px rgba(23, 23, 23, 0.598);
-
     background-color: #FFFFFF;
-
     position: relative;
     top: 100px;
     bottom: 0%;
     right: 0%;
     left: 0%;
     margin: auto;
-
     padding: 10px;
     padding-left: 40px;
     padding-right: 40px;
-
     border-color: black;
     border-radius: 13px;
     border-style: solid;
     border-width: 0px;
-
 }
 
 #wrap_center {
@@ -50,17 +45,14 @@ p {
     flex-direction: column;
     align-items: center;
     padding: 10px;
-
 }
 
 #Login_headline {
     margin: 0px;
     padding: 5px;
     top: 0px;
-
     text-align: center;
-    font-size:220%;
-
+    font-size: 220%;
     font-family: 'Inter', sans-serif;
     font-weight: bold;
 }
@@ -72,6 +64,9 @@ p {
 .blue {
     color: #193C7D;
     font-weight: bold;
+}
+
+.pointer {
     cursor: pointer;
 }
 
@@ -95,6 +90,10 @@ input {
     margin-bottom: 8px;
 }
 
+#login_password_input {
+    margin-bottom: 0px;    
+}
+
 .btn-primary {
     background-color: #193C7D;
     color: white;
@@ -110,14 +109,12 @@ input {
 .btn-primary:hover {
     background-color: #1f4da4;
     color: white;
-
 }
 
 .btn-primary:active, .btn-primary:visited {
     background-color: #2557b4 !important;
     color: white;
 }
-
 
 #social_net_container {
     margin: 10px;
@@ -132,6 +129,7 @@ button span {
 }
 
 #social_net_container button {
+    background-color: #fcfcfc;
     border-color: rgb(59, 59, 59);
     border-width: 1px;
     border-style: solid;
@@ -184,4 +182,36 @@ button span {
     -moz-transform: translateY(50%);
     -ms-transform: translateY(50%);
     transform: translateY(50%);
+}
+  
+.error-message {
+    color: red;
+    margin-top: 10px;
+}
+  
+button {
+    margin-top: 5px;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.password-container {
+    position: relative;
+    /* display: inline-block;  */
+}
+
+.password-container input {
+    width: 100%; 
+    z-index: 0;
+    padding-right: 70px; 
+}
+
+.toggle-password {
+    position: absolute;
+    right: 7px; /* Adjust positioning as needed */
+    top: 0px;
+    /* transform: translateY(-20%); */
+    background: none;
+    border: none;
+    cursor: pointer;
 }

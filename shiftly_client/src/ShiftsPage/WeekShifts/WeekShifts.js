@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import Shift from "./Shift/Shift";
 import "./WeekShifts.css";
 import ShiftWindow from "./ShiftWindow/ShiftWindow";

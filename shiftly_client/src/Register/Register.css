@@ -19,31 +19,29 @@ p {
     font-size: medium;
 }
 
+#password_note {
+    color: #0b0b0bb8;
+    margin-left: 4px;
+    font-weight: bold;
+    
+}
+
 #Register_container {
     width: 600px;
     height: 30%;
     overflow: hidden;
-
     background-color: #FFFFFF;
-
     position: relative;
     top: 100px;
     bottom: 0%;
     right: 0%;
     left: 0%;
     margin: auto;
-
     padding: 10px;
     padding-left: 40px;
     padding-right: 40px;
-
-    /* border-color: black; */
     border-radius: 13px;
-    /* border-style: solid; */
-    /* border-width: 4px; */
-
     box-shadow: 0px 0px 20px rgba(23, 23, 23, 0.598);
-
 }
 
 #wrap_center {
@@ -51,23 +49,16 @@ p {
     flex-direction: column;
     align-items: center;
     padding: 10px;
-
 }
 
 #Register_headline {
     margin: 0px;
     padding: 5px;
     top: 0px;
-
     text-align: center;
-    font-size:220%;
-
+    font-size: 220%;
     font-family: 'Inter', sans-serif;
     font-weight: bold;
-}
-
-#Register_headline>span {
-    font-style: italic;
 }
 
 .blue {
@@ -76,9 +67,6 @@ p {
 }
 
 input {
-    display: flex;
-    z-index: 3;
-    position: relative;
     min-height: 44px;
     background: #ffffff;
     border: 1px solid transparent;
@@ -90,6 +78,10 @@ input {
     font-size: large;
     text-indent: 15px;
 }
+
+#Register_verify_input {
+    margin-bottom: 0px;
+} 
 
 .input p {
     margin-bottom: 8px;
@@ -110,7 +102,6 @@ input {
 .btn-primary:hover {
     background-color: #1f4da4;
     color: white;
-
 }
 
 .btn-primary:active, .btn-primary:visited {
@@ -125,4 +116,33 @@ button span {
 
 #Register_Button {
     margin-bottom: 10px;
+}
+
+button {
+    margin-top: 5px;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.password-container {
+    position: relative;
+}
+
+.password-container input {
+    width: 100%; 
+    z-index: 0;
+    padding-right: 40px; /* Adjust padding */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px; /* Adjust positioning as needed */
+    top: 0px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.btn:disabled {
+    background-color: gray;
 }

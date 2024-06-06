@@ -1,27 +1,25 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './UploadScreen.css';
 import ResizableWindow from "./ResizableWindow";
 import UploadFile from "./UploadFile";
 import { useNavigate } from 'react-router-dom';
 
-const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFileUploaded }) => {
+const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFileUploaded, filesList, SetFilesList }) => {
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const handleNext = () => {
 
     if (currentStep === 3) {
       if(fileUploaded[0] === true && fileUploaded[1] === true) {
-        navigate("home")
+        window.location.href = '/page';
       } else {
-        alert("Please upload a the other files.");
+        alert("Please upload first the previous files.");
       }
 
 
     } else {
       setCurrentStep(currentStep + 1);
-      
-      
     }
   };
 
@@ -85,10 +83,12 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
           {renderContent()}
           <UploadFile
             id={"UploadFile_" + currentStep}
-            handleNext={handleNext}
-            fileUploaded={fileUploaded}
-            setFileUploaded={setFileUploaded}
-            currentStep={currentStep}
+            handleNext = {handleNext}
+            fileUploaded = {fileUploaded}
+            setFileUploaded = {setFileUploaded}
+            currentStep = {currentStep}
+            filesList = {filesList}
+            SetFilesList = {SetFilesList}
           />
           <div id="GenerateProgress">
             <div

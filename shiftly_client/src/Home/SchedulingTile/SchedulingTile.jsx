@@ -1,45 +1,48 @@
 import "./SchedulingTile.css";
-import React, { useState, useEffect  } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 
 function SchedulingTile(props) {
-  // State variable to manage the filled/empty state of the star icon
   const [isStarFilled, setIsStarFilled] = useState(props.starred);
 
-    // Use useEffect to sync isStarFilled state with props.starred
-    useEffect(() => {
-      setIsStarFilled(props.starred);
-    }, [props.starred]); // Run effect whenever props.starred changes
+  useEffect(() => {
+    setIsStarFilled(props.starred);
+  }, [props.starred]);
 
-  // Function to toggle the state of the star icon
-  const toggleStar = () => {
-    
-    props.onToggleStar(props.name);
+  const toggleStar = (e) => {
+    e.stopPropagation(); // Prevent the click event from propagating to the tile's click event
+    props.onToggleStar(props.ID); // Pass the ID here
     setIsStarFilled(!isStarFilled);
   };
 
-  const handleRemoveTile = () => {
-    props.onRemove(props.name);
+  const handleRemoveTile = (e) => {
+    e.stopPropagation(); // Prevent the click event from propagating to the tile's click event
+    props.onRemove(props.ID); // Pass the ID here
+  };
+
+  const navigate = useNavigate();
+
+  const handleTileClick = () => {
+    props.setCurrentTableID(props.ID);
+    navigate(`/page`);
   };
 
   return (
-    <>
-      <div id="TileContainer">
-        <img src="/SchedualPic.jpg" alt="Logo" />
-        <span id="NameOfTable">{props.name}</span>
-        <span id="dateOfTable">{props.date}</span>
-        <div className="icons">
-          {/* Conditionally render star icon based on state */}
-          {props.starred ? (
-            <i className="bi bi-star-fill" onClick={toggleStar}></i>
-          ) : (
-            <i className="bi bi-star" onClick={toggleStar}></i>
-          )}
-          <button onClick={handleRemoveTile}>
-            <i className="bi bi-dash-circle"></i>
-          </button>
-        </div>
+    <div id="TileContainer" onClick={handleTileClick}>
+      <img src="/SchedualPic.jpg" alt="Logo" />
+      <span id="NameOfTable">{props.name}</span>
+      <span id="dateOfTable">{props.date}</span>
+      <div className="icons">
+        {isStarFilled ? (
+          <i className="bi bi-star-fill" onClick={toggleStar}></i>
+        ) : (
+          <i className="bi bi-star" onClick={toggleStar}></i>
+        )}
+        <button onClick={handleRemoveTile}>
+          <i className="bi bi-dash-circle"></i>
+        </button>
       </div>
-    </>
+    </div>
   );
 }
 

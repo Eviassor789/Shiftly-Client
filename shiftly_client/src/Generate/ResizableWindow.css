@@ -36,6 +36,7 @@
   
   .content img {
     margin-bottom: 10px;
+    margin-top: 10px;
     height: fit-content;
     width: fit-content;
     max-width: 700px;

@@ -2,6 +2,7 @@ import "./HomeTopBar.css";
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SettingsPopup from "./SettingsPopup";
+import users from "../../Data/Users";
 
 function HomeTopBar(props) {
 
@@ -24,7 +25,7 @@ function HomeTopBar(props) {
       <div id="HomeTopBar">
         <button
           id="HomeButton"
-          onClick={() => handleButtonClick('home')}
+          onClick={() => handleButtonClick("home")}
           className={
             props.page === "home"
               ? "HomeTopBarButton BottomBorder"
@@ -35,7 +36,7 @@ function HomeTopBar(props) {
         </button>
         <button
           id="GenerateButton"
-          onClick={() => handleButtonClick('generate')}
+          onClick={() => handleButtonClick("generate")}
           className={
             props.page === "generate"
               ? "HomeTopBarButton BottomBorder"
@@ -44,9 +45,20 @@ function HomeTopBar(props) {
         >
           Generate
         </button>
-        <button id="UserDetailsBtn" onClick={handleSettingsClick}>U</button>
+        <button
+          id="UserDetailsBtn"
+          onClick={handleSettingsClick}
+          style={{ background: users.get(props.loggedUser) ? users.get(props.loggedUser).color : "gray" }}
+        >
+          {props.loggedUser ? props.loggedUser[0].toUpperCase() : "U"}
+        </button>{" "}
       </div>
-      {isSettingsOpen && <SettingsPopup onClose={() => setIsSettingsOpen(false)} />}
+      {isSettingsOpen && (
+        <SettingsPopup
+          onClose={() => setIsSettingsOpen(false)}
+          loggedUser={props.loggedUser}
+        />
+      )}
     </>
   );
 }

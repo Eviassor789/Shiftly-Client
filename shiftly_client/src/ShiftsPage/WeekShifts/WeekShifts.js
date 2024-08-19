@@ -14,6 +14,7 @@ const WeekShifts = ({
   setWorkers,
   ispersonalSearch,
   inputValue,
+  currentTableID,
 }) => {
   const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
 
@@ -212,6 +213,7 @@ const WeekShifts = ({
               setUnselected_shifts={setUnselected_shifts}
               workers={workers}
               setWorkers={setWorkers}
+              currentTableID={currentTableID}
             />
           </div>
         </>

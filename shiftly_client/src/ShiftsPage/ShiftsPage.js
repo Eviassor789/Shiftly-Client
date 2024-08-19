@@ -191,6 +191,7 @@ const ShiftsPage = (props) => {
             setWorkers={setWorkers}
             ispersonalSearch={ispersonalSearch}
             inputValue={inputValue}
+            currentTableID={currentTableID}
           />
           <AddShiftWindow
             shifts={shifts}
@@ -202,6 +203,7 @@ const ShiftsPage = (props) => {
             setWorkers={setWorkers}
             ispersonalSearch={ispersonalSearch}
             inputValue={inputValue}
+            currentTableID={currentTableID}
           />
         </div>
       </div>

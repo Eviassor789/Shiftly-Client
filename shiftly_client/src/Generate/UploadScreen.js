@@ -4,15 +4,23 @@ import ResizableWindow from "./ResizableWindow";
 import UploadFile from "./UploadFile";
 import { useNavigate } from 'react-router-dom';
 
-const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFileUploaded, filesList, SetFilesList }) => {
+const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFileUploaded, filesList, SetFilesList, rowsList, SetRowsList}) => {
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
+
 
   const handleNext = () => {
 
     if (currentStep === 3) {
       if(fileUploaded[0] === true && fileUploaded[1] === true) {
-        window.location.href = '/page';
+        navigate(`/page`);
+        console.log("filesList uploaded succesfully:");
+        for (let index = 0; index < filesList.length; index++) {
+          const file = filesList[index];
+          console.log("name: ", file.name);
+          console.log("parsed rows: ", rowsList[index]);
+          
+        }
       } else {
         alert("Please upload first the previous files.");
       }
@@ -89,6 +97,8 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
             currentStep = {currentStep}
             filesList = {filesList}
             SetFilesList = {SetFilesList}
+            rowsList = {rowsList}
+            SetRowsList = {SetRowsList}
           />
           <div id="GenerateProgress">
             <div

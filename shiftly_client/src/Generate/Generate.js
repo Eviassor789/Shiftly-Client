@@ -9,6 +9,9 @@ import { useNavigate } from "react-router-dom";
 function Generate(props) {
   const [currentStep, setCurrentStep] = useState(1);
   const [filesList, SetFilesList] = useState([]);
+  const [parsedRows, SetParsedRows] = useState([]);
+  const [rowsList, SetRowsList] = useState([[], [], []]);
+
 
 
   const [fileUploaded, setFileUploaded] = useState([false, false, false]);
@@ -41,6 +44,10 @@ function Generate(props) {
             setFileUploaded={setFileUploaded}
             filesList = {filesList}
             SetFilesList = {SetFilesList}
+            parsedRows = {parsedRows}
+            SetParsedRows = {SetParsedRows}
+            rowsList = {rowsList}
+            SetRowsList = {SetRowsList}
           />
         ))}
       </div>

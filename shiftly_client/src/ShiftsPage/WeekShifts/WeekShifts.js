@@ -53,6 +53,23 @@ const WeekShifts = ({
     hours.push(`${i.toString().padStart(2, "0")}:00`);
   }
 
+  function getMaxDayOverlaps(currentShift) {
+    let max = 0;
+
+    var dayShift = shifts.filter(
+      (shift) => ((shift.profession === profession) && (shift.day === currentShift.day))
+    );
+
+    for (let i = 0; i < dayShift.length; i++){
+      let temp = getMaxOverlaps(dayShift, dayShift[i]);
+      if (temp > max){
+        max = temp;
+      }
+    }
+
+    return max
+  }
+
   function getMaxOverlaps(shifts, currentShift) {
     let maxOverlaps = 0;
 
@@ -81,10 +98,10 @@ const WeekShifts = ({
 
     // Check if the shifts overlap in time
     return (
-      ((start1 >= start2 && start1 <= end2) ||
-        (end1 >= start2 && end1 <= end2) ||
-        (start2 >= start1 && start2 <= end1) ||
-        (end2 >= start1 && end2 <= end1)) &&
+      ((start2 < start1 && start1 < end2) ||
+        (start2 < end1 && end1 < end2) ||
+        (start1 < start2 && start2 < end1) ||
+        (start1 < end2 && end2 < end1)) &&
       shift1.day === shift2.day
     );
   }
@@ -178,7 +195,7 @@ const WeekShifts = ({
                               startHour={shift.startHour}
                               endHour={shift.endHour}
                               idList={shift.idList}
-                              overlapNum={getMaxOverlaps(shifts, shift)}
+                              overlapNum={getMaxDayOverlaps(shift)}
                               place={getMaxOverlaps(placed_shifted, shift)}
                               color={
                                 shift.color

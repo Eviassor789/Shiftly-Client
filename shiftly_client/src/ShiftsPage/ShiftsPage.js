@@ -29,19 +29,23 @@ const ShiftsPage = (props) => {
       navigate(`/`);
       return;
     }
-    
-    let currentAssignmentID;
-    if (tables_map && tables_map.get(currentTableID)) {
-      currentAssignmentID = tables_map.get(currentTableID).assignment;
 
-      if (currentAssignmentID && assignments.get(currentAssignmentID)) {
-        const assignmentData = assignments.get(currentAssignmentID);
-        console.log("Assignment Data:", assignmentData);
+    const currTable = tables_map.get(currentTableID)
+    console.log("currTable: ", currTable);
+    if (tables_map && currTable) {
+      const currentAssignment = currTable.assignment;
+      console.log("currentAssignment: ", currTable.assignment);
 
-        setProfessions(assignmentData.professions || []);
-        setUnselected_shifts(assignmentData.unselected_shiftsList || []);
+      if (currentAssignment) {
+
+        setProfessions(currTable.professions || []);
+
+        const all_shifts = currTable.shifts
+        console.log("all_shifts: ", all_shifts);
+        const currentAssignmentKeys = new Set(Object.keys(currentAssignment).map(Number));
+        setUnselected_shifts(all_shifts.filter(shift => !currentAssignmentKeys.has(shift.ID)) || []);
         
-        const sortedShiftsList = assignmentData.shifts_list || [];
+        const sortedShiftsList = all_shifts.filter(shift => currentAssignmentKeys.has(shift.ID)) || [];
         const daysOfWeek = [
           "Sunday",
           "Monday",

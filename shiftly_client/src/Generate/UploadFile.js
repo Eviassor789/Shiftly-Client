@@ -14,7 +14,7 @@ const UploadFile = (props) => {
   const [fileName, setFileName] = useState("");
   const [render, setRender] = useState(false);
   const fileInputRef = useRef(null);
-
+  
   let my_array = [false, false, false];
   let files = [];
   let currentStep = props.currentStep;
@@ -64,6 +64,7 @@ const UploadFile = (props) => {
   // };
 
   // Function to parse CSV data using Papa Parse
+  
   const parseCSVData = (data) => {
     return new Promise((resolve, reject) => {
       Papa.parse(data, {
@@ -399,12 +400,18 @@ const UploadFile = (props) => {
               my_array[props.currentStep - 1] = true;
               props.filesList[props.currentStep - 1] = file;
               props.setFileUploaded(my_array);
+
+              props.rowsList[props.currentStep - 1] = rows;
+
               files = [];
             } else {
               // Update the flag to indicate that a file has been uploaded
               my_array = props.fileUploaded;
               my_array[props.currentStep - 1] = false;
               props.filesList[props.currentStep - 1] = null;
+
+              props.rowsList[props.currentStep - 1] = [];
+
               props.setFileUploaded(my_array);
             }
             console.log("Parsed rows:", rows);
@@ -428,11 +435,17 @@ const UploadFile = (props) => {
               my_array[props.currentStep - 1] = true;
               props.filesList[props.currentStep - 1] = file;
               props.setFileUploaded(my_array);
+
+              props.rowsList[props.currentStep - 1] = rows;
+
               files = [];
             } else {
               my_array = props.fileUploaded;
               my_array[props.currentStep - 1] = false;
               props.filesList[props.currentStep - 1] = null;
+
+              props.rowsList[props.currentStep - 1] = [];
+
               props.setFileUploaded(my_array);
             }
           } catch (error) {
@@ -444,12 +457,17 @@ const UploadFile = (props) => {
         my_array = props.fileUploaded;
         my_array[props.currentStep - 1] = false;
         props.setFileUploaded(my_array);
+
+        props.rowsList[props.currentStep - 1] = [];
+
         files = [];
         alert("Please upload a CSV or Excel file.");
       }
       setRender(!render);
       console.log("Parsed rows:", rows);
-  
+      
+      console.log("SetParsedRows:", props.rowsList);
+
       console.log("files list: ");
       props.filesList.forEach((file) => {
         if(file) {

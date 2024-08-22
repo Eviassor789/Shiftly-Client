@@ -12,6 +12,7 @@ const AddShiftWindow = ({
   ispersonalSearch,
   inputValue,
   currentTableID,
+  handleProfessionClick
 }) => {
   const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
 
@@ -29,6 +30,9 @@ const AddShiftWindow = ({
     // Update the state with the new shifts and other_shifts arrays
     setShifts(updatedShifts);
     setUnselected_shifts(updatedUnselectedShifts);
+
+    handleProfessionClick("@"+profession)
+
   };
 
   function getRelevantUnselectedShifts() {

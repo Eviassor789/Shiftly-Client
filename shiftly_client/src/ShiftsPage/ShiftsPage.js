@@ -17,6 +17,7 @@ const ShiftsPage = (props) => {
   const [unselected_shifts, setUnselected_shifts] = useState([]);
   const [shifts, setShifts] = useState([]);
   const [workers, setWorkers] = useState(workers_map);
+  const [render, setRender] = useState(false);
 
   const loggedUser = props.loggedUser;
   const currentTableID = props.currentTableID;
@@ -29,6 +30,8 @@ const ShiftsPage = (props) => {
       navigate(`/`);
       return;
     }
+
+
 
     const currTable = tables_map.get(currentTableID)
     console.log("currTable: ", currTable);
@@ -46,6 +49,36 @@ const ShiftsPage = (props) => {
         setUnselected_shifts(all_shifts.filter(shift => !currentAssignmentKeys.has(shift.ID)) || []);
         
         const sortedShiftsList = all_shifts.filter(shift => currentAssignmentKeys.has(shift.ID)) || [];
+
+        // Iterate over each shift in all_shifts
+        sortedShiftsList.forEach(shift => {
+          if (currentAssignment[shift.ID]) {
+            shift.idList = currentAssignment[shift.ID];
+
+            // shift.idList.forEach((id) => {
+            //   workers_map[id].shifts = [
+            //     ...workers_map[id].shifts,
+            //     {
+            //       profession: shift.profession,
+            //       day: shift.day,
+            //       startHour: shift.startHour,
+            //       endHour: shift.endHour,
+            //     },
+            //   ];
+            // })
+
+
+
+
+          } else {
+            shift.idList = [];
+          }
+        });
+
+        //   console.log("workers_map: ", workers_map)
+
+
+      
         const daysOfWeek = [
           "Sunday",
           "Monday",
@@ -75,10 +108,24 @@ const ShiftsPage = (props) => {
 
         setShifts(sortedShiftsList);
       }
+
+     
     }
+ 
   }, [loggedUser, currentTableID, navigate]);
 
+  
+
   const handleProfessionClick = (profession) => {
+    setSelectedProfession(profession);
+    setPersonalSearch(false);
+  };
+
+  function render_fun(){
+    setRender(!render);
+  }
+
+  function handleProfessionClickGIMIC(profession){
     setSelectedProfession(profession);
     setPersonalSearch(false);
   };
@@ -125,7 +172,7 @@ const ShiftsPage = (props) => {
       <div className="top-panel">
         <div className="table-name">{tables_map.get(currentTableID) ? tables_map.get(currentTableID).name : "Empty Table"}</div>
         <div className="buttons">
-          <button className="button" onClick={handlePersonalSearchClick}>
+          <button id="PersonalSearch" className="button" onClick={handlePersonalSearchClick}>
             <i className="bi bi-person-circle"></i>&nbsp;&nbsp;&nbsp;Personal
             timetable
           </button>
@@ -196,6 +243,12 @@ const ShiftsPage = (props) => {
             ispersonalSearch={ispersonalSearch}
             inputValue={inputValue}
             currentTableID={currentTableID}
+            setPersonalSearch={setPersonalSearch}
+            handleProfessionClick={handleProfessionClickGIMIC}
+            render_fun={render_fun}
+            selectedProfession={selectedProfession}
+            setSelectedProfession={setSelectedProfession}
+
           />
           <AddShiftWindow
             shifts={shifts}
@@ -208,6 +261,8 @@ const ShiftsPage = (props) => {
             ispersonalSearch={ispersonalSearch}
             inputValue={inputValue}
             currentTableID={currentTableID}
+            handleProfessionClick={handleProfessionClickGIMIC}
+
           />
         </div>
       </div>

@@ -38,12 +38,10 @@ function Home(props) {
         console.log('Token verification successful:', data);
         // loggedUser = data.current_user;
         setLoggedUser(data.current_user);
-        console.log("loggedUser123: ", data.current_user);
         
   
         if (users.get(data.current_user)) {
           const userTablesArr = users.get(data.current_user).tablesArr;
-          console.log('User tablesArr:', userTablesArr);
           const userTiles = new Map();
           userTablesArr.forEach((tableId) => {
             if (tables_map.get(tableId)) {

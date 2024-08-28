@@ -7,7 +7,8 @@ import User from "../User";
 function Login(props) {
 
   const navigate = useNavigate();
-  props.setLoggedUser("");
+  localStorage.setItem('jwtToken', "");
+
   
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

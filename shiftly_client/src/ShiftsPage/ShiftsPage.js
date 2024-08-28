@@ -18,67 +18,70 @@ const ShiftsPage = (props) => {
   const [shifts, setShifts] = useState([]);
   const [workers, setWorkers] = useState(workers_map);
   const [render, setRender] = useState(false);
+  const [loggedUser, setLoggedUser] = useState("");
 
-  const loggedUser = props.loggedUser;
   const currentTableID = props.currentTableID;
   const setCurrentTableID = props.setCurrentTableID;
 
   const navigate = useNavigate();
+  const token = localStorage.getItem("jwtToken");
 
   useEffect(() => {
-    if (!users.get(loggedUser)) {
-      navigate(`/`);
-      return;
+    const verifyToken = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/protected", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Token verification failed");
+        }
+
+        const data = await response.json();
+        console.log("Token verification successful:", data);
+        setLoggedUser(data.current_user);
+      } catch (error) {
+        console.error("Error:", error);
+        navigate("/");
+      }
+    };
+
+    if (token) {
+      verifyToken();
+    } else {
+      navigate("/");
     }
+  }, [token, navigate]);
 
+  useEffect(() => {
 
-
-    const currTable = tables_map.get(currentTableID)
+    const currTable = tables_map.get(currentTableID);
     console.log("currTable: ", currTable);
     if (tables_map && currTable) {
       const currentAssignment = currTable.assignment;
       console.log("currentAssignment: ", currTable.assignment);
 
       if (currentAssignment) {
-
         setProfessions(currTable.professions || []);
 
-        const all_shifts = currTable.shifts
+        const all_shifts = currTable.shifts;
         console.log("all_shifts: ", all_shifts);
         const currentAssignmentKeys = new Set(Object.keys(currentAssignment).map(Number));
         setUnselected_shifts(all_shifts.filter(shift => !currentAssignmentKeys.has(shift.ID)) || []);
         
         const sortedShiftsList = all_shifts.filter(shift => currentAssignmentKeys.has(shift.ID)) || [];
 
-        // Iterate over each shift in all_shifts
         sortedShiftsList.forEach(shift => {
           if (currentAssignment[shift.ID]) {
             shift.idList = currentAssignment[shift.ID];
-
-            // shift.idList.forEach((id) => {
-            //   workers_map[id].shifts = [
-            //     ...workers_map[id].shifts,
-            //     {
-            //       profession: shift.profession,
-            //       day: shift.day,
-            //       startHour: shift.startHour,
-            //       endHour: shift.endHour,
-            //     },
-            //   ];
-            // })
-
-
-
-
           } else {
             shift.idList = [];
           }
         });
 
-        //   console.log("workers_map: ", workers_map)
-
-
-      
         const daysOfWeek = [
           "Sunday",
           "Monday",
@@ -94,9 +97,9 @@ const ShiftsPage = (props) => {
           const dayIndexB = daysOfWeek.indexOf(b.day);
 
           if (a.startHour !== b.startHour) {
-            return a.startHour.localeCompare(b.startHour); // Sort by day index
+            return a.startHour.localeCompare(b.startHour);
           } else {
-            return dayIndexA - dayIndexB; // If day is the same, sort by start hour
+            return dayIndexA - dayIndexB;
           }
         });
 
@@ -108,24 +111,19 @@ const ShiftsPage = (props) => {
 
         setShifts(sortedShiftsList);
       }
-
-     
     }
- 
   }, [loggedUser, currentTableID, navigate]);
-
-  
 
   const handleProfessionClick = (profession) => {
     setSelectedProfession(profession);
     setPersonalSearch(false);
   };
 
-  function render_fun(){
+  function render_fun() {
     setRender(!render);
   }
 
-  function handleProfessionClickGIMIC(profession){
+  function handleProfessionClickGIMIC(profession) {
     setSelectedProfession(profession);
     setPersonalSearch(false);
   };
@@ -170,7 +168,9 @@ const ShiftsPage = (props) => {
   return (
     <div className="page-container">
       <div className="top-panel">
-        <div className="table-name">{tables_map.get(currentTableID) ? tables_map.get(currentTableID).name : "Empty Table"}</div>
+        <div className="table-name">
+          {tables_map.get(currentTableID) ? tables_map.get(currentTableID).name : "Empty Table"}
+        </div>
         <div className="buttons">
           <button id="PersonalSearch" className="button" onClick={handlePersonalSearchClick}>
             <i className="bi bi-person-circle"></i>&nbsp;&nbsp;&nbsp;Personal
@@ -248,7 +248,6 @@ const ShiftsPage = (props) => {
             render_fun={render_fun}
             selectedProfession={selectedProfession}
             setSelectedProfession={setSelectedProfession}
-
           />
           <AddShiftWindow
             shifts={shifts}
@@ -262,7 +261,6 @@ const ShiftsPage = (props) => {
             inputValue={inputValue}
             currentTableID={currentTableID}
             handleProfessionClick={handleProfessionClickGIMIC}
-
           />
         </div>
       </div>

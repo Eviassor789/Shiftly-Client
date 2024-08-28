@@ -18,14 +18,47 @@ function Login(props) {
     navigate(`/${page}`);
   };
 
-  const handleLogin = () => {
-    if (users.get(username) && users.get(username).password == password) {
-      props.setLoggedUser(username);
-      navigate("/home");
-    } else {
-      setErrorMessage("Invalid username or password");
+  // const handleLogin = () => {
+  //   if (users.get(username) && users.get(username).password == password) {
+  //     props.setLoggedUser(username);
+  //     navigate("/home");
+  //   } else {
+  //     setErrorMessage("Invalid username or password");
+  //   }
+  // };
+
+  async function handleLogin() {
+    try {
+        const response = await fetch('http://localhost:5000/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Login failed');
+        }
+
+        const data = await response.json();
+        const { access_token } = data;
+
+        // Store the token in localStorage or sessionStorage
+        localStorage.setItem('jwtToken', access_token);
+        localStorage.setItem('loggedUser', username);
+
+        console.log('Login successful');
+        navigate("/home");
+
+    } catch (error) {
+        console.error('Error:', error);
+        setErrorMessage("Invalid username or password");
     }
-  };
+}
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);

@@ -10,6 +10,8 @@ function HomeTopBar(props) {
 
   const navigate = useNavigate();
 
+  console.log("props.loggedUser-" + props.loggedUser);
+
   const handleButtonClick = (page) => {
     // You can add additional logic or conditions here if needed
     // For now, just navigate to the specified page

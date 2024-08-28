@@ -12,25 +12,64 @@ function Home(props) {
   const [showStarredOnly, setShowStarredOnly] = useState(false);
   const [tiles, setTiles] = useState([]);
   const [filteredTiles, setFilteredTiles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [userLoading, setUserLoading] = useState(true); // New state for user data loading
+  const [loggedUser, setLoggedUser] = useState("");
+
   const navigate = useNavigate();
 
-  const loggedUser = props.loggedUser;
+  const token = localStorage.getItem('jwtToken');
 
   useEffect(() => {
-    if (!users.get(loggedUser)) {
-      navigate(`/`);
-      return;
-    }
-
-    const userTablesArr = users.get(loggedUser).tablesArr;
-    const userTiles = new Map();
-    userTablesArr.forEach((tableId) => {
-      if (tables_map.get(tableId)) {
-        userTiles.set(tableId, tables_map.get(tableId));
+    const verifyToken = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/protected', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+  
+        if (!response.ok) {
+          throw new Error('Token verification failed');
+        }
+  
+        const data = await response.json();
+        console.log('Token verification successful:', data);
+        // loggedUser = data.current_user;
+        setLoggedUser(data.current_user);
+        console.log("loggedUser123: ", data.current_user);
+        
+  
+        if (users.get(data.current_user)) {
+          const userTablesArr = users.get(data.current_user).tablesArr;
+          console.log('User tablesArr:', userTablesArr);
+          const userTiles = new Map();
+          userTablesArr.forEach((tableId) => {
+            if (tables_map.get(tableId)) {
+              userTiles.set(tableId, tables_map.get(tableId));
+            }
+          });
+          // console.log('userTiles: ', userTiles);
+          setTiles(Array.from(userTiles.values()));  // Update tiles state
+        } else {
+          console.log('User data not found in local state');
+          navigate('/');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        navigate('/');
+      } finally {
+        setLoading(false);  // Ensure loading is set to false in both success and failure cases
       }
-    });
-    setTiles(Array.from(userTiles.values()));
-  }, [loggedUser, navigate]);
+    };
+  
+    if (token) {
+      verifyToken();
+    } else {
+      navigate('/');
+    }
+  }, [token, navigate]);
 
   useEffect(() => {
     const sortedTilesArray = tiles
@@ -46,7 +85,8 @@ function Home(props) {
     );
 
     setFilteredTiles(filteredTilesArray);
-  }, [tiles, filterValue, sortOrder, showStarredOnly]);
+    setLoading(false); // Indicate that loading is complete
+  }, [tiles, filterValue, sortOrder, showStarredOnly, userLoading]);
 
   const handleToggleSort = () => {
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
@@ -78,10 +118,15 @@ function Home(props) {
     navigate(`/detail/${tileId}`);
   };
 
+  if (loading) {
+    return <p>Loading...</p>;  // Show a loading message while data is being fetched
+  }
+  
   return (
     <>
-      <HomeTopBar page="home" loggedUser={props.loggedUser} />
+      <HomeTopBar page="home" loggedUser={loggedUser} />
       <div className="CenterDiv">
+        {/* Render content after data is fetched */}
         <div id="welcomeBox" className="HomeBoxes">
           <p id="welcomeMessage">
             Hi, User! Welcome back to <span>Shiftly</span>.
@@ -92,17 +137,7 @@ function Home(props) {
           </p>
         </div>
         <div id="HomeMainBox" className="HomeBoxes">
-          <div className="input-icons">
-            <i className="bi bi-search icon"></i>
-            <input
-              id="History_input"
-              className="input-field"
-              placeholder="Search Table"
-              value={filterValue}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div id="HistoryListContainer"></div>
+          {/* Other components */}
           <div className="sort-buttons">
             <button onClick={handleToggleSort}>
               {sortOrder === "asc"
@@ -117,7 +152,7 @@ function Home(props) {
             filteredTiles.map((tile) => (
               <SchedulingTile
                 key={tile.ID}
-                ID={tile.ID}  // Pass the ID prop here
+                ID={tile.ID}
                 name={tile.name}
                 date={tile.date}
                 starred={tile.starred}

@@ -2,8 +2,6 @@ import "./Home.css";
 import HomeTopBar from "./HomeTopBar/HomeTopBar";
 import SchedulingTile from "./SchedulingTile/SchedulingTile.jsx";
 import React, { useEffect, useState } from "react";
-import tables_map from "../Data/TableArchive.js";
-import users from "../Data/Users.js";
 import { useNavigate } from "react-router-dom";
 
 function Home(props) {
@@ -36,24 +34,23 @@ function Home(props) {
   
         const data = await response.json();
         console.log('Token verification successful:', data);
-        // loggedUser = data.current_user;
         setLoggedUser(data.current_user);
-        
   
-        if (users.get(data.current_user)) {
-          const userTablesArr = users.get(data.current_user).tablesArr;
-          const userTiles = new Map();
-          userTablesArr.forEach((tableId) => {
-            if (tables_map.get(tableId)) {
-              userTiles.set(tableId, tables_map.get(tableId));
-            }
-          });
-          // console.log('userTiles: ', userTiles);
-          setTiles(Array.from(userTiles.values()));  // Update tiles state
-        } else {
-          console.log('User data not found in local state');
-          navigate('/');
+        // Fetch user-specific tables
+        const tablesResponse = await fetch('http://localhost:5000/user_tables', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (!tablesResponse.ok) {
+          throw new Error('Failed to fetch tables');
         }
+  
+        const tablesData = await tablesResponse.json();
+        console.log('User tables data:', tablesData);
+        setTiles(tablesData);
       } catch (error) {
         console.error('Error:', error);
         navigate('/');
@@ -100,7 +97,6 @@ function Home(props) {
         tile.ID === idToToggle ? { ...tile, starred: !tile.starred } : tile
       )
     );
-    tables_map.get(idToToggle).starred = !tables_map.get(idToToggle).starred;
   };
 
   const handleInputChange = (event) => {
@@ -109,7 +105,6 @@ function Home(props) {
 
   const removeTile = (idToRemove) => {
     setTiles((prevTiles) => prevTiles.filter((tile) => tile.ID !== idToRemove));
-    tables_map.delete(idToRemove);
   };
 
   const navigateToDetailPage = (tileId) => {
@@ -127,7 +122,7 @@ function Home(props) {
         {/* Render content after data is fetched */}
         <div id="welcomeBox" className="HomeBoxes">
           <p id="welcomeMessage">
-            Hi, User! Welcome back to <span>Shiftly</span>.
+            Hi, {loggedUser}! Welcome back to <span>Shiftly</span>.
           </p>
           <p>
             Tip: In the Settings you can change your preferences which can lead

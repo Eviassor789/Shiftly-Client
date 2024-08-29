@@ -8,11 +8,43 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
 
   const navigate = useNavigate();
 
+  // Example usage:
+  const tableData = {
+    name: "week 80",
+    date: "01/01/2024",
+    starred: true,
+    professions: ["Doctor", "Teacher"],
+    shifts: [
+        {
+            profession: "Doctor",
+            day: "Sunday",
+            startHour: "08:00",
+            endHour: "13:00",
+            cost: 50,
+            idList: [],
+            color: false
+        },
+        {
+            profession: "Teacher",
+            day: "Sunday",
+            startHour: "08:00",
+            endHour: "10:00",
+            cost: 50,
+            idList: [],
+            color: false
+        }
+    ],
+    assignment: { "1": [1, 10, 11, 2], "7": [1, 4, 9] }
+  };
 
   const handleNext = () => {
 
     if (currentStep === 3) {
       if(fileUploaded[0] === true && fileUploaded[1] === true) {
+        // Assuming you have a valid JWT token stored in `jwtToken`
+        const jwtToken = localStorage.getItem('jwtToken');
+        addTableForUser(jwtToken, tableData);
+        
         navigate(`/page`);
         console.log("filesList uploaded succesfully:");
         for (let index = 0; index < filesList.length; index++) {
@@ -83,6 +115,113 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
         return null;
     }
   };
+
+
+
+  // Function to add a table for a user
+  async function addTableForUser(token, tableData) {
+    try {
+        // Send the table data to the server
+        const response = await fetch('http://localhost:5000/add_table', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` // Include JWT token in the request headers
+            },
+            body: JSON.stringify(tableData) // Convert tableData to JSON string
+        });
+
+        const result = await response.json();
+        console.log("1");
+
+        if (response.ok) {
+            console.log("Table and shifts added successfully:", result);
+            console.log("2");
+
+            // Update the user's tablesArr with the new table ID
+            await updateUserTablesArray(token, tableData.name);
+        } else {
+            console.error("Failed to add table:", result.msg);
+            console.log("3");
+        }
+    } catch (error) {
+        console.error("Error while adding table:", error);
+        console.log("4");
+    }
+  }
+
+  // Function to update the user's tablesArr
+  async function updateUserTablesArray(token, tableName) {
+    try {
+        // Fetch the user data
+        const userResponse = await fetch('http://localhost:5000/protected', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        const userData = await userResponse.json();
+        console.log("5");
+
+
+        if (userResponse.ok) {
+            const username = userData.current_user;
+            console.log("6");
+
+
+            // Fetch the user's current data from the server
+            const userDetailsResponse = await fetch(`http://localhost:5000/get_user_data`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ username })
+            });
+
+            const userDetails = await userDetailsResponse.json();
+            console.log("7");
+
+
+            if (userDetailsResponse.ok) {
+                const updatedTablesArr = [...userDetails.tablesArr, tableName];
+                console.log("8");
+
+
+                // Update the user's tablesArr
+                const updateResponse = await fetch(`http://localhost:5000/update_user_tables`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ username, tablesArr: updatedTablesArr })
+                });
+
+                const updateResult = await updateResponse.json();
+
+                if (updateResponse.ok) {
+                    console.log("User's tablesArr updated successfully:", updateResult);
+                } else {
+                    console.error("Failed to update user's tablesArr:", updateResult.msg);
+                }
+            } else {
+                console.error("Failed to fetch user details:", userDetails.msg);
+            }
+        } else {
+            console.error("Failed to fetch user data:", userData.msg);
+        }
+    } catch (error) {
+        console.error("Error while updating user's tablesArr:", error);
+    }
+}
+
+
+
+
+
+
 
   return (
     <>

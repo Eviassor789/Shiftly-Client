@@ -94,7 +94,7 @@ function Home(props) {
   const toggleStarred = (idToToggle) => {
     setTiles((prevTiles) =>
       prevTiles.map((tile) =>
-        tile.ID === idToToggle ? { ...tile, starred: !tile.starred } : tile
+        tile.id === idToToggle ? { ...tile, starred: !tile.starred } : tile
       )
     );
   };
@@ -104,7 +104,7 @@ function Home(props) {
   };
 
   const removeTile = (idToRemove) => {
-    setTiles((prevTiles) => prevTiles.filter((tile) => tile.ID !== idToRemove));
+    setTiles((prevTiles) => prevTiles.filter((tile) => tile.id !== idToRemove));
   };
 
   const navigateToDetailPage = (tileId) => {
@@ -144,16 +144,16 @@ function Home(props) {
           {filteredTiles.length > 0 ? (
             filteredTiles.map((tile) => (
               <SchedulingTile
-                key={tile.ID}
-                ID={tile.ID}
+                key={tile.id}
+                ID={tile.id}
                 name={tile.name}
                 date={tile.date}
                 starred={tile.starred}
                 currentTableID={props.currentTableID}
                 setCurrentTableID={props.setCurrentTableID}
-                onRemove={() => removeTile(tile.ID)}
-                onToggleStar={() => toggleStarred(tile.ID)}
-                onNavigate={() => navigateToDetailPage(tile.ID)}
+                onRemove={() => removeTile(tile.id)}
+                onToggleStar={() => toggleStarred(tile.id)}
+                onNavigate={() => navigateToDetailPage(tile.id)}
               />
             ))
           ) : (

@@ -12,7 +12,9 @@ const AddShiftWindow = ({
   ispersonalSearch,
   inputValue,
   currentTableID,
-  handleProfessionClick
+  handleProfessionClick,
+  currentTable,
+  setCurrentTable,
 }) => {
   const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
 
@@ -31,8 +33,7 @@ const AddShiftWindow = ({
     setShifts(updatedShifts);
     setUnselected_shifts(updatedUnselectedShifts);
 
-    handleProfessionClick("@"+profession)
-
+    handleProfessionClick("@" + profession);
   };
 
   function getRelevantUnselectedShifts() {

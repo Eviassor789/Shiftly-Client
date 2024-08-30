@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Shift from "./Shift/Shift";
 import "./WeekShifts.css";
 import ShiftWindow from "./ShiftWindow/ShiftWindow";
@@ -20,7 +20,11 @@ const WeekShifts = ({
   render_fun,
   selectedProfession,
   setSelectedProfession,
+  currentTable,
+  setCurrentTable
 }) => {
+
+
   const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
   let last = 0;
   let modulo = 0;
@@ -122,17 +126,19 @@ const WeekShifts = ({
     } while (currOverlaps > maxOverlaps);
 
 
-    if(maxOverlaps != 1 && state == 2){
-      if (maxOverlaps == last){
-        modulo = modulo%last +1;
-        return modulo;
-      }else{
-        if(maxOverlaps > last)
-        {last = maxOverlaps;}
-        // if(maxOverlaps < last)
-        //   {last = 0;}
-      }
-    }
+    //i really dont know if it is better or not...:
+
+    // if(maxOverlaps != 1 && state == 2){
+    //   if (maxOverlaps == last){
+    //     modulo = modulo%last +1;
+    //     return modulo;
+    //   }else{
+    //     if(maxOverlaps > last)
+    //     {last = maxOverlaps;}
+    //     // if(maxOverlaps < last)
+    //     //   {last = 0;}
+    //   }
+    // }
 
     return maxOverlaps;
 
@@ -170,7 +176,9 @@ const WeekShifts = ({
       ((start2 < start1 && start1 < end2) ||
         (start2 < end1 && end1 < end2) ||
         (start1 < start2 && start2 < end1) ||
-        (start1 < end2 && end2 < end1)) &&
+        (start1 < end2 && end2 < end1) 
+        // || (start2 == start1 && end1 == end2)
+      ) &&
       shift1.day === shift2.day
     );
   }
@@ -232,7 +240,7 @@ const WeekShifts = ({
                     (s) =>
                       s.day === day &&
                       hour === s.startHour &&
-                      s.idList.some((id) => workers_map[id].name === inputValue)
+                      s.idList.some((id) => workers[id].name === inputValue)
                   );
                 } else {
                   relevantShifts = shifts.filter(
@@ -244,8 +252,8 @@ const WeekShifts = ({
 
                   relevantShifts.forEach((shift) => {
                     shift.idList.forEach((id) => {
-                      workers_map[id].shifts = [
-                        ...workers_map[id].shifts,
+                      workers[id].shifts = [
+                        ...workers[id].shifts,
                         {
                           profession: shift.profession,
                           day: shift.day,

@@ -4,6 +4,7 @@ import tables_map from "../../../Data/TableArchive";
 import workers_map from "../../../Data/Workers";
 import assignments from "../../../Data/Assignments";
 import Assignment from "../../../Assignment";
+import requirements from "../../../Data/Requirements";
 
 const ShiftWindow = ({
   requiredWorkers,
@@ -116,6 +117,10 @@ const ShiftWindow = ({
     setCurrIdList(updatedWorkersList);
     setpotencialIdWorkersList(updatedPotencialWorkersList);
     updateShifts(updatedWorkersList);
+
+    const existingTable = tables_map.get(currentTableID);
+
+    
     workers_map[id].shifts = [
       ...workers_map[id].shifts,
       {

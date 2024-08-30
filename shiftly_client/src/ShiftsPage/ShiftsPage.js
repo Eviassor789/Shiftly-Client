@@ -3,10 +3,12 @@ import WeekShifts from "./WeekShifts/WeekShifts";
 import "./ShiftsPage.css";
 import AddShiftWindow from "./AddShiftWindow/AddShiftWindow";
 import workers_map from "../Data/Workers";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import users from "../Data/Users";
 import tables_map from "../Data/TableArchive";
 import assignments from "../Data/Assignments";
+import requirements from "../Data/Requirements";
+import ScheduleEvaluator from "../ScheduleEvaluator";
 
 const ShiftsPage = (props) => {
   const [selectedProfession, setSelectedProfession] = useState(null);
@@ -16,12 +18,29 @@ const ShiftsPage = (props) => {
   const [professions, setProfessions] = useState([]);
   const [unselected_shifts, setUnselected_shifts] = useState([]);
   const [shifts, setShifts] = useState([]);
-  const [workers, setWorkers] = useState(workers_map);
   const [render, setRender] = useState(false);
 
   const loggedUser = props.loggedUser;
   const currentTableID = props.currentTableID;
   const setCurrentTableID = props.setCurrentTableID;
+  const [workers, setWorkers] = useState(workers_map);
+  const [currentTable, setCurrentTable] = useState(null);
+
+  //##################################################################################################
+
+  function transformSolution(solution) {
+    let result = [];
+
+    Object.entries(solution).forEach(([shiftId, workerIds]) => {
+        workerIds.forEach(workerId => {
+            result.push([workerId, parseInt(shiftId)]);
+        });
+    });
+
+    return result.sort((a, b) => a[1] - b[1]);;
+}
+
+  //########################################################################################################3
 
   const navigate = useNavigate();
 
@@ -31,45 +50,40 @@ const ShiftsPage = (props) => {
       return;
     }
 
-
-
-    const currTable = tables_map.get(currentTableID)
+    const currTable = tables_map.get(currentTableID);
     console.log("currTable: ", currTable);
+    setCurrentTable(currTable);
+
     if (tables_map && currTable) {
       const currentAssignment = currTable.assignment;
       console.log("currentAssignment: ", currTable.assignment);
 
       if (currentAssignment) {
-
         setProfessions(currTable.professions || []);
+        // setWorkers(currTable.workers)
 
-        const all_shifts = currTable.shifts
-        console.log("all_shifts: ", all_shifts);
-        const currentAssignmentKeys = new Set(Object.keys(currentAssignment).map(Number));
-        setUnselected_shifts(all_shifts.filter(shift => !currentAssignmentKeys.has(shift.ID)) || []);
-        
-        const sortedShiftsList = all_shifts.filter(shift => currentAssignmentKeys.has(shift.ID)) || [];
+        const all_shifts = currTable.shifts;
+        // console.log("all_shifts: ", all_shifts);
+        const currentAssignmentKeys = new Set(
+          Object.keys(currentAssignment).map(Number)
+        );
+        setUnselected_shifts(
+          all_shifts.filter((shift) => !currentAssignmentKeys.has(shift.ID)) ||
+            []
+        );
+
+        const sortedShiftsList =
+          all_shifts.filter((shift) => currentAssignmentKeys.has(shift.ID)) ||
+          [];
+
+        console.log("all_shifts num 2 : ", all_shifts);
+        console.log("currentAssignmentKeys : ", currentAssignmentKeys);
+
 
         // Iterate over each shift in all_shifts
-        sortedShiftsList.forEach(shift => {
+        sortedShiftsList.forEach((shift) => {
           if (currentAssignment[shift.ID]) {
             shift.idList = currentAssignment[shift.ID];
-
-            // shift.idList.forEach((id) => {
-            //   workers_map[id].shifts = [
-            //     ...workers_map[id].shifts,
-            //     {
-            //       profession: shift.profession,
-            //       day: shift.day,
-            //       startHour: shift.startHour,
-            //       endHour: shift.endHour,
-            //     },
-            //   ];
-            // })
-
-
-
-
           } else {
             shift.idList = [];
           }
@@ -77,8 +91,6 @@ const ShiftsPage = (props) => {
 
         //   console.log("workers_map: ", workers_map)
 
-
-      
         const daysOfWeek = [
           "Sunday",
           "Monday",
@@ -107,28 +119,29 @@ const ShiftsPage = (props) => {
         });
 
         setShifts(sortedShiftsList);
+        console.log("sortedShiftsList: ", sortedShiftsList);
+
+        const evaluator = new ScheduleEvaluator(sortedShiftsList, workers_map, requirements);
+        let solution = transformSolution(currentAssignment);
+        const result = evaluator.getFitnessWithMoreInfo(solution);
+        console.log("result: ", result );
       }
-
-     
     }
- 
   }, [loggedUser, currentTableID, navigate]);
-
-  
 
   const handleProfessionClick = (profession) => {
     setSelectedProfession(profession);
     setPersonalSearch(false);
   };
 
-  function render_fun(){
+  function render_fun() {
     setRender(!render);
   }
 
-  function handleProfessionClickGIMIC(profession){
+  function handleProfessionClickGIMIC(profession) {
     setSelectedProfession(profession);
     setPersonalSearch(false);
-  };
+  }
 
   const handlePersonalSearchClick = () => {
     setSelectedProfession(null);
@@ -170,9 +183,17 @@ const ShiftsPage = (props) => {
   return (
     <div className="page-container">
       <div className="top-panel">
-        <div className="table-name">{tables_map.get(currentTableID) ? tables_map.get(currentTableID).name : "Empty Table"}</div>
+        <div className="table-name">
+          {tables_map.get(currentTableID)
+            ? tables_map.get(currentTableID).name
+            : "Empty Table"}
+        </div>
         <div className="buttons">
-          <button id="PersonalSearch" className="button" onClick={handlePersonalSearchClick}>
+          <button
+            id="PersonalSearch"
+            className="button"
+            onClick={handlePersonalSearchClick}
+          >
             <i className="bi bi-person-circle"></i>&nbsp;&nbsp;&nbsp;Personal
             timetable
           </button>
@@ -248,7 +269,8 @@ const ShiftsPage = (props) => {
             render_fun={render_fun}
             selectedProfession={selectedProfession}
             setSelectedProfession={setSelectedProfession}
-
+            currentTable={currentTable}
+            setCurrentTable={setCurrentTable}
           />
           <AddShiftWindow
             shifts={shifts}
@@ -262,7 +284,8 @@ const ShiftsPage = (props) => {
             inputValue={inputValue}
             currentTableID={currentTableID}
             handleProfessionClick={handleProfessionClickGIMIC}
-
+            currentTable={currentTable}
+            setCurrentTable={setCurrentTable}
           />
         </div>
       </div>

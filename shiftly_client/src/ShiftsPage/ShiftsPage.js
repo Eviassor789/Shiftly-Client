@@ -19,8 +19,8 @@ const ShiftsPage = (props) => {
   const [unselected_shifts, setUnselected_shifts] = useState([]);
   const [shifts, setShifts] = useState([]);
   const [render, setRender] = useState(false);
+  const [loggedUser, setLoggedUser] = useState("");
 
-  const loggedUser = props.loggedUser;
   const currentTableID = props.currentTableID;
   const setCurrentTableID = props.setCurrentTableID;
   const [workers, setWorkers] = useState(workers_map);
@@ -43,12 +43,39 @@ const ShiftsPage = (props) => {
   //########################################################################################################3
 
   const navigate = useNavigate();
+  const token = localStorage.getItem("jwtToken");
 
   useEffect(() => {
-    if (!users.get(loggedUser)) {
-      navigate(`/`);
-      return;
+    const verifyToken = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/protected", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Token verification failed");
+        }
+
+        const data = await response.json();
+        console.log("Token verification successful:", data);
+        setLoggedUser(data.current_user);
+      } catch (error) {
+        console.error("Error:", error);
+        navigate("/");
+      }
+    };
+
+    if (token) {
+      verifyToken();
+    } else {
+      navigate("/");
     }
+  }, [token, navigate]);
+
+  useEffect(() => {
 
     const currTable = tables_map.get(currentTableID);
     console.log("currTable: ", currTable);
@@ -106,9 +133,9 @@ const ShiftsPage = (props) => {
           const dayIndexB = daysOfWeek.indexOf(b.day);
 
           if (a.startHour !== b.startHour) {
-            return a.startHour.localeCompare(b.startHour); // Sort by day index
+            return a.startHour.localeCompare(b.startHour);
           } else {
-            return dayIndexA - dayIndexB; // If day is the same, sort by start hour
+            return dayIndexA - dayIndexB;
           }
         });
 
@@ -184,9 +211,7 @@ const ShiftsPage = (props) => {
     <div className="page-container">
       <div className="top-panel">
         <div className="table-name">
-          {tables_map.get(currentTableID)
-            ? tables_map.get(currentTableID).name
-            : "Empty Table"}
+          {tables_map.get(currentTableID) ? tables_map.get(currentTableID).name : "Empty Table"}
         </div>
         <div className="buttons">
           <button

@@ -2,8 +2,6 @@ import "./Home.css";
 import HomeTopBar from "./HomeTopBar/HomeTopBar";
 import SchedulingTile from "./SchedulingTile/SchedulingTile.jsx";
 import React, { useEffect, useState } from "react";
-import tables_map from "../Data/TableArchive.js";
-import users from "../Data/Users.js";
 import { useNavigate } from "react-router-dom";
 
 function Home(props) {
@@ -12,25 +10,61 @@ function Home(props) {
   const [showStarredOnly, setShowStarredOnly] = useState(false);
   const [tiles, setTiles] = useState([]);
   const [filteredTiles, setFilteredTiles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [userLoading, setUserLoading] = useState(true); // New state for user data loading
+  const [loggedUser, setLoggedUser] = useState("");
+
   const navigate = useNavigate();
 
-  const loggedUser = props.loggedUser;
+  const token = localStorage.getItem('jwtToken');
 
   useEffect(() => {
-    if (!users.get(loggedUser)) {
-      navigate(`/`);
-      return;
-    }
-
-    const userTablesArr = users.get(loggedUser).tablesArr;
-    const userTiles = new Map();
-    userTablesArr.forEach((tableId) => {
-      if (tables_map.get(tableId)) {
-        userTiles.set(tableId, tables_map.get(tableId));
+    const verifyToken = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/protected', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+  
+        if (!response.ok) {
+          throw new Error('Token verification failed');
+        }
+  
+        const data = await response.json();
+        console.log('Token verification successful:', data);
+        setLoggedUser(data.current_user);
+  
+        // Fetch user-specific tables
+        const tablesResponse = await fetch('http://localhost:5000/user_tables', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (!tablesResponse.ok) {
+          throw new Error('Failed to fetch tables');
+        }
+  
+        const tablesData = await tablesResponse.json();
+        console.log('User tables data:', tablesData);
+        setTiles(tablesData);
+      } catch (error) {
+        console.error('Error:', error);
+        navigate('/');
+      } finally {
+        setLoading(false);  // Ensure loading is set to false in both success and failure cases
       }
-    });
-    setTiles(Array.from(userTiles.values()));
-  }, [loggedUser, navigate]);
+    };
+  
+    if (token) {
+      verifyToken();
+    } else {
+      navigate('/');
+    }
+  }, [token, navigate]);
 
   useEffect(() => {
     const sortedTilesArray = tiles
@@ -46,7 +80,8 @@ function Home(props) {
     );
 
     setFilteredTiles(filteredTilesArray);
-  }, [tiles, filterValue, sortOrder, showStarredOnly]);
+    setLoading(false); // Indicate that loading is complete
+  }, [tiles, filterValue, sortOrder, showStarredOnly, userLoading]);
 
   const handleToggleSort = () => {
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
@@ -59,10 +94,9 @@ function Home(props) {
   const toggleStarred = (idToToggle) => {
     setTiles((prevTiles) =>
       prevTiles.map((tile) =>
-        tile.ID === idToToggle ? { ...tile, starred: !tile.starred } : tile
+        tile.id === idToToggle ? { ...tile, starred: !tile.starred } : tile
       )
     );
-    tables_map.get(idToToggle).starred = !tables_map.get(idToToggle).starred;
   };
 
   const handleInputChange = (event) => {
@@ -70,21 +104,25 @@ function Home(props) {
   };
 
   const removeTile = (idToRemove) => {
-    setTiles((prevTiles) => prevTiles.filter((tile) => tile.ID !== idToRemove));
-    tables_map.delete(idToRemove);
+    setTiles((prevTiles) => prevTiles.filter((tile) => tile.id !== idToRemove));
   };
 
   const navigateToDetailPage = (tileId) => {
     navigate(`/detail/${tileId}`);
   };
 
+  if (loading) {
+    return <p>Loading...</p>;  // Show a loading message while data is being fetched
+  }
+  
   return (
     <>
-      <HomeTopBar page="home" loggedUser={props.loggedUser} />
+      <HomeTopBar page="home" loggedUser={loggedUser} />
       <div className="CenterDiv">
+        {/* Render content after data is fetched */}
         <div id="welcomeBox" className="HomeBoxes">
           <p id="welcomeMessage">
-            Hi, User! Welcome back to <span>Shiftly</span>.
+            Hi, {loggedUser}! Welcome back to <span>Shiftly</span>.
           </p>
           <p>
             Tip: In the Settings you can change your preferences which can lead
@@ -92,17 +130,7 @@ function Home(props) {
           </p>
         </div>
         <div id="HomeMainBox" className="HomeBoxes">
-          <div className="input-icons">
-            <i className="bi bi-search icon"></i>
-            <input
-              id="History_input"
-              className="input-field"
-              placeholder="Search Table"
-              value={filterValue}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div id="HistoryListContainer"></div>
+          {/* Other components */}
           <div className="sort-buttons">
             <button onClick={handleToggleSort}>
               {sortOrder === "asc"
@@ -116,16 +144,16 @@ function Home(props) {
           {filteredTiles.length > 0 ? (
             filteredTiles.map((tile) => (
               <SchedulingTile
-                key={tile.ID}
-                ID={tile.ID}  // Pass the ID prop here
+                key={tile.id}
+                ID={tile.id}
                 name={tile.name}
                 date={tile.date}
                 starred={tile.starred}
                 currentTableID={props.currentTableID}
                 setCurrentTableID={props.setCurrentTableID}
-                onRemove={() => removeTile(tile.ID)}
-                onToggleStar={() => toggleStarred(tile.ID)}
-                onNavigate={() => navigateToDetailPage(tile.ID)}
+                onRemove={() => removeTile(tile.id)}
+                onToggleStar={() => toggleStarred(tile.id)}
+                onNavigate={() => navigateToDetailPage(tile.id)}
               />
             ))
           ) : (

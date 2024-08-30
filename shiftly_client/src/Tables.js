@@ -4,6 +4,8 @@ class Table {
       this.name = props.name;
       this.date = props.date;
       this.starred = props.starred;
+      this.professions = props.professions;
+      this.shifts = props.shifts;
       this.assignment = props.assignment;
     }
   

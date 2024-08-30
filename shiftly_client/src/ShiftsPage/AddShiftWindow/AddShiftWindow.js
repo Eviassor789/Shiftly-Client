@@ -10,7 +10,11 @@ const AddShiftWindow = ({
   workers,
   setWorkers,
   ispersonalSearch,
-  inputValue
+  inputValue,
+  currentTableID,
+  handleProfessionClick,
+  currentTable,
+  setCurrentTable,
 }) => {
   const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
 
@@ -28,16 +32,18 @@ const AddShiftWindow = ({
     // Update the state with the new shifts and other_shifts arrays
     setShifts(updatedShifts);
     setUnselected_shifts(updatedUnselectedShifts);
+
+    handleProfessionClick("@" + profession);
   };
 
   function getRelevantUnselectedShifts() {
-    return unselected_shifts.filter((shift) => shift.profession === profession)
+    return unselected_shifts.filter((shift) => shift.profession === profession);
   }
 
   return (
     <div className="shift-container">
       <div className="head">Additional shifts possible</div>
-      
+
       <div className="shift_boxes">
         {getRelevantUnselectedShifts().map((shift, index) => (
           <div
@@ -51,7 +57,7 @@ const AddShiftWindow = ({
                 idList: [],
                 color:
                   color_list[Math.floor(Math.random() * color_list.length)],
-                  profession: profession
+                profession: profession,
               })
             }
           >

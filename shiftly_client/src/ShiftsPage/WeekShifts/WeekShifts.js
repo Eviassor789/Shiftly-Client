@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Shift from "./Shift/Shift";
 import "./WeekShifts.css";
 import ShiftWindow from "./ShiftWindow/ShiftWindow";
@@ -14,8 +14,25 @@ const WeekShifts = ({
   setWorkers,
   ispersonalSearch,
   inputValue,
+  currentTableID,
+  setPersonalSearch,
+  handleProfessionClick,
+  render_fun,
+  selectedProfession,
+  setSelectedProfession,
+  currentTable,
+  setCurrentTable
 }) => {
+
+
   const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
+  let last = 0;
+  let modulo = 0;
+
+  if(selectedProfession && selectedProfession.startsWith("@")){
+    setSelectedProfession(selectedProfession.slice(1));
+  }
+  
 
   const [shiftData, setShiftData] = useState({
     profession: profession,
@@ -41,6 +58,8 @@ const WeekShifts = ({
       day: "",
       showModal: false,
     });
+
+    // document.getElementById("PersonalSearch").click()
   };
 
   let placed_shifted = [],
@@ -52,24 +71,98 @@ const WeekShifts = ({
     hours.push(`${i.toString().padStart(2, "0")}:00`);
   }
 
-  function getMaxOverlaps(shifts, currentShift) {
-    let maxOverlaps = 0;
+  // function getMaxDayOverlaps(currentShift) {
+  //   let max = 0;
 
-    var professionShift = shifts.filter(
+  //   var dayShift = shifts.filter(
+  //     (shift) =>
+  //       shift.profession === profession && shift.day === currentShift.day
+  //   );
+
+  //   for (let i = 0; i < dayShift.length; i++) {
+  //     let temp = getMaxOverlaps(dayShift, dayShift[i]);
+  //     if (temp > max) {
+  //       max = temp;
+  //     }
+  //   }
+
+  //   return max;
+  // }
+
+  function maxChainOfOverLap(list, currentShift, state) {
+    let maxOverlaps = 0;
+    let currOverlaps = 0;
+    let professionShift = list.filter(
       (shift) => shift.profession === profession
     );
 
-    for (let i = 0; i < professionShift.length; i++) {
-      if (professionShift[i] !== currentShift) {
-        const overlaps = checkOverlap(currentShift, professionShift[i]);
-        if (overlaps) {
-          maxOverlaps++;
+    let arrayOne = [];
+    let arrayTwo = [];
+
+    arrayTwo.push(currentShift);
+
+    do {
+      arrayOne.length = 0;  // Clear array1
+      arrayOne.push(...arrayTwo);  // Add all items from array2 to array1
+      arrayTwo.length = 0;  // Clear array2
+
+      maxOverlaps = currOverlaps;
+      
+      arrayOne.forEach((shift1) => {
+        let temp = 0;
+
+        professionShift.forEach((shift2) => {
+          const overlaps = checkOverlap(shift1, shift2);
+            if (overlaps) {
+              temp++;
+              arrayTwo.push(shift2)
+            }
+        });
+        if(temp > currOverlaps){
+          currOverlaps = temp;
         }
-      }
-    }
+      });
+
+    } while (currOverlaps > maxOverlaps);
+
+
+    //i really dont know if it is better or not...:
+
+    // if(maxOverlaps != 1 && state == 2){
+    //   if (maxOverlaps == last){
+    //     modulo = modulo%last +1;
+    //     return modulo;
+    //   }else{
+    //     if(maxOverlaps > last)
+    //     {last = maxOverlaps;}
+    //     // if(maxOverlaps < last)
+    //     //   {last = 0;}
+    //   }
+    // }
 
     return maxOverlaps;
+
   }
+
+
+  // function getMaxOverlaps(professionShift, currentShift) {
+  //   let maxOverlaps = 0;
+
+  //   // var professionShift = shifts.filter(
+  //   //   (shift) => shift.profession === profession
+  //   // );
+
+  //   for (let i = 0; i < professionShift.length; i++) {
+  //     if (professionShift[i] !== currentShift) {
+  //       const overlaps = checkOverlap(currentShift, professionShift[i]);
+  //       if (overlaps) {
+  //         maxOverlaps++;
+  //       }
+  //     }
+  //   }
+
+  //   return maxOverlaps;
+  // }
 
   function checkOverlap(shift1, shift2) {
     // Convert start and end times to minutes for easier comparison
@@ -80,10 +173,12 @@ const WeekShifts = ({
 
     // Check if the shifts overlap in time
     return (
-      ((start1 >= start2 && start1 <= end2) ||
-        (end1 >= start2 && end1 <= end2) ||
-        (start2 >= start1 && start2 <= end1) ||
-        (end2 >= start1 && end2 <= end1)) &&
+      ((start2 < start1 && start1 < end2) ||
+        (start2 < end1 && end1 < end2) ||
+        (start1 < start2 && start2 < end1) ||
+        (start1 < end2 && end2 < end1) 
+        // || (start2 == start1 && end1 == end2)
+      ) &&
       shift1.day === shift2.day
     );
   }
@@ -138,13 +233,14 @@ const WeekShifts = ({
                 "Thursday",
                 "Friday",
               ].map((day) => {
+
                 var relevantShifts;
                 if (ispersonalSearch) {
                   relevantShifts = shifts.filter(
                     (s) =>
                       s.day === day &&
                       hour === s.startHour &&
-                      s.idList.some((id) => workers_map[id].name === inputValue)
+                      s.idList.some((id) => workers[id].name === inputValue)
                   );
                 } else {
                   relevantShifts = shifts.filter(
@@ -153,12 +249,26 @@ const WeekShifts = ({
                       hour === s.startHour &&
                       profession === s.profession
                   );
+
+                  relevantShifts.forEach((shift) => {
+                    shift.idList.forEach((id) => {
+                      workers[id].shifts = [
+                        ...workers[id].shifts,
+                        {
+                          profession: shift.profession,
+                          day: shift.day,
+                          startHour: shift.startHour,
+                          endHour: shift.endHour,
+                        },
+                      ];
+                    });
+                  });
                 }
                 return (
                   <td key={day + hour}>
                     {relevantShifts.map(
                       (shift, index) =>
-                        placed_shifted.push(shift) && (
+                        placed_shifted.push(shift) &&(
                           <div
                             onClick={() =>
                               handleShiftClick({
@@ -177,8 +287,8 @@ const WeekShifts = ({
                               startHour={shift.startHour}
                               endHour={shift.endHour}
                               idList={shift.idList}
-                              overlapNum={getMaxOverlaps(shifts, shift)}
-                              place={getMaxOverlaps(placed_shifted, shift)}
+                              overlapNum={maxChainOfOverLap(shifts, shift, 1)}
+                              place={maxChainOfOverLap(placed_shifted, shift, 2)}
                               color={
                                 shift.color
                                   ? shift.color
@@ -212,6 +322,12 @@ const WeekShifts = ({
               setUnselected_shifts={setUnselected_shifts}
               workers={workers}
               setWorkers={setWorkers}
+              currentTableID={currentTableID}
+              setPersonalSearch={setPersonalSearch}
+              handleProfessionClick={handleProfessionClick}
+              render_fun={render_fun}
+              selectedProfession={selectedProfession}
+              setSelectedProfession={setSelectedProfession}
             />
           </div>
         </>

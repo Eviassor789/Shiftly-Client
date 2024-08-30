@@ -78,7 +78,7 @@ class ScheduleEvaluator {
                 .map(shift => shift.ID);
         });
 
-        // Initialize possibleShiftsToWorkersMap
+        // Initialize possibleShiftsToWorkersMap .
         Object.entries(this.workers).forEach(([workerId, workerInfo]) => {
             workerInfo.relevantShiftsId.forEach(shiftId => {
                 if (!this.possibleShiftsToWorkersMap[shiftId]) {

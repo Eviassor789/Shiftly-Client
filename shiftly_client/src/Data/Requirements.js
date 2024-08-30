@@ -239,8 +239,7 @@ let requirements = [
     { id: 238, profession: "Engineer", day: "Friday", hour: "18:00", number: 6 },
     { id: 239, profession: "Engineer", day: "Friday", hour: "08:00", number: 5 },
     { id: 240, profession: "Engineer", day: "Friday", hour: "15:00", number: 8 },
+    //.
 ];
-
-
 
 export default requirements;

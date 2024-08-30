@@ -10,10 +10,10 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
 
   // Example usage:
   const tableData = {
-    name: "week 80",
+    name: "week 10",
     date: "01/01/2024",
-    starred: true,
-    professions: ["Doctor", "Teacher"],
+    starred: false,
+    professions: ["Doctor", "Teacher", "Nurse"],
     shifts: [
         {
             profession: "Doctor",
@@ -139,7 +139,7 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
             console.log("2");
 
             // Update the user's tablesArr with the new table ID
-            await updateUserTablesArray(token, tableData.name);
+            // await updateUserTablesArray(token, tableData.name);
         } else {
             console.error("Failed to add table:", result.msg);
             console.log("3");

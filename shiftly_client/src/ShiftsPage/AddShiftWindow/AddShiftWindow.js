@@ -25,8 +25,8 @@ const AddShiftWindow = ({
     var updatedUnselectedShifts = unselected_shifts.filter(
       (shift) =>
         shift.day !== data.day ||
-        shift.startHour !== data.startHour ||
-        shift.endHour !== data.endHour
+        shift.start_hour !== data.start_hour ||
+        shift.end_hour !== data.end_hour
     );
 
     // Update the state with the new shifts and other_shifts arrays
@@ -52,8 +52,8 @@ const AddShiftWindow = ({
             onClick={() =>
               handleAddShiftClick({
                 day: shift.day,
-                startHour: shift.startHour,
-                endHour: shift.endHour,
+                start_hour: shift.start_hour,
+                end_hour: shift.end_hour,
                 idList: [],
                 color:
                   color_list[Math.floor(Math.random() * color_list.length)],
@@ -65,10 +65,10 @@ const AddShiftWindow = ({
               <strong>Day:</strong> {shift.day}
             </p>
             <p>
-              <strong>Start Hour:</strong> {shift.startHour}
+              <strong>Start Hour:</strong> {shift.start_hour}
             </p>
             <p>
-              <strong>End Hour:</strong> {shift.endHour}
+              <strong>End Hour:</strong> {shift.end_hour}
             </p>
           </div>
         ))}

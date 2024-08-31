@@ -38,8 +38,8 @@ const WeekShifts = ({
     profession: profession,
     color: "",
     idList: [],
-    startHour: "",
-    endHour: "",
+    start_hour: "",
+    end_hour: "",
     day: "",
     showModal: false,
   });
@@ -53,8 +53,8 @@ const WeekShifts = ({
       profession: profession,
       color: "",
       idList: [],
-      startHour: "",
-      endHour: "",
+      start_hour: "",
+      end_hour: "",
       day: "",
       showModal: false,
     });
@@ -166,10 +166,10 @@ const WeekShifts = ({
 
   function checkOverlap(shift1, shift2) {
     // Convert start and end times to minutes for easier comparison
-    const start1 = convertToMinutes(shift1.startHour);
-    const end1 = convertToMinutes(shift1.endHour);
-    const start2 = convertToMinutes(shift2.startHour);
-    const end2 = convertToMinutes(shift2.endHour);
+    const start1 = convertToMinutes(shift1.start_hour);
+    const end1 = convertToMinutes(shift1.end_hour);
+    const start2 = convertToMinutes(shift2.start_hour);
+    const end2 = convertToMinutes(shift2.end_hour);
 
     // Check if the shifts overlap in time
     return (
@@ -204,11 +204,7 @@ const WeekShifts = ({
   }
   // className={personalSearch? "week-shifts personalSearch" : "week-shifts"}
   return (
-    <div
-      className={
-        ispersonalSearch ? "week-shifts personalSearch" : "week-shifts"
-      }
-    >
+    <div className={ispersonalSearch ? "week-shifts personalSearch" : "week-shifts"}>
       <table>
         <thead>
           <tr>
@@ -225,31 +221,23 @@ const WeekShifts = ({
           {hours.map((hour) => (
             <tr key={hour}>
               <td>{hour + " - " + nextHour(hour)}</td>
-              {[
-                "Sunday",
-                "Monday",
-                "Tuesday",
-                "Wednesday",
-                "Thursday",
-                "Friday",
-              ].map((day) => {
-
-                var relevantShifts;
+              {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].map((day) => {
+                let relevantShifts;
                 if (ispersonalSearch) {
                   relevantShifts = shifts.filter(
                     (s) =>
                       s.day === day &&
-                      hour === s.startHour &&
+                      hour === s.start_hour &&
                       s.idList.some((id) => workers[id].name === inputValue)
                   );
                 } else {
                   relevantShifts = shifts.filter(
                     (s) =>
                       s.day === day &&
-                      hour === s.startHour &&
+                      hour === s.start_hour &&
                       profession === s.profession
                   );
-
+  
                   relevantShifts.forEach((shift) => {
                     shift.idList.forEach((id) => {
                       workers[id].shifts = [
@@ -257,49 +245,48 @@ const WeekShifts = ({
                         {
                           profession: shift.profession,
                           day: shift.day,
-                          startHour: shift.startHour,
-                          endHour: shift.endHour,
+                          start_hour: shift.start_hour,
+                          end_hour: shift.end_hour,
                         },
                       ];
                     });
                   });
                 }
+  
                 return (
-                  <td key={day + hour}>
-                    {relevantShifts.map(
-                      (shift, index) =>
-                        placed_shifted.push(shift) &&(
-                          <div
-                            onClick={() =>
-                              handleShiftClick({
-                                profession: shift.profession,
-                                color: shift.color,
-                                idList: shift.idList,
-                                startHour: shift.startHour,
-                                endHour: shift.endHour,
-                                day: day,
-                                showModal: true,
-                              })
-                            }
-                          >
-                            <Shift
-                              key={index}
-                              startHour={shift.startHour}
-                              endHour={shift.endHour}
-                              idList={shift.idList}
-                              overlapNum={maxChainOfOverLap(shifts, shift, 1)}
-                              place={maxChainOfOverLap(placed_shifted, shift, 2)}
-                              color={
-                                shift.color
-                                  ? shift.color
-                                  : color_list[counter++ % color_list.length]
-                              }
-                              ispersonalSearch={ispersonalSearch}
-                              profession={shift.profession}
-                            />
-                          </div>
-                        )
-                    )}
+                  <td key={day}>
+                    {relevantShifts.map((shift, index) => (
+                      <div
+                        key={shift.idList.join('-') + index} // Ensure unique key for each shift
+                        onClick={() =>
+                          handleShiftClick({
+                            profession: shift.profession,
+                            color: shift.color,
+                            idList: shift.idList,
+                            start_hour: shift.start_hour,
+                            end_hour: shift.end_hour,
+                            day: day,
+                            showModal: true,
+                          })
+                        }
+                      >
+                        <Shift
+                          key={shift.idList.join('-') + index} // Ensure unique key for each Shift component
+                          start_hour={shift.start_hour}
+                          end_hour={shift.end_hour}
+                          idList={shift.idList}
+                          overlapNum={maxChainOfOverLap(shifts, shift, 1)}
+                          place={maxChainOfOverLap(placed_shifted, shift, 2)}
+                          color={
+                            shift.color
+                              ? shift.color
+                              : color_list[counter++ % color_list.length]
+                          }
+                          ispersonalSearch={ispersonalSearch}
+                          profession={shift.profession}
+                        />
+                      </div>
+                    ))}
                   </td>
                 );
               })}
@@ -307,7 +294,7 @@ const WeekShifts = ({
           ))}
         </tbody>
       </table>
-
+  
       {shiftData.showModal && (
         <>
           <div className="overlay"></div>
@@ -323,6 +310,7 @@ const WeekShifts = ({
               workers={workers}
               setWorkers={setWorkers}
               currentTableID={currentTableID}
+              currentTable={currentTable}
               setPersonalSearch={setPersonalSearch}
               handleProfessionClick={handleProfessionClick}
               render_fun={render_fun}
@@ -334,6 +322,7 @@ const WeekShifts = ({
       )}
     </div>
   );
+  
 };
 
 export default WeekShifts;

@@ -2,10 +2,10 @@ import React from "react";
 import "./Shift.css"
 import workers_map from "../../../Data/Workers";
 
-const Shift = ({ startHour, endHour, overlapNum, place, color, idList, ispersonalSearch, profession }) => {
+const Shift = ({ start_hour, end_hour, overlapNum, place, color, idList, ispersonalSearch, profession }) => {
   // Calculate the number of rows to span
-  const startRow = parseInt(startHour.substring(0, 2), 10) - 7;
-  const endRow = parseInt(endHour.substring(0, 2), 10) - 7;
+  const startRow = parseInt(start_hour.substring(0, 2), 10) - 7;
+  const endRow = parseInt(end_hour.substring(0, 2), 10) - 7;
 
   return (
     <div

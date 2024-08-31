@@ -18,8 +18,8 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
         {
             profession: "Doctor",
             day: "Sunday",
-            startHour: "08:00",
-            endHour: "13:00",
+            start_hour: "08:00",
+            end_hour: "13:00",
             cost: 50,
             idList: [],
             color: false
@@ -27,8 +27,8 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
         {
             profession: "Teacher",
             day: "Sunday",
-            startHour: "08:00",
-            endHour: "10:00",
+            start_hour: "08:00",
+            end_hour: "10:00",
             cost: 50,
             idList: [],
             color: false

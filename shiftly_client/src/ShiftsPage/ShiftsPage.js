@@ -137,8 +137,8 @@ const ShiftsPage = (props) => {
                 shiftId: shift.id,
                 profession: shift.profession,
                 day: shift.day,
-                startHour: shift.start_hour,
-                endHour: shift.end_hour,
+                start_hour: shift.start_hour,
+                end_hour: shift.end_hour,
                 cost: shift.cost,
                 color: shift.color,
             });
@@ -157,8 +157,8 @@ const ShiftsPage = (props) => {
             const dayIndexA = daysOfWeek.indexOf(a.day);
             const dayIndexB = daysOfWeek.indexOf(b.day);
   
-            if (a.startHour !== b.startHour) {
-              return a.startHour.localeCompare(b.startHour);
+            if (a.start_hour !== b.start_hour) {
+              return a.start_hour.localeCompare(b.start_hour);
             } else {
               return dayIndexA - dayIndexB;
             }

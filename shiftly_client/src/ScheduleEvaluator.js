@@ -27,11 +27,11 @@ class ScheduleEvaluator {
     }
 
     // Helper function to check if an hour is within a range
-    isHourInRange(hour, startHour, endHour) {
+    isHourInRange(hour, start_hour, end_hour) {
         const hourInt = parseInt(hour.replace(':', ''), 10);
-        const startHourInt = parseInt(startHour.replace(':', ''), 10);
-        const endHourInt = parseInt(endHour.replace(':', ''), 10);
-        return startHourInt <= hourInt && hourInt < endHourInt;
+        const start_hourInt = parseInt(start_hour.replace(':', ''), 10);
+        const end_hourInt = parseInt(end_hour.replace(':', ''), 10);
+        return start_hourInt <= hourInt && hourInt < end_hourInt;
     }
 
     // Helper function to get the relevant requirements for a shift

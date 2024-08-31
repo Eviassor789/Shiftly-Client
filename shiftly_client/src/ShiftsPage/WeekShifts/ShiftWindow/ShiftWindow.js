@@ -17,6 +17,7 @@ const ShiftWindow = ({
   workers,
   setWorkers,
   currentTableID,
+  currentTable,
   setPersonalSearch,
   handleProfessionClick,
   render_fun,
@@ -38,23 +39,23 @@ const ShiftWindow = ({
     setShowDeleteModal(false);
   };
 
-  const currentAssignmentID = tables_map.get(currentTableID).assignment;
+  const currentAssignmentID = currentTable.assignment;
 
   // find curr shift, remove it and return it updated with the new "theworkersIdList"
   const updateShifts = (theworkersIdList) => {
     var updatedShifts = shifts.filter(
       (shift) =>
         shift.day !== shiftData.day ||
-        shift.startHour !== shiftData.startHour ||
-        shift.endHour !== shiftData.endHour
+        shift.start_hour !== shiftData.start_hour ||
+        shift.end_hour !== shiftData.end_hour
     );
 
     updatedShifts = [
       ...updatedShifts,
       {
         day: shiftData.day,
-        startHour: shiftData.startHour,
-        endHour: shiftData.endHour,
+        start_hour: shiftData.start_hour,
+        end_hour: shiftData.end_hour,
         idList: theworkersIdList,
         color: shiftData.color,
         profession: shiftData.profession,
@@ -85,8 +86,8 @@ const ShiftWindow = ({
   //       {
   //         profession: shiftData.profession,
   //         day: shiftData.day,
-  //         startHour: shiftData.startHour,
-  //         endHour: shiftData.endHour,
+  //         start_hour: shiftData.start_hour,
+  //         end_hour: shiftData.end_hour,
   //       },
   //     ];
   //   })
@@ -98,8 +99,8 @@ const ShiftWindow = ({
   //   //       {
   //   //         profession: shift.profession,
   //   //         day: shift.day,
-  //   //         startHour: shift.startHour,
-  //   //         endHour: shift.endHour,
+  //   //         start_hour: shift.start_hour,
+  //   //         end_hour: shift.end_hour,
   //   //       },
   //   //     ];
   //   //   });
@@ -126,8 +127,8 @@ const ShiftWindow = ({
       {
         profession: shiftData.profession,
         day: shiftData.day,
-        startHour: shiftData.startHour,
-        endHour: shiftData.endHour,
+        start_hour: shiftData.start_hour,
+        end_hour: shiftData.end_hour,
       },
     ];
   };
@@ -143,8 +144,8 @@ const ShiftWindow = ({
       (shift) =>
         shift.profession !== shiftData.profession ||
         shift.day !== shiftData.day ||
-        shift.startHour !== shiftData.startHour ||
-        shift.endHour !== shiftData.endHour
+        shift.start_hour !== shiftData.start_hour ||
+        shift.end_hour !== shiftData.end_hour
     );
   };
 
@@ -158,8 +159,8 @@ const ShiftWindow = ({
         worker.shifts = worker.shifts.filter(
           (shift) =>
             shift.day !== shiftData.day ||
-            shift.startHour !== shiftData.startHour ||
-            shift.endHour !== shiftData.endHour ||
+            shift.start_hour !== shiftData.start_hour ||
+            shift.end_hour !== shiftData.end_hour ||
             shift.profession !== shiftData.profession
         );
 
@@ -175,8 +176,8 @@ const ShiftWindow = ({
       {
         profession: shiftData.profession,
         day: shiftData.day,
-        startHour: shiftData.startHour,
-        endHour: shiftData.endHour,
+        start_hour: shiftData.start_hour,
+        end_hour: shiftData.end_hour,
         idList: [],
         color: false,
       },
@@ -185,8 +186,8 @@ const ShiftWindow = ({
     var updatedShifts = shifts.filter(
       (shift) =>
         shift.day !== shiftData.day ||
-        shift.startHour !== shiftData.startHour ||
-        shift.endHour !== shiftData.endHour
+        shift.start_hour !== shiftData.start_hour ||
+        shift.end_hour !== shiftData.end_hour
     );
 
     // Update the state with the new shifts and other_shifts arrays
@@ -224,8 +225,8 @@ const ShiftWindow = ({
           person.shifts.every(
             (shift) =>
               shift.day !== shiftData.day ||
-              shift.startHour >= shiftData.endHour ||
-              shift.endHour <= shiftData.startHour
+              shift.start_hour >= shiftData.end_hour ||
+              shift.end_hour <= shiftData.start_hour
           )
       )
       .map((person) => person.ID);
@@ -248,8 +249,8 @@ const ShiftWindow = ({
     shifts.forEach((shift) => {
       if (
         shift.day == shiftData.day &&
-        shift.startHour <= time &&
-        shift.endHour > time
+        shift.start_hour <= time &&
+        shift.end_hour > time
       ) {
         counter += shift.idList.length;
       }
@@ -263,7 +264,7 @@ const ShiftWindow = ({
       <div className="header">
         <span>{shiftData.day}, </span>
         <span>
-          {shiftData.startHour} - {shiftData.endHour}
+          {shiftData.start_hour} - {shiftData.end_hour}
         </span>
         <span>Required: {requiredWorkers}</span>
         <i onClick={handleCloseClick} class="bi bi-x-lg"></i>
@@ -384,21 +385,21 @@ const ShiftWindow = ({
           {Array.from(
             {
               length:
-                parseInt(shiftData.endHour.substring(0, 2), 10) -
-                parseInt(shiftData.startHour.substring(0, 2), 10),
+                parseInt(shiftData.end_hour.substring(0, 2), 10) -
+                parseInt(shiftData.start_hour.substring(0, 2), 10),
             },
             (_, i) => (
               <div key={i} className="hour">
-                {upHour(shiftData.startHour, i)} -{" "}
-                {upHour(shiftData.startHour, i + 1)}
+                {upHour(shiftData.start_hour, i)} -{" "}
+                {upHour(shiftData.start_hour, i + 1)}
                 <span
                   className={
-                    workersOnHour(upHour(shiftData.startHour, i)) < 4
+                    workersOnHour(upHour(shiftData.start_hour, i)) < 4
                       ? "capacity insufficient"
                       : "capacity sufficient"
                   }
                 >
-                  {workersOnHour(upHour(shiftData.startHour, i))}/4
+                  {workersOnHour(upHour(shiftData.start_hour, i))}/4
                 </span>
               </div>
             )

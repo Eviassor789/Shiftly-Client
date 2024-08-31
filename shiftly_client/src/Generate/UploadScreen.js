@@ -34,8 +34,59 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
             color: false
         }
     ],
-    assignment: { "1": [1, 10, 11, 2], "7": [1, 4, 9] }
+    workers: [
+      {
+          "name": "_1",
+          "professions": ["Doctor", "Teacher"],
+          "days": ["Wednesday", "Sunday", "Friday"],
+          "shifts": [],
+          "relevant_shifts_id": [],
+          "hours_per_week": 11
+      },
+      {
+          "name": "_2",
+          "professions": ["Doctor", "Teacher"],
+          "days": ["Saturday", "Monday", "Tuesday", "Friday"],
+          "shifts": [],
+          "relevant_shifts_id": [],
+          "hours_per_week": 12
+      },
+      {
+          "name": "_3",
+          "professions": ["Doctor", "Teacher"],
+          "days": ["Sunday", "Friday", "Tuesday", "Monday"],
+          "shifts": [],
+          "relevant_shifts_id": [],
+          "hours_per_week": 20
+      },
+      {
+          "name": "_4",
+          "professions": ["Doctor", "Teacher"],
+          "days": ["Saturday", "Tuesday", "Thursday", "Monday"],
+          "shifts": [],
+          "relevant_shifts_id": [],
+          "hours_per_week": 11
+      },
+      {
+          "name": "_5",
+          "professions": ["Doctor", "Teacher"],
+          "days": ["Monday", "Thursday", "Wednesday", "Tuesday"],
+          "shifts": [],
+          "relevant_shifts_id": [],
+          "hours_per_week": 11
+      },
+      {
+          "name": "_6",
+          "professions": ["Doctor", "Teacher"],
+          "days": ["Saturday", "Tuesday", "Thursday"],
+          "shifts": [],
+          "relevant_shifts_id": [],
+          "hours_per_week": 16
+      }
+    ],
+    assignment: { "1": [1, 2, 3, 4], "2": [1, 5, 6] }
   };
+
 
   const handleNext = () => {
 
@@ -45,14 +96,14 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
         const jwtToken = localStorage.getItem('jwtToken');
         addTableForUser(jwtToken, tableData);
         
-        navigate(`/page`);
         console.log("filesList uploaded succesfully:");
         for (let index = 0; index < filesList.length; index++) {
           const file = filesList[index];
           console.log("name: ", file.name);
-          console.log("parsed rows: ", rowsList[index]);
-          
+          console.log("parsed rows: ", rowsList[index]);  
         }
+
+        navigate(`/home`);
       } else {
         alert("Please upload first the previous files.");
       }

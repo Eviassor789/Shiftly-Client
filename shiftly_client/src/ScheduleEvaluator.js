@@ -39,15 +39,15 @@ class ScheduleEvaluator {
         return this.requirements.filter(req => 
             req.profession === shift.profession && 
             req.day === shift.day && 
-            this.isHourInRange(req.hour, shift.startHour, shift.endHour)
+            this.isHourInRange(req.hour, shift.start_hour, shift.end_hour)
         );
     }
 
     // Helper function to calculate the duration of a shift
     durationOfShift(shiftId) {
         const shift = this.relevantShifts[shiftId];
-        const start = this.convertToMinutes(shift.startHour);
-        const end = this.convertToMinutes(shift.endHour);
+        const start = this.convertToMinutes(shift.start_hour);
+        const end = this.convertToMinutes(shift.end_hour);
         return (end - start) / 60;
     }
 
@@ -57,8 +57,8 @@ class ScheduleEvaluator {
 
         this.shifts.forEach(shift => {
             // Ensure shift.id exists and is valid
-            if (shift.ID) {
-                this.relevantShifts[shift.ID] = shift;
+            if (shift.id) {
+                this.relevantShifts[shift.id] = shift;
             } else {
                 console.warn("Shift with missing or invalid ID: ", shift);
             }
@@ -75,7 +75,7 @@ class ScheduleEvaluator {
                     workerInfo.days.includes(shift.day) &&
                     workerInfo.professions.includes(shift.profession)
                 )
-                .map(shift => shift.ID);
+                .map(shift => shift.id);
         });
 
         // Initialize possibleShiftsToWorkersMap .

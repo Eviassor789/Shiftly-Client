@@ -31,7 +31,7 @@ function App() {
         <Route path="/register" element={<Register loggedUser={loggedUser} setLoggedUser={setLoggedUser}/>} />
         <Route path="/home" element={<Home currentTableID={currentTableID} setCurrentTableID={setCurrentTableID} loggedUser={loggedUser} setLoggedUser={setLoggedUser}/>} />
         <Route path="/generate" element={<Generate loggedUser={loggedUser} setLoggedUser={setLoggedUser}/>} />
-        <Route path="/page" element={<ShiftsPage currentTableID={currentTableID} setCurrentTableID={setCurrentTableID} loggedUser={loggedUser} setLoggedUser={setLoggedUser}/>} />
+        <Route path="/page/:tableId" element={<ShiftsPage currentTableID={currentTableID} setCurrentTableID={setCurrentTableID} loggedUser={loggedUser} setLoggedUser={setLoggedUser}/>} />
         <Route path="*" element={<NotFoundPage/>} />
       </Routes>
     </Router>

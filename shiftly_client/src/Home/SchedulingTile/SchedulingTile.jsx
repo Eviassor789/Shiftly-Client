@@ -9,22 +9,60 @@ function SchedulingTile(props) {
     setIsStarFilled(props.starred);
   }, [props.starred]);
 
-  const toggleStar = (e) => {
+  const toggleStar = async (e) => {
     e.stopPropagation(); // Prevent the click event from propagating to the tile's click event
-    props.onToggleStar(props.ID); // Pass the ID here
-    setIsStarFilled(!isStarFilled);
+    
+    // Send the star toggle request to the server
+    try {
+      const response = await fetch(`http://localhost:5000/toggle_star/${props.ID}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ starred: !isStarFilled }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to toggle star');
+      }
+
+      // Update the UI state
+      setIsStarFilled(!isStarFilled);
+      props.onToggleStar(props.ID);
+    } catch (error) {
+      console.error('Error toggling star:', error);
+    }
   };
 
-  const handleRemoveTile = (e) => {
+  const handleRemoveTile = async (e) => {
     e.stopPropagation(); // Prevent the click event from propagating to the tile's click event
-    props.onRemove(props.ID); // Pass the ID here
+    
+    // Send the delete request to the server
+    try {
+      const response = await fetch(`http://localhost:5000/delete_table/${props.ID}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete table');
+      }
+
+      // Update the UI state
+      props.onRemove(props.ID);
+    } catch (error) {
+      console.error('Error deleting table:', error);
+    }
   };
 
   const navigate = useNavigate();
 
   const handleTileClick = () => {
     props.setCurrentTableID(props.ID);
-    navigate(`/page`);
+    navigate(`/page/${props.ID}`); // Navigate to the specific table page
   };
 
   return (

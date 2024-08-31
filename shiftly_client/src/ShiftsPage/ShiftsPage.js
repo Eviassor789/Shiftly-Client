@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import WeekShifts from "./WeekShifts/WeekShifts";
 import "./ShiftsPage.css";
 import AddShiftWindow from "./AddShiftWindow/AddShiftWindow";
-import workers_map from "../Data/Workers";
+// import workers_map from "../Data/Workers";
 import { useNavigate } from "react-router-dom";
 import users from "../Data/Users";
 import tables_map from "../Data/TableArchive";
@@ -11,6 +12,10 @@ import requirements from "../Data/Requirements";
 import ScheduleEvaluator from "../ScheduleEvaluator";
 
 const ShiftsPage = (props) => {
+
+  const { tableId } = useParams(); // Extract the table ID from the URL
+  const navigate = useNavigate();
+
   const [selectedProfession, setSelectedProfession] = useState(null);
   const [ispersonalSearch, setPersonalSearch] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -23,10 +28,8 @@ const ShiftsPage = (props) => {
 
   const currentTableID = props.currentTableID;
   const setCurrentTableID = props.setCurrentTableID;
-  const [workers, setWorkers] = useState(workers_map);
+  const [workers, setWorkers] = useState({});
   const [currentTable, setCurrentTable] = useState(null);
-
-  //##################################################################################################
 
   function transformSolution(solution) {
     let result = [];
@@ -40,9 +43,7 @@ const ShiftsPage = (props) => {
     return result.sort((a, b) => a[1] - b[1]);;
 }
 
-  //########################################################################################################3
 
-  const navigate = useNavigate();
   const token = localStorage.getItem("jwtToken");
 
   useEffect(() => {
@@ -76,85 +77,116 @@ const ShiftsPage = (props) => {
   }, [token, navigate]);
 
   useEffect(() => {
-
-    const currTable = tables_map.get(currentTableID);
-    console.log("currTable: ", currTable);
-    setCurrentTable(currTable);
-
-    if (tables_map && currTable) {
-      const currentAssignment = currTable.assignment;
-      console.log("currentAssignment: ", currTable.assignment);
-
-      if (currentAssignment) {
-        setProfessions(currTable.professions || []);
-        // setWorkers(currTable.workers)
-
-        const all_shifts = currTable.shifts;
-        // console.log("all_shifts: ", all_shifts);
-        const currentAssignmentKeys = new Set(
-          Object.keys(currentAssignment).map(Number)
-        );
-        setUnselected_shifts(
-          all_shifts.filter((shift) => !currentAssignmentKeys.has(shift.ID)) ||
-            []
-        );
-
-        const sortedShiftsList =
-          all_shifts.filter((shift) => currentAssignmentKeys.has(shift.ID)) ||
-          [];
-
-        console.log("all_shifts num 2 : ", all_shifts);
-        console.log("currentAssignmentKeys : ", currentAssignmentKeys);
-
-
-        // Iterate over each shift in all_shifts
-        sortedShiftsList.forEach((shift) => {
-          if (currentAssignment[shift.ID]) {
-            shift.idList = currentAssignment[shift.ID];
-          } else {
-            shift.idList = [];
-          }
+    const fetchTableData = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/table/${tableId}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
+  
+        if (!response.ok) {
+          throw new Error("Failed to fetch table data from the server");
+        }
+  
+        const currTable = await response.json();
+        console.log("currTable: ", currTable);
+        setCurrentTable(currTable);
+  
+        if (currTable) {
+          const currentAssignment = currTable.assignment;
+          setProfessions(currTable.professions || []);
+  
+          const all_shifts = currTable.shifts;
+          const currentAssignmentKeys = new Set(
+            Object.keys(currentAssignment).map(Number)
+          );
+  
+          setUnselected_shifts(
+            all_shifts.filter((shift) => !currentAssignmentKeys.has(shift.id)) || []
+          );
+  
+          const sortedShiftsList = 
+    all_shifts.filter((shift) => currentAssignmentKeys.has(shift.id)) || [];
 
-        //   console.log("workers_map: ", workers_map)
+    // Create the workers map
+    const workersMap = {};
 
-        const daysOfWeek = [
-          "Sunday",
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-        ];
+    sortedShiftsList.forEach((shift) => {
+        // Update the shift's idList with workers from the current assignment
+        shift.idList = currentAssignment[shift.id] || [];
 
-        sortedShiftsList.sort((a, b) => {
-          const dayIndexA = daysOfWeek.indexOf(a.day);
-          const dayIndexB = daysOfWeek.indexOf(b.day);
+        // Iterate over each worker in the shift
+        shift.workers.forEach((worker) => {
+            // If the worker is not already in the workersMap, add them
+            if (!workersMap[worker.id]) {
+                workersMap[worker.id] = {
+                    ID: worker.id,
+                    name: worker.name,
+                    professions: worker.professions,
+                    days: worker.days,
+                    shifts: [],  // This will be populated with shift details
+                    relevant_shifts_id: worker.relevant_shifts_id,
+                    hours_per_week: worker.hours_per_week,
+                };
+            }
 
-          if (a.startHour !== b.startHour) {
-            return a.startHour.localeCompare(b.startHour);
-          } else {
-            return dayIndexA - dayIndexB;
-          }
+            // Add the current shift to the worker's shifts array
+            workersMap[worker.id].shifts.push({
+                shiftId: shift.id,
+                profession: shift.profession,
+                day: shift.day,
+                startHour: shift.start_hour,
+                endHour: shift.end_hour,
+                cost: shift.cost,
+                color: shift.color,
+            });
         });
+    });
 
-        const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
-        let counter = 0;
-        sortedShiftsList.forEach((shift) => {
-          shift.color = color_list[counter++ % color_list.length];
-        });
-
-        setShifts(sortedShiftsList);
-        console.log("sortedShiftsList: ", sortedShiftsList);
-
-        const evaluator = new ScheduleEvaluator(sortedShiftsList, workers_map, requirements);
-        let solution = transformSolution(currentAssignment);
-        const result = evaluator.getFitnessWithMoreInfo(solution);
-        console.log("result: ", result );
+    // Finally, update the state with the populated workersMap
+    setWorkers(workersMap);
+  
+          const daysOfWeek = [
+            "Sunday", "Monday", "Tuesday", "Wednesday", 
+            "Thursday", "Friday", "Saturday"
+          ];
+  
+          sortedShiftsList.sort((a, b) => {
+            const dayIndexA = daysOfWeek.indexOf(a.day);
+            const dayIndexB = daysOfWeek.indexOf(b.day);
+  
+            if (a.startHour !== b.startHour) {
+              return a.startHour.localeCompare(b.startHour);
+            } else {
+              return dayIndexA - dayIndexB;
+            }
+          });
+  
+          const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
+          let counter = 0;
+          sortedShiftsList.forEach((shift) => {
+            shift.color = color_list[counter++ % color_list.length];
+          });
+          console.log("sortedShiftsList:", sortedShiftsList);
+          setShifts(sortedShiftsList);
+  
+          const evaluator = new ScheduleEvaluator(sortedShiftsList, workersMap, requirements);
+          let solution = transformSolution(currentAssignment);
+          const result = evaluator.getFitnessWithMoreInfo(solution);
+          console.log("result: ", result);
+        }
+      } catch (error) {
+        console.error("Error fetching table data:", error);
+        navigate("/");
       }
+    };
+
+    if (tableId && token) {
+        fetchTableData();
     }
-  }, [loggedUser, currentTableID, navigate]);
+}, [tableId, loggedUser, navigate, token]);
 
   const handleProfessionClick = (profession) => {
     setSelectedProfession(profession);
@@ -179,7 +211,7 @@ const ShiftsPage = (props) => {
     const value = event.target.value;
     setInputValue(value);
     if (value.length > 0) {
-      const filteredSuggestions = Object.values(workers_map)
+      const filteredSuggestions = Object.values(workers)
         .map((person) => person.name)
         .filter((suggestion) =>
           suggestion.toLowerCase().includes(value.toLowerCase())

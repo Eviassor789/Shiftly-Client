@@ -1,32 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import './SettingsPopup.css'; // Import the CSS file for styling
 import { useNavigate } from 'react-router-dom';
-import users from '../../Data/Users';
 
-function SettingsPopup({ onClose, loggedUser }) {
+function SettingsPopup({ onClose, loggedUser, userCurrent, initialSettings, isChecked, setIsChecked }) {
   const navigate = useNavigate();
 
   // Ensure loggedUser.settings is an array and has at least 2 elements
-  const initialSettings = users.get(loggedUser).settings && Array.isArray(users.get(loggedUser).settings) 
-    ? users.get(loggedUser).settings 
-    : [false, false];
 
-  const [isChecked, setIsChecked] = useState(initialSettings);
 
   useEffect(() => {
     // Update isChecked when loggedUser.settings changes
     setIsChecked(initialSettings);
-  }, [loggedUser]);
+  }, [loggedUser, userCurrent]);
 
   const handleCheckboxChange = (index) => (event) => {
     // Create a copy of the isChecked array to avoid mutation
     const newChecked = [...isChecked];
     newChecked[index] = event.target.checked;
     setIsChecked(newChecked);
-    users.get(loggedUser).settings = newChecked;
+    userCurrent.settings = newChecked;
+  };
 
-    if (event.target.checked) {
-      // alert(`Hello! Objective ${index + 1} is checked.`);
+  const updateSettingsOnServer = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/update-settings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+        },
+        body: JSON.stringify({
+          username: loggedUser,
+          settings: isChecked, // Send the updated settings array
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update settings');
+      }
+      const data = await response.json();
+      console.log("Settings updated successfully", data);
+    } catch (error) {
+      console.error("Error updating settings:", error);
     }
   };
 
@@ -71,7 +86,13 @@ function SettingsPopup({ onClose, loggedUser }) {
 
         <br />
 
-        <button className="close-button" onClick={onClose}>
+        <button
+          className="close-button"
+          onClick={() => {
+            updateSettingsOnServer(); // Update server before closing
+            onClose(); // Close the popup
+          }}
+        >
           Close
         </button>
       </div>

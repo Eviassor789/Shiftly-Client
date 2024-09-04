@@ -16,46 +16,46 @@ function Login(props) {
   const [errorMessage, setErrorMessage] = useState("");
 
   const rMessage = async (response) => {
-    try {
-      console.log("response:", response);
-      const decodedResponse = jwtDecode(response.credential);
-      console.log("decodedResponse:", decodedResponse);
-  
-      const googleResponse = await fetch("http://localhost:5000/login/google", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: decodedResponse.name,
-          email: decodedResponse.email,
-          sub: decodedResponse.sub,
-          picture: decodedResponse.picture,
-        }),
-      });
-  
-      if (!googleResponse.ok) {
-        throw new Error("Google login failed");
-      }
-  
-      const data = await googleResponse.json();
-      const { token } = data;  // Make sure you’re correctly extracting the token
-  
-      if (!token || token.split('.').length !== 3) {
-        throw new Error("Invalid token received from server");
-      }
-  
-      // Store the token in localStorage or sessionStorage
-      localStorage.setItem('jwtToken', token);
-      localStorage.setItem('loggedUser', decodedResponse.name);
-  
-      console.log("Google login successful");
-      navigate("/home");
-    } catch (error) {
-      console.error(error);
-      setErrorMessage("Google login failed");
+  try {
+    console.log("response:", response);
+    const decodedResponse = jwtDecode(response.credential);
+    console.log("decodedResponse:", decodedResponse);
+
+    const googleResponse = await fetch("http://localhost:5000/login/google", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: decodedResponse.name,
+        email: decodedResponse.email,
+        sub: decodedResponse.sub,
+        picture: decodedResponse.picture,
+      }),
+    });
+
+    if (!googleResponse.ok) {
+      throw new Error("Google login failed");
     }
-  };
+
+    const data = await googleResponse.json();
+    const { token } = data;  // Make sure you’re correctly extracting the token
+
+    if (!token || token.split('.').length !== 3) {
+      throw new Error("Invalid token received from server");
+    }
+
+    // Store the token in localStorage or sessionStorage
+    localStorage.setItem('jwtToken', token);
+    localStorage.setItem('loggedUser', decodedResponse.name);
+
+    console.log("Google login successful");
+    navigate("/home");
+  } catch (error) {
+    console.error(error);
+    setErrorMessage("Google login failed");
+  }
+};
 
 const eMessage = (error) => {
     console.log(error);

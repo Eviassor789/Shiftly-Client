@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Shift from "./Shift/Shift";
 import "./WeekShifts.css";
 import ShiftWindow from "./ShiftWindow/ShiftWindow";
-import workers_map from "../../Data/Workers";
 
 const WeekShifts = ({
   shifts,
@@ -42,6 +41,9 @@ const WeekShifts = ({
     end_hour: "",
     day: "",
     showModal: false,
+    id: 666,
+    workers: [],
+    cost: 0
   });
 
   const handleShiftClick = (newData) => {
@@ -57,6 +59,9 @@ const WeekShifts = ({
       end_hour: "",
       day: "",
       showModal: false,
+      id: 666,
+      workers: [],
+      cost: 0
     });
 
     // document.getElementById("PersonalSearch").click()
@@ -71,23 +76,6 @@ const WeekShifts = ({
     hours.push(`${i.toString().padStart(2, "0")}:00`);
   }
 
-  // function getMaxDayOverlaps(currentShift) {
-  //   let max = 0;
-
-  //   var dayShift = shifts.filter(
-  //     (shift) =>
-  //       shift.profession === profession && shift.day === currentShift.day
-  //   );
-
-  //   for (let i = 0; i < dayShift.length; i++) {
-  //     let temp = getMaxOverlaps(dayShift, dayShift[i]);
-  //     if (temp > max) {
-  //       max = temp;
-  //     }
-  //   }
-
-  //   return max;
-  // }
 
   function maxChainOfOverLap(list, currentShift, state) {
     let maxOverlaps = 0;
@@ -145,25 +133,6 @@ const WeekShifts = ({
   }
 
 
-  // function getMaxOverlaps(professionShift, currentShift) {
-  //   let maxOverlaps = 0;
-
-  //   // var professionShift = shifts.filter(
-  //   //   (shift) => shift.profession === profession
-  //   // );
-
-  //   for (let i = 0; i < professionShift.length; i++) {
-  //     if (professionShift[i] !== currentShift) {
-  //       const overlaps = checkOverlap(currentShift, professionShift[i]);
-  //       if (overlaps) {
-  //         maxOverlaps++;
-  //       }
-  //     }
-  //   }
-
-  //   return maxOverlaps;
-  // }
-
   function checkOverlap(shift1, shift2) {
     // Convert start and end times to minutes for easier comparison
     const start1 = convertToMinutes(shift1.start_hour);
@@ -208,7 +177,7 @@ const WeekShifts = ({
       <table>
         <thead>
           <tr>
-            <th></th> {/* Empty cell for spacing */}
+            <th>&#32;</th> {/* Empty cell for spacing */}
             <th>Sunday</th>
             <th>Monday</th>
             <th>Tuesday</th>
@@ -238,6 +207,20 @@ const WeekShifts = ({
                       profession === s.profession
                   );
   
+                  // relevantShifts.forEach((shift) => {
+                  //   shift.idList.forEach((id) => {
+                  //     workers[id].shifts = [
+                  //       ...workers[id].shifts,
+                  //       {
+                  //         profession: shift.profession,
+                  //         day: shift.day,
+                  //         start_hour: shift.start_hour,
+                  //         end_hour: shift.end_hour,
+                  //       },
+                  //     ];
+                  //   });
+                  // });
+
                   relevantShifts.forEach((shift) => {
                     shift.idList.forEach((id) => {
                       workers[id].shifts = [
@@ -267,6 +250,9 @@ const WeekShifts = ({
                             end_hour: shift.end_hour,
                             day: day,
                             showModal: true,
+                            id: shift.id,
+                            workers: shift.workers,
+                            cost:shift.cost
                           })
                         }
                       >
@@ -284,6 +270,7 @@ const WeekShifts = ({
                           }
                           ispersonalSearch={ispersonalSearch}
                           profession={shift.profession}
+                          workers={workers}
                         />
                       </div>
                     ))}

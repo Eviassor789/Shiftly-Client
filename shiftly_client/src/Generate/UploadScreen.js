@@ -10,7 +10,7 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
 
   // Example usage:
   const tableData = {
-    name: "week 10",
+    name: "week 1",
     date: "01/01/2024",
     starred: false,
     professions: ["Doctor", "Teacher", "Nurse"],
@@ -18,7 +18,7 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
         {
             profession: "Doctor",
             day: "Sunday",
-            start_hour: "08:00",
+            start_hour: "11:00",
             end_hour: "13:00",
             cost: 50,
             idList: [],
@@ -26,7 +26,7 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
         },
         {
             profession: "Teacher",
-            day: "Sunday",
+            day: "Monday",
             start_hour: "08:00",
             end_hour: "10:00",
             cost: 50,
@@ -84,7 +84,7 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
           "hours_per_week": 16
       }
     ],
-    assignment: { "1": [1, 2, 3, 4], "2": [1, 5, 6] }
+    assignment: { "1": [1, 3], "2": [3, 2, 4, 5] }
   };
 
 

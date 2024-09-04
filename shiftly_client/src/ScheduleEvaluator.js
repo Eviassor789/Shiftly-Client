@@ -36,6 +36,9 @@ class ScheduleEvaluator {
 
     // Helper function to get the relevant requirements for a shift
     getRelevantRequirementsForShift(shift) {
+        if (!shift) {
+            return false;
+        }
         return this.requirements.filter(req => 
             req.profession === shift.profession && 
             req.day === shift.day && 
@@ -46,6 +49,9 @@ class ScheduleEvaluator {
     // Helper function to calculate the duration of a shift
     durationOfShift(shiftId) {
         const shift = this.relevantShifts[shiftId];
+        if (!shift) {
+            return 0;
+        }
         const start = this.convertToMinutes(shift.start_hour);
         const end = this.convertToMinutes(shift.end_hour);
         return (end - start) / 60;
@@ -57,6 +63,8 @@ class ScheduleEvaluator {
 
         this.shifts.forEach(shift => {
             // Ensure shift.id exists and is valid
+            // console.log("shift.id relevantShift", shift.id)
+
             if (shift.id) {
                 this.relevantShifts[shift.id] = shift;
             } else {
@@ -64,8 +72,8 @@ class ScheduleEvaluator {
             }
         });
     
-        console.log("shifts: ", this.shifts);
-        console.log("relevantShifts: ", this.relevantShifts);
+        // console.log("shifts: ", this.shifts);
+        // console.log("relevantShifts: ", this.relevantShifts);
 
 
         // Initialize relevant shifts for each worker
@@ -127,25 +135,32 @@ class ScheduleEvaluator {
         let leftRequirementsNumMap = { ...this.requirementsNumMap };
 
 
+        // console.log("solution:", solution);
         solution.forEach(([workerId, shiftId]) => {
             // Update cost
-            cost += this.relevantShifts[shiftId].cost;
+            // console.log("shiftId:", shiftId);
+            // console.log("this.relevantShifts", this.relevantShifts);
+            cost += this.relevantShifts[shiftId]? this.relevantShifts[shiftId].cost : 0;
 
             // Update constructs
             constructs[workerId] -= this.durationOfShift(shiftId);
 
             // Update leftRequirements and idleWorkers
             let idleFlag = true;
-            this.getRelevantRequirementsForShift(this.relevantShifts[shiftId]).forEach(requirement => {
-                const requirementId = requirement.id;
-                if (leftRequirementsNumMap[requirementId] > 0) {
-                    leftRequirementsNumMap[requirementId] -= 1;
-                    idleFlag = false;
-                }
-            });
+            if(this.getRelevantRequirementsForShift(this.relevantShifts[shiftId])) {
+                this.getRelevantRequirementsForShift(this.relevantShifts[shiftId]).forEach(requirement => {
+                    const requirementId = requirement.id;
+                    if (leftRequirementsNumMap[requirementId] > 0) {
+                        leftRequirementsNumMap[requirementId] -= 1;
+                        idleFlag = false;
+                    }
+                });
+            } else {
+                idleFlag = false;
+            }
             if (idleFlag) {
                 idleWorkers += 1;
-                console.log("shiftId + workerId: ", shiftId, workerId);
+                // console.log("shiftId + workerId: ", shiftId, workerId);
 
             }
         });

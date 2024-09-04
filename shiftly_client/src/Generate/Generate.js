@@ -2,7 +2,6 @@ import "./Generate.css"
 import HomeTopBar from "../Home/HomeTopBar/HomeTopBar";
 import React, { useState, useEffect} from 'react';
 import UploadScreen from "./UploadScreen";
-import users from "../Data/Users";
 import { useNavigate } from "react-router-dom";
 
 

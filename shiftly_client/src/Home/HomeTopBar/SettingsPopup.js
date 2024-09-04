@@ -59,7 +59,13 @@ function SettingsPopup({ onClose, loggedUser }) {
           </label>
         </div>
 
-        <button className="Log-out" onClick={() => navigate("/")}>
+        <button
+          className="Log-out"
+          onClick={() => {
+            localStorage.setItem("jwtToken", "");
+            navigate("/");
+          }}
+        >
           Log Out
         </button>
 

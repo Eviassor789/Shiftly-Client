@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import WeekShifts from "./WeekShifts/WeekShifts";
 import "./ShiftsPage.css";
 import AddShiftWindow from "./AddShiftWindow/AddShiftWindow";
-// import workers_map from "../Data/Workers";
 import { useNavigate } from "react-router-dom";
 import users from "../Data/Users";
 import tables_map from "../Data/TableArchive";
@@ -107,6 +106,7 @@ const ShiftsPage = (props) => {
             all_shifts.filter((shift) => !currentAssignmentKeys.has(shift.id)) || []
           );
   
+          // console.log("all_shifts", all_shifts)
           const sortedShiftsList = 
     all_shifts.filter((shift) => currentAssignmentKeys.has(shift.id)) || [];
 
@@ -122,7 +122,7 @@ const ShiftsPage = (props) => {
             // If the worker is not already in the workersMap, add them
             if (!workersMap[worker.id]) {
                 workersMap[worker.id] = {
-                    ID: worker.id,
+                    id: worker.id,
                     name: worker.name,
                     professions: worker.professions,
                     days: worker.days,
@@ -144,6 +144,11 @@ const ShiftsPage = (props) => {
             });
         });
     });
+
+    // const temp_workers = currTable.all_workers.reduce((map, worker) => {
+    //   map[worker.id] = worker;
+    //   return map;
+    // }, {});
 
     // Finally, update the state with the populated workersMap
     setWorkers(workersMap);
@@ -169,13 +174,14 @@ const ShiftsPage = (props) => {
           sortedShiftsList.forEach((shift) => {
             shift.color = color_list[counter++ % color_list.length];
           });
-          console.log("sortedShiftsList:", sortedShiftsList);
+          // console.log("sortedShiftsList:", sortedShiftsList);
           setShifts(sortedShiftsList);
+
   
           const evaluator = new ScheduleEvaluator(sortedShiftsList, workersMap, requirements);
           let solution = transformSolution(currentAssignment);
           const result = evaluator.getFitnessWithMoreInfo(solution);
-          console.log("result: ", result);
+          // console.log("result: ", result);
         }
       } catch (error) {
         console.error("Error fetching table data:", error);
@@ -231,7 +237,56 @@ const ShiftsPage = (props) => {
     setSuggestionsList([]);
   };
 
-  const handleSave = () => {
+
+  const updateAssignment = async (tableId, assignment, token) => {
+    try {
+      const response = await fetch('http://localhost:5000/update_assignment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ tableId, assignment, shifts:currentTable.shifts })
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.msg || 'Failed to update assignment');
+      }
+  
+      console.log('Assignment updated successfully:', data.msg);
+    } catch (error) {
+      console.error('Error updating assignment:', error);
+    }
+  };
+
+  async function handleSave() {
+    const assignment = {};
+
+    // Iterate over each shift
+  shifts.forEach((shift) => {
+    console.log("shift 111", shift);
+
+  // Initialize the assignment object for the shift if it doesn't exist
+  if (!assignment[shift.id]) {
+    assignment[shift.id] = [];
+  }
+
+  // Loop through the idList of the shift (which contains worker IDs)
+  shift.idList.forEach((workerId) => {
+    // Add the worker's ID to the array for the corresponding shiftId
+    assignment[shift.id].push(workerId);
+  });
+});
+  
+
+    
+    console.log("assignment 111", assignment);
+    // Call the function to update the assignment on the server
+    await updateAssignment(currentTable.id, assignment, token); // Replace with your actual token
+  
+    // Navigate to the home page
     navigate(`/home`);
   };
 

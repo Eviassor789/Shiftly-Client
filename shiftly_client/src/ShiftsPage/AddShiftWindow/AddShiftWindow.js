@@ -51,6 +51,8 @@ const AddShiftWindow = ({
             className="shift-box"
             onClick={() =>
               handleAddShiftClick({
+                id: shift.id,
+                cost: shift.cost,
                 day: shift.day,
                 start_hour: shift.start_hour,
                 end_hour: shift.end_hour,
@@ -58,6 +60,7 @@ const AddShiftWindow = ({
                 color:
                   color_list[Math.floor(Math.random() * color_list.length)],
                 profession: profession,
+                workers:[]
               })
             }
           >

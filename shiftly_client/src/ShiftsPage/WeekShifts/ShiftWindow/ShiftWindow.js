@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./ShiftWindow.css";
 import tables_map from "../../../Data/TableArchive";
-import workers_map from "../../../Data/Workers";
 import assignments from "../../../Data/Assignments";
 import Assignment from "../../../Assignment";
 import requirements from "../../../Data/Requirements";
@@ -53,12 +52,15 @@ const ShiftWindow = ({
     updatedShifts = [
       ...updatedShifts,
       {
+        id: shiftData.id,
+        workers: shiftData.workers,
         day: shiftData.day,
         start_hour: shiftData.start_hour,
         end_hour: shiftData.end_hour,
         idList: theworkersIdList,
         color: shiftData.color,
         profession: shiftData.profession,
+        cost:shiftData.cost
       },
     ];
 
@@ -72,6 +74,7 @@ const ShiftWindow = ({
     assignments.set(currentAssignmentID, updatedAssignment);
 
     setShifts(updatedShifts);
+    console.log("relevant: " + getRelevantIdWorkers());
   };
 
   const handleCloseClick = () => {
@@ -119,11 +122,22 @@ const ShiftWindow = ({
     setpotencialIdWorkersList(updatedPotencialWorkersList);
     updateShifts(updatedWorkersList);
 
-    const existingTable = tables_map.get(currentTableID);
+    // const existingTable = tables_map.get(currentTableID);
 
     
-    workers_map[id].shifts = [
-      ...workers_map[id].shifts,
+    // workers_map[id].shifts = [
+    //   ...workers_map[id].shifts,
+    //   {
+    //     profession: shiftData.profession,
+    //     day: shiftData.day,
+    //     start_hour: shiftData.start_hour,
+    //     end_hour: shiftData.end_hour,
+    //   },
+    // ];
+
+    let temp_workers = workers;
+    temp_workers[id].shifts = [
+      ...temp_workers[id].shifts,
       {
         profession: shiftData.profession,
         day: shiftData.day,
@@ -131,6 +145,8 @@ const ShiftWindow = ({
         end_hour: shiftData.end_hour,
       },
     ];
+    
+    setWorkers(temp_workers)
   };
 
   const handleMinusClick = (id) => {
@@ -140,20 +156,31 @@ const ShiftWindow = ({
     setCurrIdList(updatedWorkersList);
     setpotencialIdWorkersList(updatedPotencialWorkersList);
     updateShifts(updatedWorkersList);
-    workers_map[id].shifts = workers_map[id].shifts.filter(
+
+    let temp_workers = workers;
+    console.log("temp_workers: ",temp_workers )
+    console.log("id: ",id )
+    console.log("temp_workers[id]: ",temp_workers[id] )
+
+    temp_workers[id].shifts = temp_workers[id].shifts.filter(
       (shift) =>
         shift.profession !== shiftData.profession ||
         shift.day !== shiftData.day ||
         shift.start_hour !== shiftData.start_hour ||
         shift.end_hour !== shiftData.end_hour
     );
+
+    setWorkers(temp_workers)
+
   };
 
   function removeShiftFromTheWorkers() {
+    const updatedWorkers = { ...workers }; // Create a shallow copy of the workers object
+  
     currIdList.forEach((id) => {
       // Get the worker by ID
-      const worker = workers_map[id];
-
+      let worker = updatedWorkers[id];
+  
       if (worker) {
         // Filter out the shift to remove from the worker's shifts
         worker.shifts = worker.shifts.filter(
@@ -163,22 +190,28 @@ const ShiftWindow = ({
             shift.end_hour !== shiftData.end_hour ||
             shift.profession !== shiftData.profession
         );
-
-        // Update the worker in the workers_map
-        workers_map[id] = worker;
+  
+        // Update the worker in the copied workers object
+        updatedWorkers[id] = worker;
       }
     });
+  
+    // Update the state with the modified workers object
+    setWorkers(updatedWorkers);
   }
 
   const handleRealDeleteClick = () => {
     var updatedUnselected_shifts = [
       ...unselected_shifts,
       {
+        id: shiftData.id,
+        cost: shiftData.cost,
         profession: shiftData.profession,
         day: shiftData.day,
         start_hour: shiftData.start_hour,
         end_hour: shiftData.end_hour,
         idList: [],
+        workers:[],
         color: false,
       },
     ];
@@ -215,24 +248,25 @@ const ShiftWindow = ({
   };
 
   function getRelevantIdWorkers() {
-    console.log(workers_map);
-    return Object.values(workers_map)
+    console.log(workers);
+    return Object.values(workers)
       .filter(
         (person) =>
           person.professions.includes(shiftData.profession) &&
           person.days.includes(shiftData.day) &&
-          !shiftData.idList.some((id) => person.ID === id) &&
+          !shiftData.idList.some((id) => person.id === id) 
+          &&
           person.shifts.every(
             (shift) =>
-              shift.day !== shiftData.day ||
-              shift.start_hour >= shiftData.end_hour ||
-              shift.end_hour <= shiftData.start_hour
+              shift.shiftId !== shiftData.id
           )
       )
-      .map((person) => person.ID);
+      .map((person) => person.id);
   }
 
-  console.log("relevant: " + getRelevantIdWorkers());
+  
+  console.log("shiftData: " , shiftData);
+
 
   function upHour(time, i) {
     const [hours, minutes] = time.split(":").map(Number);
@@ -267,7 +301,7 @@ const ShiftWindow = ({
           {shiftData.start_hour} - {shiftData.end_hour}
         </span>
         <span>Required: {requiredWorkers}</span>
-        <i onClick={handleCloseClick} class="bi bi-x-lg"></i>
+        <i onClick={handleCloseClick} className="bi bi-x-lg"></i>
       </div>
       <div className="content">
         <div className="main_section">
@@ -280,12 +314,12 @@ const ShiftWindow = ({
                   width="20"
                   height="20"
                   fill="currentColor"
-                  class="bi bi-person-plus"
+                  className="bi bi-person-plus"
                   viewBox="0 0 16 16"
                 >
                   <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z" />
                   <path
-                    fill-rule="evenodd"
+                    fillRule="evenodd"
                     d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5"
                   />
                 </svg>
@@ -293,9 +327,9 @@ const ShiftWindow = ({
               <ul>
                 {potencialIdWorkersList.map((id) => (
                   <li key={id}>
-                    {workers_map[id].name}{" "}
+                    {workers[id].name}{" "}
                     <i
-                      class="bi bi-plus"
+                      className="bi bi-plus"
                       onClick={() => handlePlusClick(id)}
                     ></i>
                   </li>
@@ -364,9 +398,9 @@ const ShiftWindow = ({
               <ul>
                 {currIdList.map((id) => (
                   <li key={id}>
-                    {workers_map[id].name}{" "}
+                    {workers[id].name}{" "}
                     <i
-                      class="bi bi-dash"
+                      className="bi bi-dash"
                       onClick={() => handleMinusClick(id)}
                     ></i>
                   </li>

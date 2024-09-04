@@ -13,6 +13,7 @@ function Home(props) {
   const [loading, setLoading] = useState(true);
   const [userLoading, setUserLoading] = useState(true); // New state for user data loading
   const [loggedUser, setLoggedUser] = useState("");
+  const [userCurrent, setUserCurrent] = useState("");
 
   const navigate = useNavigate();
 
@@ -27,15 +28,17 @@ function Home(props) {
             'Authorization': `Bearer ${token}`
           }
         });
-  
+    
         if (!response.ok) {
+          const errorDetail = await response.text(); // Get error detail from the response
+          console.error('Token verification failed:', errorDetail); // Log the error detail
           throw new Error('Token verification failed');
         }
-  
+    
         const data = await response.json();
         console.log('Token verification successful:', data);
         setLoggedUser(data.current_user);
-  
+    
         // Fetch user-specific tables
         const tablesResponse = await fetch('http://localhost:5000/user_tables', {
           method: 'GET',
@@ -45,12 +48,33 @@ function Home(props) {
         });
         
         if (!tablesResponse.ok) {
+          const tablesErrorDetail = await tablesResponse.text(); // Get error detail from the response
+          console.error('Failed to fetch tables:', tablesErrorDetail); // Log the error detail
           throw new Error('Failed to fetch tables');
         }
-  
+    
         const tablesData = await tablesResponse.json();
         console.log('User tables data:', tablesData);
         setTiles(tablesData);
+    
+        // Fetch user current data
+        const userCurrentResponse = await fetch('http://localhost:5000/get_current_user', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+    
+        if (!userCurrentResponse.ok) {
+          const userCurrentErrorDetail = await userCurrentResponse.text(); // Get error detail from the response
+          console.error('Failed to fetch user color:', userCurrentErrorDetail); // Log the error detail
+          throw new Error('Failed to fetch user color');
+        }
+    
+        const userCurrentJson = await userCurrentResponse.json();
+        console.log('User color:', userCurrentJson);
+        setUserCurrent(userCurrentJson.user_data);
+    
       } catch (error) {
         console.error('Error:', error);
         navigate('/');
@@ -117,7 +141,7 @@ function Home(props) {
   
   return (
     <>
-      <HomeTopBar page="home" loggedUser={loggedUser} />
+      <HomeTopBar page="home" loggedUser={loggedUser} userCurrent={userCurrent} />
       <div className="CenterDiv">
         {/* Render content after data is fetched */}
         <div id="welcomeBox" className="HomeBoxes">

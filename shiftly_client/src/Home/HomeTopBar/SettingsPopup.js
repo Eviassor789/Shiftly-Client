@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './SettingsPopup.css'; // Import the CSS file for styling
 import { useNavigate } from 'react-router-dom';
-import users from '../../Data/Users';
 
-function SettingsPopup({ onClose, loggedUser }) {
+function SettingsPopup({ onClose, loggedUser, userCurrent }) {
   const navigate = useNavigate();
 
   // Ensure loggedUser.settings is an array and has at least 2 elements
-  const initialSettings = users.get(loggedUser).settings && Array.isArray(users.get(loggedUser).settings) 
-    ? users.get(loggedUser).settings 
+  const initialSettings = userCurrent.settings && Array.isArray(userCurrent.settings) 
+    ? userCurrent.settings 
     : [false, false];
 
   const [isChecked, setIsChecked] = useState(initialSettings);
@@ -16,14 +15,14 @@ function SettingsPopup({ onClose, loggedUser }) {
   useEffect(() => {
     // Update isChecked when loggedUser.settings changes
     setIsChecked(initialSettings);
-  }, [loggedUser]);
+  }, [loggedUser, userCurrent]);
 
   const handleCheckboxChange = (index) => (event) => {
     // Create a copy of the isChecked array to avoid mutation
     const newChecked = [...isChecked];
     newChecked[index] = event.target.checked;
     setIsChecked(newChecked);
-    users.get(loggedUser).settings = newChecked;
+    userCurrent.settings = newChecked;
 
     if (event.target.checked) {
       // alert(`Hello! Objective ${index + 1} is checked.`);

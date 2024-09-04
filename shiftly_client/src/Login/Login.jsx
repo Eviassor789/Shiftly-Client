@@ -1,8 +1,9 @@
 import "./Login.css";
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import users from "../Data/Users";
-import User from "../User";
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from 'jwt-decode';
+
 
 function Login(props) {
 
@@ -14,18 +15,57 @@ function Login(props) {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const rMessage = async (response) => {
+    try {
+      console.log("response:", response);
+      const decodedResponse = jwtDecode(response.credential);
+      console.log("decodedResponse:", decodedResponse);
+  
+      const googleResponse = await fetch("http://localhost:5000/login/google", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: decodedResponse.name,
+          email: decodedResponse.email,
+          sub: decodedResponse.sub,
+          picture: decodedResponse.picture,
+        }),
+      });
+  
+      if (!googleResponse.ok) {
+        throw new Error("Google login failed");
+      }
+  
+      const data = await googleResponse.json();
+      const { token } = data;  // Make sure you’re correctly extracting the token
+  
+      if (!token || token.split('.').length !== 3) {
+        throw new Error("Invalid token received from server");
+      }
+  
+      // Store the token in localStorage or sessionStorage
+      localStorage.setItem('jwtToken', token);
+      localStorage.setItem('loggedUser', decodedResponse.name);
+  
+      console.log("Google login successful");
+      navigate("/home");
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Google login failed");
+    }
+  };
+
+const eMessage = (error) => {
+    console.log(error);
+    setErrorMessage('Google login failed');
+};
+
   const handleButtonClick = (page) => {
     navigate(`/${page}`);
   };
 
-  // const handleLogin = () => {
-  //   if (users.get(username) && users.get(username).password == password) {
-  //     props.setLoggedUser(username);
-  //     navigate("/home");
-  //   } else {
-  //     setErrorMessage("Invalid username or password");
-  //   }
-  // };
 
   async function handleLogin() {
     try {
@@ -73,6 +113,10 @@ function Login(props) {
     if (event.key === 'Enter' && !errorMessage && username && password) {
       handleLogin(event); // Call handleLogin on Enter key press
     }
+  };
+
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:5000/login/google";
   };
 
   return (
@@ -172,7 +216,7 @@ function Login(props) {
 
           <div id="social_net_container">
             <div>
-              <button className="btn">
+              <button className="btn" onClick={handleGoogleLogin}>
                 <svg
                   enableBackground="new 0 0 48 48"
                   height="30"
@@ -199,6 +243,7 @@ function Login(props) {
                 </svg>
                 <span> continue with Google</span>
               </button>
+              <GoogleLogin className="GoogleLogin" onSuccess={rMessage} onError={eMessage} />
             </div>
           </div>
 

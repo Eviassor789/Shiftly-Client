@@ -10,6 +10,7 @@ function Generate(props) {
   const [filesList, SetFilesList] = useState([]);
   const [parsedRows, SetParsedRows] = useState([]);
   const [rowsList, SetRowsList] = useState([[], [], []]);
+  const [userCurrent, setUserCurrent] = useState("");
 
   const [fileUploaded, setFileUploaded] = useState([false, false, false]);
   const [loggedUser, setLoggedUser] = useState("");
@@ -34,6 +35,21 @@ function Generate(props) {
         const data = await response.json();
         console.log("Token verification successful:", data);
         setLoggedUser(data.current_user);
+
+        const userCurrnetResponse = await fetch('http://localhost:5000/get_current_user', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (!userCurrnetResponse.ok) {
+          throw new Error('Failed to fetch user color');
+        }
+  
+        const userCurrentJson = await userCurrnetResponse.json();
+        console.log('User color:', userCurrentJson);
+        setUserCurrent(userCurrentJson.user_data);
       } catch (error) {
         console.error("Error:", error);
         navigate("/");
@@ -69,7 +85,7 @@ function Generate(props) {
           />
         ))}
       </div>
-      <HomeTopBar page="generate" loggedUser={loggedUser} />
+      <HomeTopBar page="generate" loggedUser={loggedUser} userCurrent={userCurrent} />
       {/* <button onClick={handleNext} type="button" disabled={currentStep === 3} class="btn btn-primary">
         next page
       </button>

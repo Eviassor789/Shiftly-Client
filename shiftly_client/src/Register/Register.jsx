@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import users from '../Data/Users';
-import User from '../User';
 import './Register.css';
 
 function Register() {
@@ -18,22 +16,37 @@ function Register() {
     navigate(`/${page}`);
   };
 
-  const handleRegisteration = () => {
-    if (!users.get(username)) {
-      users.set(
-        username,
-        new User({
-          username: username,
-          password: password,
-          tablesArr: [],
-          picture: '',
-        })
-      );
-      handleButtonClick('');
+  const handleRegisteration = async () => {
+    if (usernameLengthValid && passwordLengthValid && passwordsMatch) {
+      try {
+        const response = await fetch('http://localhost:5000/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: username,
+            password: password,
+          }),
+        });
+  
+        const result = await response.json();
+  
+        if (response.ok) {
+          // Registration successful, redirect to another page or log in the user
+          navigate(`/home`);
+        } else {
+          setErrorMessage(result.msg || 'Registration failed');
+        }
+      } catch (error) {
+        setErrorMessage('An error occurred during registration');
+        console.error('Error:', error);
+      }
     } else {
-      setErrorMessage('Username already taken'); // Set error message
+      setErrorMessage('Please ensure all fields are filled out correctly.');
     }
   };
+  
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -170,7 +183,7 @@ function Register() {
                 </>
               ) : (
                 <>
-                  {/* Your SVG icon for hiding password */}
+                  {/* SVG icon for hiding password */}
                   <svg
                     aria-labelledby="eyeIconTitle"
                     color="#000000"

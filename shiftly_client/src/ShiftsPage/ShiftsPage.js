@@ -4,7 +4,6 @@ import WeekShifts from "./WeekShifts/WeekShifts";
 import "./ShiftsPage.css";
 import AddShiftWindow from "./AddShiftWindow/AddShiftWindow";
 import { useNavigate } from "react-router-dom";
-import users from "../Data/Users";
 import tables_map from "../Data/TableArchive";
 import assignments from "../Data/Assignments";
 import requirements from "../Data/Requirements";

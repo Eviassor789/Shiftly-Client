@@ -2,11 +2,16 @@ import "./HomeTopBar.css";
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SettingsPopup from "./SettingsPopup";
-import users from "../../Data/Users";
 
 function HomeTopBar(props) {
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  
+  const initialSettings = props.userCurrent.settings && Array.isArray(props.userCurrent.settings) 
+  ? props.userCurrent.settings 
+  : [false, false]; // Default settings if userCurrent.settings is not an array
+
+const [isChecked, setIsChecked] = useState(initialSettings);
 
   const navigate = useNavigate();
 
@@ -16,7 +21,34 @@ function HomeTopBar(props) {
     navigate(`/${page}`);
   };
 
+  const updateSettingsOnServer = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/update-settings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+        },
+        body: JSON.stringify({
+          username: props.loggedUser,
+          settings: isChecked, // Send the updated settings array
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update settings');
+      }
+      const data = await response.json();
+      console.log("Settings updated successfully", data);
+    } catch (error) {
+      console.error("Error updating settings:", error);
+    }
+  };
+
   const handleSettingsClick = () => {
+    if (isSettingsOpen) {
+      updateSettingsOnServer();
+    }
     setIsSettingsOpen(!isSettingsOpen);
   };
 
@@ -48,7 +80,7 @@ function HomeTopBar(props) {
         <button
           id="UserDetailsBtn"
           onClick={handleSettingsClick}
-          style={{ background: users.get(props.loggedUser) ? users.get(props.loggedUser).color : "gray" }}
+          style={{ background: props.userCurrent.color ? props.userCurrent.color : "gray" }}
         >
           {props.loggedUser ? props.loggedUser[0].toUpperCase() : "U"}
         </button>{" "}
@@ -57,6 +89,10 @@ function HomeTopBar(props) {
         <SettingsPopup
           onClose={() => setIsSettingsOpen(false)}
           loggedUser={props.loggedUser}
+          userCurrent={props.userCurrent}
+          initialSettings={initialSettings}
+          isChecked={isChecked}
+          setIsChecked={setIsChecked}
         />
       )}
     </>

@@ -9,7 +9,7 @@ function HomeTopBar(props) {
   
   const initialSettings = props.userCurrent.settings && Array.isArray(props.userCurrent.settings) 
   ? props.userCurrent.settings 
-  : [false, false];
+  : [false, false]; // Default settings if userCurrent.settings is not an array
 
 const [isChecked, setIsChecked] = useState(initialSettings);
 

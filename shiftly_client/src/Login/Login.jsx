@@ -1,104 +1,99 @@
 import "./Login.css";
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode';
-
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
 
 function Login(props) {
-
   const navigate = useNavigate();
 
-  
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   const rMessage = async (response) => {
-  try {
-    console.log("response:", response);
-    const decodedResponse = jwtDecode(response.credential);
-    console.log("decodedResponse:", decodedResponse);
+    try {
+      console.log("response:", response);
+      const decodedResponse = jwtDecode(response.credential);
+      console.log("decodedResponse:", decodedResponse);
 
-    const googleResponse = await fetch("http://localhost:5000/login/google", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: decodedResponse.name,
-        email: decodedResponse.email,
-        sub: decodedResponse.sub,
-        picture: decodedResponse.picture,
-      }),
-    });
+      const googleResponse = await fetch("http://localhost:5000/login/google", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: decodedResponse.name,
+          email: decodedResponse.email,
+          sub: decodedResponse.sub,
+          picture: decodedResponse.picture,
+        }),
+      });
 
-    if (!googleResponse.ok) {
-      throw new Error("Google login failed");
+      if (!googleResponse.ok) {
+        throw new Error("Google login failed");
+      }
+
+      const data = await googleResponse.json();
+      const { token } = data; // Make sure you’re correctly extracting the token
+
+      if (!token || token.split(".").length !== 3) {
+        throw new Error("Invalid token received from server");
+      }
+
+      // Store the token in localStorage or sessionStorage
+      localStorage.setItem("jwtToken", token);
+      localStorage.setItem("loggedUser", decodedResponse.name);
+
+      console.log("Google login successful");
+      navigate("/home");
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Google login failed");
     }
+  };
 
-    const data = await googleResponse.json();
-    const { token } = data;  // Make sure you’re correctly extracting the token
-
-    if (!token || token.split('.').length !== 3) {
-      throw new Error("Invalid token received from server");
-    }
-
-    // Store the token in localStorage or sessionStorage
-    localStorage.setItem('jwtToken', token);
-    localStorage.setItem('loggedUser', decodedResponse.name);
-
-    console.log("Google login successful");
-    navigate("/home");
-  } catch (error) {
-    console.error(error);
-    setErrorMessage("Google login failed");
-  }
-};
-
-const eMessage = (error) => {
+  const eMessage = (error) => {
     console.log(error);
-    setErrorMessage('Google login failed');
-};
+    setErrorMessage("Google login failed");
+  };
 
   const handleButtonClick = (page) => {
     navigate(`/${page}`);
   };
 
-
   async function handleLogin() {
     try {
-        const response = await fetch('http://localhost:5000/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username: username,
-                password: password
-            })
-        });
+      const response = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        }),
+      });
 
-        if (!response.ok) {
-            throw new Error('Login failed');
-        }
+      if (!response.ok) {
+        throw new Error("Login failed");
+      }
 
-        const data = await response.json();
-        const { access_token } = data;
+      const data = await response.json();
+      const { access_token } = data;
 
-        // Store the token in localStorage or sessionStorage
-        localStorage.setItem('jwtToken', access_token);
-        localStorage.setItem('loggedUser', username);
+      // Store the token in localStorage or sessionStorage
+      localStorage.setItem("jwtToken", access_token);
+      localStorage.setItem("loggedUser", username);
 
-        console.log('Login successful');
-        navigate("/home");
-
+      console.log("Login successful");
+      navigate("/home");
     } catch (error) {
-        console.error('Error:', error);
-        setErrorMessage("Invalid username or password");
+      console.error("Error:", error);
+      setErrorMessage("Invalid username or password");
     }
-}
+  }
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -110,7 +105,7 @@ const eMessage = (error) => {
   };
 
   const handleKeyDown = (event) => {
-    if (event.key === 'Enter' && !errorMessage && username && password) {
+    if (event.key === "Enter" && !errorMessage && username && password) {
       handleLogin(event); // Call handleLogin on Enter key press
     }
   };
@@ -216,7 +211,7 @@ const eMessage = (error) => {
 
           <div id="social_net_container">
             <div>
-              <button className="btn" onClick={handleGoogleLogin}>
+              {/* <button className="btn" onClick={handleGoogleLogin}>
                 <svg
                   enableBackground="new 0 0 48 48"
                   height="30"
@@ -242,8 +237,54 @@ const eMessage = (error) => {
                   />
                 </svg>
                 <span> continue with Google</span>
-              </button>
-              <GoogleLogin className="GoogleLogin" onSuccess={rMessage} onError={eMessage} />
+              </button> */}
+              <GoogleLogin
+                onSuccess={rMessage}
+                onError={eMessage}
+                render={(renderProps) => (
+                  <button
+                    onClick={renderProps.onClick}
+                    disabled={renderProps.disabled}
+                    style={{
+                      width: "500px",
+                      backgroundColor: "#4285F4", // Google's button color
+                      color: "#fff",
+                      padding: "10px",
+                      fontSize: "16px",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <svg
+                      enableBackground="new 0 0 48 48"
+                      height="20"
+                      viewBox="0 0 48 48"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                      style={{ marginRight: "10px" }}
+                    >
+                      <path
+                        d="m43.611 20.083h-1.611v-.083h-18v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657c-3.572-3.329-8.35-5.382-13.618-5.382-11.045 0-20 8.955-20 20s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"
+                        fill="#ffc107"
+                      />
+                      <path
+                        d="m6.306 14.691 6.571 4.819c1.778-4.402 6.084-7.51 11.123-7.51 3.059 0 5.842 1.154 7.961 3.039l5.657-5.657c-3.572-3.329-8.35-5.382-13.618-5.382-7.682 0-14.344 4.337-17.694 10.691z"
+                        fill="#ff3d00"
+                      />
+                      <path
+                        d="m24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238c-2.008 1.521-4.504 2.43-7.219 2.43-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025c3.319 6.437 9.952 10.921 17.805 10.921z"
+                        fill="#4caf50"
+                      />
+                      <path
+                        d="m43.611 20.083h-1.611v-.083h-18v8h11.303c-1.37 3.871-4.425 6.941-8.194 8.328l6.19 5.238c-.436.241 6.817-3.066 6.817-13.566 0-1.341-.138-2.65-.389-3.917z"
+                        fill="#1976d2"
+                      />
+                    </svg>
+                    Continue with Google
+                  </button>
+                )}
+              />
             </div>
           </div>
 
@@ -263,6 +304,5 @@ const eMessage = (error) => {
     </>
   );
 }
-
 
 export default Login;

@@ -6,6 +6,12 @@ import SettingsPopup from "./SettingsPopup";
 function HomeTopBar(props) {
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  
+  const initialSettings = props.userCurrent.settings && Array.isArray(props.userCurrent.settings) 
+  ? props.userCurrent.settings 
+  : [false, false];
+
+const [isChecked, setIsChecked] = useState(initialSettings);
 
   const navigate = useNavigate();
 
@@ -15,7 +21,34 @@ function HomeTopBar(props) {
     navigate(`/${page}`);
   };
 
+  const updateSettingsOnServer = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/update-settings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+        },
+        body: JSON.stringify({
+          username: props.loggedUser,
+          settings: isChecked, // Send the updated settings array
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update settings');
+      }
+      const data = await response.json();
+      console.log("Settings updated successfully", data);
+    } catch (error) {
+      console.error("Error updating settings:", error);
+    }
+  };
+
   const handleSettingsClick = () => {
+    if (isSettingsOpen) {
+      updateSettingsOnServer();
+    }
     setIsSettingsOpen(!isSettingsOpen);
   };
 
@@ -57,6 +90,9 @@ function HomeTopBar(props) {
           onClose={() => setIsSettingsOpen(false)}
           loggedUser={props.loggedUser}
           userCurrent={props.userCurrent}
+          initialSettings={initialSettings}
+          isChecked={isChecked}
+          setIsChecked={setIsChecked}
         />
       )}
     </>

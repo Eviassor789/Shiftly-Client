@@ -182,13 +182,15 @@ const ShiftWindow = ({
 
       if (worker) {
         // Filter out the shift to remove from the worker's shifts
-        worker.shifts = worker.shifts.filter(
+        if (worker.shifts){        
+          worker.shifts = worker.shifts.filter(
           (shift) =>
             shift.day !== shiftData.day ||
             shift.start_hour !== shiftData.start_hour ||
             shift.end_hour !== shiftData.end_hour ||
             shift.profession !== shiftData.profession
-        );
+        );}
+
 
         // Update the worker in the copied workers object
         updatedWorkers[id] = worker;

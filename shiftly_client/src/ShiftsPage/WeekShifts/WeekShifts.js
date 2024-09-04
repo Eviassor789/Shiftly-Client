@@ -221,19 +221,25 @@ const WeekShifts = ({
                   //   });
                   // });
 
-                  relevantShifts.forEach((shift) => {
-                    shift.idList.forEach((id) => {
-                      workers[id].shifts = [
-                        ...workers[id].shifts,
-                        {
-                          profession: shift.profession,
-                          day: shift.day,
-                          start_hour: shift.start_hour,
-                          end_hour: shift.end_hour,
-                        },
-                      ];
-                    });
-                  });
+                  // let temp_workers = workers;
+                  // Object.values(temp_workers).forEach((worker) => {
+                  //   worker.shifts = []
+                  // })
+                
+                  // shifts.forEach((shift) => {
+                  //   shift.idList.forEach((id) => {
+                  //     temp_workers[id].shifts = [
+                  //       ...temp_workers[id].shifts,
+                  //       {
+                  //         profession: shift.profession,
+                  //         day: shift.day,
+                  //         start_hour: shift.start_hour,
+                  //         end_hour: shift.end_hour,
+                  //       },
+                  //     ];
+                  //   });
+                  // });
+                  // setWorkers(temp_workers)
                 }
   
                 return (

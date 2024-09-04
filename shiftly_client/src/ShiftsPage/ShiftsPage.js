@@ -145,13 +145,13 @@ const ShiftsPage = (props) => {
         });
     });
 
-    // const temp_workers = currTable.all_workers.reduce((map, worker) => {
-    //   map[worker.id] = worker;
-    //   return map;
-    // }, {});
+    const temp_workers = currTable.all_workers.reduce((map, worker) => {
+      map[worker.id] = worker;
+      return map;
+    }, {});
 
     // Finally, update the state with the populated workersMap
-    setWorkers(workersMap);
+    setWorkers(temp_workers);
   
           const daysOfWeek = [
             "Sunday", "Monday", "Tuesday", "Wednesday", 

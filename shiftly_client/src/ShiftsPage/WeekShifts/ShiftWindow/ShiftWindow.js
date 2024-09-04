@@ -29,8 +29,6 @@ const ShiftWindow = ({
     getRelevantIdWorkers()
   );
 
-
-
   const handleDeleteClick = () => {
     setShowDeleteModal(true);
   };
@@ -60,7 +58,7 @@ const ShiftWindow = ({
         idList: theworkersIdList,
         color: shiftData.color,
         profession: shiftData.profession,
-        cost:shiftData.cost
+        cost: shiftData.cost,
       },
     ];
 
@@ -122,31 +120,33 @@ const ShiftWindow = ({
     setpotencialIdWorkersList(updatedPotencialWorkersList);
     updateShifts(updatedWorkersList);
 
-    // const existingTable = tables_map.get(currentTableID);
+    console.log("plus - workers: ", workers);
 
-    
-    // workers_map[id].shifts = [
-    //   ...workers_map[id].shifts,
-    //   {
-    //     profession: shiftData.profession,
-    //     day: shiftData.day,
-    //     start_hour: shiftData.start_hour,
-    //     end_hour: shiftData.end_hour,
-    //   },
-    // ];
+    let temp_workers = JSON.parse(JSON.stringify(workers));
+    if (!temp_workers[id].shifts) {
+      temp_workers[id].shifts = [
+        {
+          profession: shiftData.profession,
+          day: shiftData.day,
+          start_hour: shiftData.start_hour,
+          end_hour: shiftData.end_hour,
+        },
+      ];
+    } else {
+      temp_workers[id].shifts = [
+        ...temp_workers[id].shifts,
+        {
+          profession: shiftData.profession,
+          day: shiftData.day,
+          start_hour: shiftData.start_hour,
+          end_hour: shiftData.end_hour,
+        },
+      ];
+    }
+    // temp_workers[id].shifts = ["a", "b"]
+    console.log("plus - temp_workers[id]: ", temp_workers[id]);
 
-    let temp_workers = workers;
-    temp_workers[id].shifts = [
-      ...temp_workers[id].shifts,
-      {
-        profession: shiftData.profession,
-        day: shiftData.day,
-        start_hour: shiftData.start_hour,
-        end_hour: shiftData.end_hour,
-      },
-    ];
-    
-    setWorkers(temp_workers)
+    setWorkers(temp_workers);
   };
 
   const handleMinusClick = (id) => {
@@ -158,9 +158,9 @@ const ShiftWindow = ({
     updateShifts(updatedWorkersList);
 
     let temp_workers = workers;
-    console.log("temp_workers: ",temp_workers )
-    console.log("id: ",id )
-    console.log("temp_workers[id]: ",temp_workers[id] )
+    console.log("temp_workers: ", temp_workers);
+    console.log("id: ", id);
+    console.log("temp_workers[id]: ", temp_workers[id]);
 
     temp_workers[id].shifts = temp_workers[id].shifts.filter(
       (shift) =>
@@ -170,32 +170,33 @@ const ShiftWindow = ({
         shift.end_hour !== shiftData.end_hour
     );
 
-    setWorkers(temp_workers)
-
+    setWorkers(temp_workers);
   };
 
   function removeShiftFromTheWorkers() {
     const updatedWorkers = { ...workers }; // Create a shallow copy of the workers object
-  
+
     currIdList.forEach((id) => {
       // Get the worker by ID
       let worker = updatedWorkers[id];
-  
+
       if (worker) {
         // Filter out the shift to remove from the worker's shifts
-        worker.shifts = worker.shifts.filter(
+        if (worker.shifts){        
+          worker.shifts = worker.shifts.filter(
           (shift) =>
             shift.day !== shiftData.day ||
             shift.start_hour !== shiftData.start_hour ||
             shift.end_hour !== shiftData.end_hour ||
             shift.profession !== shiftData.profession
-        );
-  
+        );}
+
+
         // Update the worker in the copied workers object
         updatedWorkers[id] = worker;
       }
     });
-  
+
     // Update the state with the modified workers object
     setWorkers(updatedWorkers);
   }
@@ -211,7 +212,7 @@ const ShiftWindow = ({
         start_hour: shiftData.start_hour,
         end_hour: shiftData.end_hour,
         idList: [],
-        workers:[],
+        workers: [],
         color: false,
       },
     ];
@@ -241,10 +242,7 @@ const ShiftWindow = ({
     setShowDeleteModal(false);
     onClose();
 
-    handleProfessionClick("@"+shiftData.profession)
-
-
-
+    handleProfessionClick("@" + shiftData.profession);
   };
 
   function getRelevantIdWorkers() {
@@ -254,19 +252,18 @@ const ShiftWindow = ({
         (person) =>
           person.professions.includes(shiftData.profession) &&
           person.days.includes(shiftData.day) &&
-          !shiftData.idList.some((id) => person.id === id) 
-          &&
-          person.shifts.every(
-            (shift) =>
-              shift.shiftId !== shiftData.id
-          )
+          !shiftData.idList.some((id) => person.id === id) &&
+          (!person.shifts ||
+            person.shifts.every(
+              (shift) =>
+                shift.start_hour >= shiftData.end_hour ||
+                shift.end_hour <= shiftData.start_hour
+            ))
       )
       .map((person) => person.id);
   }
 
-  
-  console.log("shiftData: " , shiftData);
-
+  console.log("shiftData: ", shiftData);
 
   function upHour(time, i) {
     const [hours, minutes] = time.split(":").map(Number);

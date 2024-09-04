@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import jsPDF from 'jspdf';
+// import 'jspdf-autotable';
 import { useParams } from "react-router-dom";
 import WeekShifts from "./WeekShifts/WeekShifts";
 import "./ShiftsPage.css";
@@ -144,13 +146,13 @@ const ShiftsPage = (props) => {
         });
     });
 
-    // const temp_workers = currTable.all_workers.reduce((map, worker) => {
-    //   map[worker.id] = worker;
-    //   return map;
-    // }, {});
+    const temp_workers = currTable.all_workers.reduce((map, worker) => {
+      map[worker.id] = worker;
+      return map;
+    }, {});
 
     // Finally, update the state with the populated workersMap
-    setWorkers(workersMap);
+    setWorkers(temp_workers);
   
           const daysOfWeek = [
             "Sunday", "Monday", "Tuesday", "Wednesday", 
@@ -289,6 +291,23 @@ const ShiftsPage = (props) => {
     navigate(`/home`);
   };
 
+
+  async function handleDownload () {
+    const doc = new jsPDF();
+    const shiftsData = [
+      { worker: "John Doe", shifts: ["Monday 09:00-12:00", "Wednesday 14:00-18:00"] },
+      { worker: "Jane Smith", shifts: ["Tuesday 10:00-13:00", "Friday 09:00-12:00"] }
+  ];
+
+    doc.text('Shift Assignments', 20, 20);
+    shiftsData.forEach((data, index) => {
+        doc.text(`${data.worker}`, 20, 30 + index * 10);
+        doc.text(`${data.shifts.join(", ")}`, 20, 40 + index * 10);
+    });
+
+    doc.save('shift_assignments.pdf');
+};
+
   const handleBack = () => {
     navigate(`/home`);
   };
@@ -311,7 +330,7 @@ const ShiftsPage = (props) => {
           <button className="button">
             <i className="bi bi-clipboard2-check"></i>&nbsp;&nbsp;&nbsp;Status
           </button>
-          <button className="button">
+          <button className="button" onClick={handleDownload}>
             <i className="bi bi-download"></i>&nbsp;&nbsp;&nbsp;Download
           </button>
           <button className="button" onClick={handleSave}>

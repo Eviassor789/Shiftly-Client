@@ -32,7 +32,16 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
             cost: 50,
             idList: [],
             color: false
-        }
+        },
+        {
+          profession: "Teacher",
+          day: "Sunday",
+          start_hour: "12:00",
+          end_hour: "14:00",
+          cost: 50,
+          idList: [],
+          color: false
+      }
     ],
     workers: [
       {

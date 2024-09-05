@@ -78,6 +78,7 @@ function SettingsPopup({ onClose, loggedUser, userCurrent, initialSettings, isCh
           className="Log-out"
           onClick={() => {
             localStorage.setItem("jwtToken", "");
+            updateSettingsOnServer(); // Update server before logging out
             navigate("/");
           }}
         >

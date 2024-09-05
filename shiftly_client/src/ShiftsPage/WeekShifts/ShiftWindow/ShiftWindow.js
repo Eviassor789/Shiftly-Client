@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./ShiftWindow.css";
 import tables_map from "../../../Data/TableArchive";
-import assignments from "../../../Data/Assignments";
-import Assignment from "../../../Assignment";
+// import assignments from "../../../Data/Assignments";
+// import Assignment from "../../../Assignment";
 import requirements from "../../../Data/Requirements";
 
 const ShiftWindow = ({
@@ -62,14 +62,14 @@ const ShiftWindow = ({
       },
     ];
 
-    const existingAssignment = assignments.get(currentAssignmentID);
-    // Create a new Assignment object with the updated shifts_list
-    const updatedAssignment = new Assignment({
-      ...existingAssignment, // Spread the existing properties
-      shifts_list: updatedShifts, // Override the shifts_list with the new one
-    });
-    // Update the assignments map with the new Assignment object
-    assignments.set(currentAssignmentID, updatedAssignment);
+    // const existingAssignment = assignments.get(currentAssignmentID);
+    // // Create a new Assignment object with the updated shifts_list
+    // const updatedAssignment = new Assignment({
+    //   ...existingAssignment, // Spread the existing properties
+    //   shifts_list: updatedShifts, // Override the shifts_list with the new one
+    // });
+    // // Update the assignments map with the new Assignment object
+    // assignments.set(currentAssignmentID, updatedAssignment);
 
     setShifts(updatedShifts);
     console.log("relevant: " + getRelevantIdWorkers());
@@ -162,13 +162,17 @@ const ShiftWindow = ({
     console.log("id: ", id);
     console.log("temp_workers[id]: ", temp_workers[id]);
 
-    temp_workers[id].shifts = temp_workers[id].shifts.filter(
-      (shift) =>
-        shift.profession !== shiftData.profession ||
-        shift.day !== shiftData.day ||
-        shift.start_hour !== shiftData.start_hour ||
-        shift.end_hour !== shiftData.end_hour
-    );
+
+
+    if (temp_workers[id].shifts){
+      temp_workers[id].shifts = temp_workers[id].shifts.filter(
+        (shift) =>
+          shift.profession !== shiftData.profession ||
+          shift.day !== shiftData.day ||
+          shift.start_hour !== shiftData.start_hour ||
+          shift.end_hour !== shiftData.end_hour
+      );
+    }
 
     setWorkers(temp_workers);
   };
@@ -227,15 +231,15 @@ const ShiftWindow = ({
     // Update the state with the new shifts and other_shifts arrays
     removeShiftFromTheWorkers();
 
-    const existingAssignment = assignments.get(currentAssignmentID);
-    // Create a new Assignment object with the updated shifts_list
-    const updatedAssignment = new Assignment({
-      ...existingAssignment, // Spread the existing properties
-      shifts_list: updatedShifts, // Override the shifts_list with the new one
-      unselected_shiftsList: updatedUnselected_shifts,
-    });
-    // Update the assignments map with the new Assignment object
-    assignments.set(currentAssignmentID, updatedAssignment);
+    // const existingAssignment = assignments.get(currentAssignmentID);
+    // // Create a new Assignment object with the updated shifts_list
+    // const updatedAssignment = new Assignment({
+    //   ...existingAssignment, // Spread the existing properties
+    //   shifts_list: updatedShifts, // Override the shifts_list with the new one
+    //   unselected_shiftsList: updatedUnselected_shifts,
+    // });
+    // // Update the assignments map with the new Assignment object
+    // assignments.set(currentAssignmentID, updatedAssignment);
 
     setShifts(updatedShifts);
     setUnselected_shifts(updatedUnselected_shifts);

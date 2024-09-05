@@ -7,7 +7,6 @@ import "./ShiftsPage.css";
 import AddShiftWindow from "./AddShiftWindow/AddShiftWindow";
 import { useNavigate } from "react-router-dom";
 import tables_map from "../Data/TableArchive";
-import assignments from "../Data/Assignments";
 import requirements from "../Data/Requirements";
 import ScheduleEvaluator from "../ScheduleEvaluator";
 

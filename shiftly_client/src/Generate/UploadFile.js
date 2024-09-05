@@ -153,25 +153,14 @@ const UploadFile = (props) => {
       "skill 2",
       "skill 3",
       "Hours per Week",
-      "days per week",
-      "work on weekends? (Y/N)",
+      "days" // New header replacing "days per week" and "work on weekends?"
     ];
-
+  
     if (rows.length === 0) {
       console.error("The data is empty.");
       return [rows, false];
     }
-
-    // const headers = rows[0];
-
-    // Check if the headers match
-    // for (let i = 0; i < expectedHeaders.length; i++) {
-    //   if (headers[i].trim() !== expectedHeaders[i]) {
-    //     alert(`Header mismatch at position ${i}.\nExpected: "${expectedHeaders[i]}", Found: "${headers[i]}"`);
-    //     return false;
-    //   }
-    // }
-
+  
     // Check each row for correct number of columns and valid data
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i];
@@ -181,39 +170,56 @@ const UploadFile = (props) => {
         );
         return [rows, false];
       }
-
+  
       if (isNaN(row[0])) {
         // Check if employee ID number is a number
         alert(`Invalid employee ID number at row ${i}.\nFound: "${row[0]}"`);
         return [rows, false];
       }
-
+  
       for (let j = 1; j <= 4; j++) {
         if (typeof row[j] === 'string' && /\d/.test(row[j])) {
           alert(`Invalid data in row ${i}, column ${j}:\nStrings should not contain numbers.`);
           return [rows, false];
         }
       }
-
-      if (!["Y", "N"].includes(row[7]) && row[7].length !== 1) {
-        // Check if work on weekends is Y or N
+  
+      if (isNaN(row[5])) {
+        // Check if Hours per Week is a number
         alert(
-          `Invalid value for 'work on weekends' at row ${i}.\nExpected: "Y" or "N", Found: "${row[7]}"`
+          `Invalid number for Hours per Week at row ${i}.\nFound: "${row[5]}"`
         );
         return [rows, false];
       }
-
-      if (isNaN(row[5]) || isNaN(row[6])) {
-        // Check if Hours per Week and days per week are numbers
-        alert(
-          `Invalid number for Hours per Week or days per week at row ${i}.\nFound: "${row[5]}", "${row[6]}"`
-        );
+  
+      // Validate "days" column (new logic)
+      const days = row[6].split(',').map(Number);
+      const uniqueDays = new Set(days);
+  
+      if (days.some(isNaN) || days.length !== uniqueDays.size) {
+        alert(`Row ${i} has invalid or duplicate days.\nDays should be unique and between 1 and 7.`);
+        return [rows, false];
+      }
+  
+      if (days.some(day => day < 1 || day > 7)) {
+        alert(`Row ${i} has days out of range.\nExpected: days between 1 and 7.`);
+        return [rows, false];
+      }
+  
+      if (days.length > 7) {
+        alert(`Row ${i} should have no more than 7 days.\nFound: ${days.length}`);
+        return [rows, false];
+      }
+      
+      if (days.length < 1) {
+        alert(`Row ${i} should have more than 0 days.\nFound: ${days.length}`);
         return [rows, false];
       }
     }
-
+  
     return [rows, true];
   }
+  
 
   function validate_two(rows) {
     const expectedScheduleHeaders = [

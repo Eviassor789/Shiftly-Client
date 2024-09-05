@@ -14,7 +14,7 @@ const ResizableWindow = ({step}) => {
         return (
           <>
             <img src="emp-det-1.png" alt="emp-det-1" draggable="false" />
-            <img src="emp-det-2.png" alt="emp-det-2" draggable="false" />
+            <img className="emp-images" src="emp-det-2.png" alt="emp-det-2" draggable="false" />
           </>
         );
 

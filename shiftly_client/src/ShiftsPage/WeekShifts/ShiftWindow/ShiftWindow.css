@@ -58,7 +58,12 @@
     font-size: larger;
     font-weight: bold;
     
+}
 
+.total-capacity.insufficient{
+    font-size: x-large;
+    font-weight:bolder;
+    color: #ad0202;
 }
 
 .left-box,

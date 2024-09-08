@@ -162,9 +162,7 @@ const ShiftWindow = ({
     console.log("id: ", id);
     console.log("temp_workers[id]: ", temp_workers[id]);
 
-
-
-    if (temp_workers[id].shifts){
+    if (temp_workers[id].shifts) {
       temp_workers[id].shifts = temp_workers[id].shifts.filter(
         (shift) =>
           shift.profession !== shiftData.profession ||
@@ -186,15 +184,15 @@ const ShiftWindow = ({
 
       if (worker) {
         // Filter out the shift to remove from the worker's shifts
-        if (worker.shifts){        
+        if (worker.shifts) {
           worker.shifts = worker.shifts.filter(
-          (shift) =>
-            shift.day !== shiftData.day ||
-            shift.start_hour !== shiftData.start_hour ||
-            shift.end_hour !== shiftData.end_hour ||
-            shift.profession !== shiftData.profession
-        );}
-
+            (shift) =>
+              shift.day !== shiftData.day ||
+              shift.start_hour !== shiftData.start_hour ||
+              shift.end_hour !== shiftData.end_hour ||
+              shift.profession !== shiftData.profession
+          );
+        }
 
         // Update the worker in the copied workers object
         updatedWorkers[id] = worker;
@@ -230,16 +228,6 @@ const ShiftWindow = ({
 
     // Update the state with the new shifts and other_shifts arrays
     removeShiftFromTheWorkers();
-
-    // const existingAssignment = assignments.get(currentAssignmentID);
-    // // Create a new Assignment object with the updated shifts_list
-    // const updatedAssignment = new Assignment({
-    //   ...existingAssignment, // Spread the existing properties
-    //   shifts_list: updatedShifts, // Override the shifts_list with the new one
-    //   unselected_shiftsList: updatedUnselected_shifts,
-    // });
-    // // Update the assignments map with the new Assignment object
-    // assignments.set(currentAssignmentID, updatedAssignment);
 
     setShifts(updatedShifts);
     setUnselected_shifts(updatedUnselected_shifts);
@@ -301,7 +289,8 @@ const ShiftWindow = ({
         <span>
           {shiftData.start_hour} - {shiftData.end_hour}
         </span>
-        <span>Required: {requiredWorkers}</span>
+        <span>Max requirement: {requiredWorkers}</span>
+        <span>Cost: {shiftData.cost}</span>
         <i onClick={handleCloseClick} className="bi bi-x-lg"></i>
       </div>
       <div className="content">
@@ -412,7 +401,13 @@ const ShiftWindow = ({
           <button className="delete-button" onClick={handleDeleteClick}>
             delete shift
           </button>
-          <div className="total-capacity">
+          <div
+            className={
+              currIdList.length > requiredWorkers
+                ? "total-capacity insufficient"
+                : "total-capacity"
+            }
+          >
             {currIdList.length} / {requiredWorkers}
           </div>
         </div>
@@ -429,7 +424,8 @@ const ShiftWindow = ({
                 {upHour(shiftData.start_hour, i + 1)}
                 <span
                   className={
-                    workersOnHour(upHour(shiftData.start_hour, i)) < 4
+                    workersOnHour(upHour(shiftData.start_hour, i)) <
+                    requiredWorkers
                       ? "capacity insufficient"
                       : "capacity sufficient"
                   }

@@ -7,7 +7,6 @@ import "./ShiftsPage.css";
 import AddShiftWindow from "./AddShiftWindow/AddShiftWindow";
 import { useNavigate } from "react-router-dom";
 import tables_map from "../Data/TableArchive";
-import requirements from "../Data/Requirements";
 import ScheduleEvaluator from "../ScheduleEvaluator";
 
 const ShiftsPage = (props) => {
@@ -78,18 +77,19 @@ const ShiftsPage = (props) => {
   useEffect(() => {
     const fetchTableData = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/table/${tableId}`, {
+        // Fetch table data
+        const tableResponse = await fetch(`http://localhost:5000/table/${tableId}`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
   
-        if (!response.ok) {
+        if (!tableResponse.ok) {
           throw new Error("Failed to fetch table data from the server");
         }
   
-        const currTable = await response.json();
+        const currTable = await tableResponse.json();
         console.log("currTable: ", currTable);
         setCurrentTable(currTable);
   
@@ -106,34 +106,29 @@ const ShiftsPage = (props) => {
             all_shifts.filter((shift) => !currentAssignmentKeys.has(shift.id)) || []
           );
   
-          // console.log("all_shifts", all_shifts)
-          const sortedShiftsList = 
-    all_shifts.filter((shift) => currentAssignmentKeys.has(shift.id)) || [];
-
-    // Create the workers map
-    const workersMap = {};
-
-    sortedShiftsList.forEach((shift) => {
-        // Update the shift's idList with workers from the current assignment
-        shift.idList = currentAssignment[shift.id] || [];
-
-        // Iterate over each worker in the shift
-        shift.workers.forEach((worker) => {
-            // If the worker is not already in the workersMap, add them
-            if (!workersMap[worker.id]) {
+          const sortedShiftsList =
+            all_shifts.filter((shift) => currentAssignmentKeys.has(shift.id)) || [];
+  
+          // Create the workers map
+          const workersMap = {};
+  
+          sortedShiftsList.forEach((shift) => {
+            shift.idList = currentAssignment[shift.id] || [];
+  
+            shift.workers.forEach((worker) => {
+              if (!workersMap[worker.id]) {
                 workersMap[worker.id] = {
-                    id: worker.id,
-                    name: worker.name,
-                    professions: worker.professions,
-                    days: worker.days,
-                    shifts: [],  // This will be populated with shift details
-                    relevant_shifts_id: worker.relevant_shifts_id,
-                    hours_per_week: worker.hours_per_week,
+                  id: worker.id,
+                  name: worker.name,
+                  professions: worker.professions,
+                  days: worker.days,
+                  shifts: [],
+                  relevant_shifts_id: worker.relevant_shifts_id,
+                  hours_per_week: worker.hours_per_week,
                 };
-            }
-
-            // Add the current shift to the worker's shifts array
-            workersMap[worker.id].shifts.push({
+              }
+  
+              workersMap[worker.id].shifts.push({
                 shiftId: shift.id,
                 profession: shift.profession,
                 day: shift.day,
@@ -141,20 +136,19 @@ const ShiftsPage = (props) => {
                 end_hour: shift.end_hour,
                 cost: shift.cost,
                 color: shift.color,
+              });
             });
-        });
-    });
-
-    const temp_workers = currTable.all_workers.reduce((map, worker) => {
-      map[worker.id] = worker;
-      return map;
-    }, {});
-
-    // Finally, update the state with the populated workersMap
-    setWorkers(temp_workers);
+          });
+  
+          const temp_workers = currTable.all_workers.reduce((map, worker) => {
+            map[worker.id] = worker;
+            return map;
+          }, {});
+  
+          setWorkers(temp_workers);
   
           const daysOfWeek = [
-            "Sunday", "Monday", "Tuesday", "Wednesday", 
+            "Sunday", "Monday", "Tuesday", "Wednesday",
             "Thursday", "Friday", "Saturday"
           ];
   
@@ -174,25 +168,41 @@ const ShiftsPage = (props) => {
           sortedShiftsList.forEach((shift) => {
             shift.color = color_list[counter++ % color_list.length];
           });
-          // console.log("sortedShiftsList:", sortedShiftsList);
-          setShifts(sortedShiftsList);
-
   
-          const evaluator = new ScheduleEvaluator(sortedShiftsList, workersMap, requirements);
+          setShifts(sortedShiftsList);
+  
+          // Fetch the requirements
+          const requirementsResponse = await fetch(`http://localhost:5000/requirements/${tableId}`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+  
+          if (!requirementsResponse.ok) {
+            throw new Error("Failed to fetch requirements from the server");
+          }
+  
+          const fetchedRequirements = await requirementsResponse.json();
+          console.log("Fetched Requirements:", fetchedRequirements);
+  
+          // Create the evaluator with fetched requirements
+          const evaluator = new ScheduleEvaluator(sortedShiftsList, workersMap, fetchedRequirements);
           let solution = transformSolution(currentAssignment);
           const result = evaluator.getFitnessWithMoreInfo(solution);
           // console.log("result: ", result);
         }
       } catch (error) {
-        console.error("Error fetching table data:", error);
+        console.error("Error fetching data:", error);
         navigate("/");
       }
     };
-
+  
     if (tableId && token) {
-        fetchTableData();
+      fetchTableData();
     }
-}, [tableId, loggedUser, navigate, token]);
+  }, [tableId, loggedUser, navigate, token]);
+  
 
   const handleProfessionClick = (profession) => {
     setSelectedProfession(profession);

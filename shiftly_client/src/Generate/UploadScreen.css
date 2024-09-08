@@ -49,3 +49,21 @@
     justify-content: center;
     background-color: #f0f0f0;
   }
+
+  .loadingScreen {
+    position: fixed; /* Make it take up the entire screen */
+    top: 0;
+    left: 0;
+    width: 100vw;  /* Full width of the viewport */
+    height: 100vh; /* Full height of the viewport */
+    z-index: 100;  /* Ensure it appears on top of other elements */
+    display: flex;  /* Center the content inside the loading screen */
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    overflow-x: visible;
+}
+
+.content-container {
+    display: inline;
+}

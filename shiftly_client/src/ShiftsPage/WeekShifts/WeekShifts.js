@@ -83,6 +83,7 @@ const WeekShifts = ({
     let professionShift = list.filter(
       (shift) => shift.profession === profession
     );
+    console.log("professionShift: ", professionShift);
 
     let arrayOne = [];
     let arrayTwo = [];
@@ -102,6 +103,7 @@ const WeekShifts = ({
         professionShift.forEach((shift2) => {
           const overlaps = checkOverlap(shift1, shift2);
             if (overlaps) {
+              console.log("stadddddte: ", state);
               temp++;
               arrayTwo.push(shift2)
             }
@@ -112,6 +114,9 @@ const WeekShifts = ({
       });
 
     } while (currOverlaps > maxOverlaps);
+
+    console.log("state: ", state);
+    console.log("maxOverlaps: ", maxOverlaps);
 
 
     //i really dont know if it is better or not...:
@@ -190,7 +195,7 @@ const WeekShifts = ({
           {hours.map((hour) => (
             <tr key={hour}>
               <td>{hour + " - " + nextHour(hour)}</td>
-              {["1", "2", "3", "4", "5", "6"].map((day) => {
+              {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].map((day) => {
                 let relevantShifts;
                 if (ispersonalSearch) {
                   relevantShifts = shifts.filter(
@@ -244,7 +249,7 @@ const WeekShifts = ({
   
                 return (
                   <td key={day}>
-                    {relevantShifts.map((shift, index) => (
+                    {relevantShifts.map((shift, index) => ( placed_shifted.push(shift) &&
                       <div
                         key={shift.idList.join('-') + index} // Ensure unique key for each shift
                         onClick={() =>

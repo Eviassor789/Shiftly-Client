@@ -1,9 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./ShiftWindow.css";
-import tables_map from "../../../Data/TableArchive";
-// import assignments from "../../../Data/Assignments";
-// import Assignment from "../../../Assignment";
-// import requirements from "../../../Data/Requirements";
 
 const ShiftWindow = ({
   requiredWorkers,

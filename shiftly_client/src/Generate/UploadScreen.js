@@ -3,6 +3,7 @@ import './UploadScreen.css';
 import ResizableWindow from "./ResizableWindow";
 import UploadFile from "./UploadFile";
 import { useNavigate } from 'react-router-dom';
+import LoadingPage from '../LoadingPage';
 
 const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFileUploaded, filesList, SetFilesList, rowsList, SetRowsList, screenLoading, setScreenLoading}) => {
 
@@ -316,37 +317,49 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
 
 return (
   <>
-    <div className={`upload-screen ${position()}`}>
-      <div className="CenterDiv">
-        {renderContent()}
-        <UploadFile
-          id={"UploadFile_" + currentStep}
-          handleNext={handleNext}
-          fileUploaded={fileUploaded}
-          setFileUploaded={setFileUploaded}
-          currentStep={currentStep}
-          filesList={filesList}
-          SetFilesList={SetFilesList}
-          rowsList={rowsList}
-          SetRowsList={SetRowsList}
-        />
-        <div id="GenerateProgress">
-          <div
-            className={` ${step === 1 ? "elipse elipse-on" : "elipse"}`}
-            onClick={() => setCurrentStep(1)}
-          ></div>
-          <div
-            className={` ${step === 2 ? "elipse elipse-on" : "elipse"}`}
-            onClick={() => setCurrentStep(2)}
-          ></div>
-          <div
-            className={` ${step === 3 ? "elipse elipse-on" : "elipse"}`}
-            onClick={() => setCurrentStep(3)}
-          ></div>
-        </div>
-        <ResizableWindow step={step} />
-      </div>
-    </div>
+    {screenLoading && position() == "main" ? (
+      <>
+        <LoadingPage id="loadingScreen" />
+      </>
+    ) : (
+      <>
+        {screenLoading && (position() != "main") ? (
+          <></>
+        ) : (
+          <div className={`upload-screen ${position()}`}>
+            <div className="CenterDiv">
+              {renderContent()}
+              <UploadFile
+                id={"UploadFile_" + currentStep}
+                handleNext={handleNext}
+                fileUploaded={fileUploaded}
+                setFileUploaded={setFileUploaded}
+                currentStep={currentStep}
+                filesList={filesList}
+                SetFilesList={SetFilesList}
+                rowsList={rowsList}
+                SetRowsList={SetRowsList}
+              />
+              <div id="GenerateProgress">
+                <div
+                  className={` ${step === 1 ? "elipse elipse-on" : "elipse"}`}
+                  onClick={() => setCurrentStep(1)}
+                ></div>
+                <div
+                  className={` ${step === 2 ? "elipse elipse-on" : "elipse"}`}
+                  onClick={() => setCurrentStep(2)}
+                ></div>
+                <div
+                  className={` ${step === 3 ? "elipse elipse-on" : "elipse"}`}
+                  onClick={() => setCurrentStep(3)}
+                ></div>
+              </div>
+              <ResizableWindow step={step} />
+            </div>
+          </div>
+        )}
+      </>
+    )}
   </>
 );
 };

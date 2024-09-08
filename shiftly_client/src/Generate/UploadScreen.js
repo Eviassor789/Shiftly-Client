@@ -1,17 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './UploadScreen.css';
 import ResizableWindow from "./ResizableWindow";
 import UploadFile from "./UploadFile";
 import { useNavigate } from 'react-router-dom';
 
-const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFileUploaded, filesList, SetFilesList, rowsList, SetRowsList}) => {
+const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFileUploaded, filesList, SetFilesList, rowsList, SetRowsList, screenLoading, setScreenLoading}) => {
 
   const navigate = useNavigate();
-
-  // Example usage:
-  
-
-
 
   const addParsedDataToDatabase = async (jwtToken, workersData, requirementsData, shiftsData) => {
     try {
@@ -30,7 +25,7 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
   
       if (response.ok) {
         const result = await response.json();
-        console.log('Assignment Calculated Succesfully:', result);
+        console.log('Assignment Calculated Successfully:', result);
         return result;
       } else {
         console.error('Failed to add data:', await response.text());
@@ -42,26 +37,7 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
     }
   };
 
-
-  const handleNext = async () => {
-
-    if (currentStep === 3) {
-      if(fileUploaded[0] === true && fileUploaded[1] === true) {
-        // Assuming you have a valid JWT token stored in `jwtToken`
-        const jwtToken = localStorage.getItem('jwtToken');
-        // addTableForUser(jwtToken, tableData);
-        
-        console.log("filesList uploaded succesfully:");
-        for (let index = 0; index < filesList.length; index++) {
-          const file = filesList[index];
-          console.log("name: ", file.name);
-          console.log("parsed rows: ", rowsList[index]);  
-        }
-
-        const newAssignment = await addParsedDataToDatabase(jwtToken, rowsList[0], rowsList[1], rowsList[2]);
-        console.log("newAssignment: ", newAssignment);
-
-        // const tableData = {
+  // const tableData = {
         //   name: "week 1",
         //   date: "01/01/2024",
         //   starred: false,
@@ -150,13 +126,29 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
 
         // addTableForUser(jwtToken, tableData);
 
+  const handleNext = async () => {
+    if (currentStep === 3) {
+      if(fileUploaded[0] === true && fileUploaded[1] === true) {
+        const jwtToken = localStorage.getItem('jwtToken');
+        
+        console.log("filesList uploaded successfully:");
+        for (let index = 0; index < filesList.length; index++) {
+          const file = filesList[index];
+          console.log("name: ", file.name);
+          console.log("parsed rows: ", rowsList[index]);  
+        }
+
+        setScreenLoading(true); // Show loading screen
+
+        const newAssignment = await addParsedDataToDatabase(jwtToken, rowsList[0], rowsList[1], rowsList[2]);
+
+        console.log("newAssignment: ", newAssignment);
+        setScreenLoading(false); // Hide loading screen
 
         navigate(`/home`);
       } else {
-        alert("Please upload first the previous files.");
+        alert("Please upload the previous files first.");
       }
-
-
     } else {
       setCurrentStep(currentStep + 1);
     }
@@ -322,41 +314,41 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
 
 
 
-  return (
-    <>
-      <div className={`upload-screen ${position()}`}>
-        <div className="CenterDiv">
-          {renderContent()}
-          <UploadFile
-            id={"UploadFile_" + currentStep}
-            handleNext = {handleNext}
-            fileUploaded = {fileUploaded}
-            setFileUploaded = {setFileUploaded}
-            currentStep = {currentStep}
-            filesList = {filesList}
-            SetFilesList = {SetFilesList}
-            rowsList = {rowsList}
-            SetRowsList = {SetRowsList}
-          />
-          <div id="GenerateProgress">
-            <div
-              className={` ${step === 1 ? "elipse elipse-on" : "elipse"}`}
-              onClick={() => setCurrentStep(1)}
-            ></div>
-            <div
-              className={` ${step === 2 ? "elipse elipse-on" : "elipse"}`}
-              onClick={() => setCurrentStep(2)}
-            ></div>
-            <div
-              className={` ${step === 3 ? "elipse elipse-on" : "elipse"}`}
-              onClick={() => setCurrentStep(3)}
-            ></div>
-          </div>
-          <ResizableWindow step={step} />
+return (
+  <>
+    <div className={`upload-screen ${position()}`}>
+      <div className="CenterDiv">
+        {renderContent()}
+        <UploadFile
+          id={"UploadFile_" + currentStep}
+          handleNext={handleNext}
+          fileUploaded={fileUploaded}
+          setFileUploaded={setFileUploaded}
+          currentStep={currentStep}
+          filesList={filesList}
+          SetFilesList={SetFilesList}
+          rowsList={rowsList}
+          SetRowsList={SetRowsList}
+        />
+        <div id="GenerateProgress">
+          <div
+            className={` ${step === 1 ? "elipse elipse-on" : "elipse"}`}
+            onClick={() => setCurrentStep(1)}
+          ></div>
+          <div
+            className={` ${step === 2 ? "elipse elipse-on" : "elipse"}`}
+            onClick={() => setCurrentStep(2)}
+          ></div>
+          <div
+            className={` ${step === 3 ? "elipse elipse-on" : "elipse"}`}
+            onClick={() => setCurrentStep(3)}
+          ></div>
         </div>
+        <ResizableWindow step={step} />
       </div>
-    </>
-  );
+    </div>
+  </>
+);
 };
 
 export default UploadScreen;

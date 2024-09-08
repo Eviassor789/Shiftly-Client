@@ -190,7 +190,7 @@ const WeekShifts = ({
           {hours.map((hour) => (
             <tr key={hour}>
               <td>{hour + " - " + nextHour(hour)}</td>
-              {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].map((day) => {
+              {["1", "2", "3", "4", "5", "6"].map((day) => {
                 let relevantShifts;
                 if (ispersonalSearch) {
                   relevantShifts = shifts.filter(

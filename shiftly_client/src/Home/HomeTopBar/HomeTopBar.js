@@ -1,23 +1,25 @@
-import "./HomeTopBar.css";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SettingsPopup from "./SettingsPopup";
+import "./HomeTopBar.css";
 
 function HomeTopBar(props) {
-
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  
-  const initialSettings = props.userCurrent.settings && Array.isArray(props.userCurrent.settings) 
-  ? props.userCurrent.settings 
-  : [false, false]; // Default settings if userCurrent.settings is not an array
-
-const [isChecked, setIsChecked] = useState(initialSettings);
+  const [isChecked, setIsChecked] = useState([]);
 
   const navigate = useNavigate();
 
+  // Fetch initial settings or simulate fetching from the server
+  useEffect(() => {
+    const initialSettings = props.userCurrent.settings && Array.isArray(props.userCurrent.settings)
+      ? props.userCurrent.settings
+      : [false, false]; // Default settings if no data
+
+    setIsChecked(initialSettings);
+
+  }, [props.userCurrent]);
+
   const handleButtonClick = (page) => {
-    // You can add additional logic or conditions here if needed
-    // For now, just navigate to the specified page
     navigate(`/${page}`);
   };
 
@@ -31,13 +33,14 @@ const [isChecked, setIsChecked] = useState(initialSettings);
         },
         body: JSON.stringify({
           username: props.loggedUser,
-          settings: isChecked, // Send the updated settings array
+          settings: isChecked,
         }),
       });
 
       if (!response.ok) {
         throw new Error('Failed to update settings');
       }
+
       const data = await response.json();
       console.log("Settings updated successfully", data);
     } catch (error) {
@@ -90,7 +93,7 @@ const [isChecked, setIsChecked] = useState(initialSettings);
           onClose={() => setIsSettingsOpen(false)}
           loggedUser={props.loggedUser}
           userCurrent={props.userCurrent}
-          initialSettings={initialSettings}
+          initialSettings={isChecked}
           isChecked={isChecked}
           setIsChecked={setIsChecked}
         />
@@ -99,4 +102,4 @@ const [isChecked, setIsChecked] = useState(initialSettings);
   );
 }
 
-export default HomeTopBar ;
+export default HomeTopBar;

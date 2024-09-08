@@ -3,6 +3,7 @@ import HomeTopBar from "./HomeTopBar/HomeTopBar";
 import SchedulingTile from "./SchedulingTile/SchedulingTile.jsx";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import LoadingPage from "../LoadingPage.js";
 
 function Home(props) {
   const [filterValue, setFilterValue] = useState("");
@@ -14,6 +15,8 @@ function Home(props) {
   const [userLoading, setUserLoading] = useState(true); // New state for user data loading
   const [loggedUser, setLoggedUser] = useState("");
   const [userCurrent, setUserCurrent] = useState("");
+  const [barLoaded, setBarLoaded] = useState(false); // New state to track when data is fetched
+
 
   const navigate = useNavigate();
 
@@ -74,6 +77,7 @@ function Home(props) {
         const userCurrentJson = await userCurrentResponse.json();
         console.log('User color:', userCurrentJson);
         setUserCurrent(userCurrentJson.user_data);
+        setBarLoaded(true); // Indicate that the bar is loaded
     
       } catch (error) {
         console.error('Error:', error);
@@ -135,57 +139,61 @@ function Home(props) {
     navigate(`/detail/${tileId}`);
   };
 
-  if (loading) {
-    return <p>Loading...</p>;  // Show a loading message while data is being fetched
-  }
   
   return (
     <>
-      <HomeTopBar page="home" loggedUser={loggedUser} userCurrent={userCurrent} />
-      <div className="CenterDiv">
-        {/* Render content after data is fetched */}
-        <div id="welcomeBox" className="HomeBoxes">
-          <p id="welcomeMessage">
-            Hi, {loggedUser}! Welcome back to <span>Shiftly</span>.
-          </p>
-          <p>
-            Tip: In the Settings you can change your preferences which can lead
-            to different results on your tables.
-          </p>
-        </div>
-        <div id="HomeMainBox" className="HomeBoxes">
-          {/* Other components */}
-          <div className="sort-buttons">
-            <button onClick={handleToggleSort}>
-              {sortOrder === "asc"
-                ? "Order by Oldest First"
-                : "Order by Newest First"}
-            </button>
-            <button onClick={handleShowStarred}>
-              {showStarredOnly ? "Show All Tiles" : "Show Starred Tiles Only"}
-            </button>
+      {/* Conditionally render based on userCurrent */}
+      {userCurrent ? (
+        <>
+          <HomeTopBar page="home" loggedUser={loggedUser} userCurrent={userCurrent} setBarLoaded={setBarLoaded} />
+          <div className="CenterDiv">
+  
+            <div id="welcomeBox" className="HomeBoxes">
+              <p id="welcomeMessage">
+                Hi, {loggedUser}! Welcome back to <span>Shiftly</span>.
+              </p>
+              <p>
+                Tip: In the Settings you can change your preferences which can lead
+                to different results on your tables.
+              </p>
+            </div>
+            <div id="HomeMainBox" className="HomeBoxes">
+  
+              <div className="sort-buttons">
+                <button onClick={handleToggleSort}>
+                  {sortOrder === "asc"
+                    ? "Order by Oldest First"
+                    : "Order by Newest First"}
+                </button>
+                <button onClick={handleShowStarred}>
+                  {showStarredOnly ? "Show All Tiles" : "Show Starred Tiles Only"}
+                </button>
+              </div>
+              {filteredTiles.length > 0 ? (
+                filteredTiles.map((tile) => (
+                  <SchedulingTile
+                    key={tile.id}
+                    ID={tile.id}
+                    name={tile.name}
+                    date={tile.date}
+                    starred={tile.starred}
+                    currentTableID={props.currentTableID}
+                    setCurrentTableID={props.setCurrentTableID}
+                    onRemove={() => removeTile(tile.id)}
+                    onToggleStar={() => toggleStarred(tile.id)}
+                    onNavigate={() => navigateToDetailPage(tile.id)}
+                  />
+                ))
+              ) : (
+                <p>No tables found...</p>
+              )}
+            </div>
           </div>
-          {filteredTiles.length > 0 ? (
-            filteredTiles.map((tile) => (
-              <SchedulingTile
-                key={tile.id}
-                ID={tile.id}
-                name={tile.name}
-                date={tile.date}
-                starred={tile.starred}
-                currentTableID={props.currentTableID}
-                setCurrentTableID={props.setCurrentTableID}
-                onRemove={() => removeTile(tile.id)}
-                onToggleStar={() => toggleStarred(tile.id)}
-                onNavigate={() => navigateToDetailPage(tile.id)}
-              />
-            ))
-          ) : (
-            <p>No tables found</p>
-          )}
-        </div>
-      </div>
-      <div id="easterEgg">easter egg</div>
+          <div id="easterEgg">easter egg</div>
+        </>
+      ) : (
+        <LoadingPage msg="Loading Home screen"/>
+      )}
     </>
   );
 }

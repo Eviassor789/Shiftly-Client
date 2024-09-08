@@ -31,11 +31,14 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
       if (response.ok) {
         const result = await response.json();
         console.log('Assignment Calculated Succesfully:', result);
+        return result;
       } else {
         console.error('Failed to add data:', await response.text());
+        return {};
       }
     } catch (error) {
       console.error('Error occurred while adding parsed data:', error);
+      return {};
     }
   };
 

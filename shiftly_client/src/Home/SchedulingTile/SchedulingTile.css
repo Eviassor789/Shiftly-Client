@@ -39,6 +39,9 @@
     margin: 0 10px;
     flex-grow: 1;
     width: 200px;
+    text-overflow: ellipsis;
+    overflow: hidden; 
+    white-space: nowrap;
 }
 
 #dateOfTable {
@@ -62,7 +65,7 @@
     outline: none; /* Remove outline on focus */
 }
 
-.icons button i {
+.icons .bi-dash-circle {
     color: #ff6347; /* Red color for remove icon */
     font-size: 20px;
     transition: color 0.3s ease; /* Smooth color transition */
@@ -70,6 +73,25 @@
 
 .icons button i:hover {
     color: #cc0000; /* Darker red color on hover */
+}
+
+#pencil {
+    color: rgb(23, 93, 255); /* Blue color for edit icon */
+    transition: color 0.3s ease; /* Smooth background color transition */
+
+}
+
+#pencil:hover {
+    color: rgb(0, 26, 255); /* Blue color for edit icon */
+}
+
+#check {
+    color: rgb(42, 179, 48); /* Blue color for edit icon */
+    transition: color 0.3s ease; /* Smooth background color transition */
+}
+
+#check:hover {
+    color: rgb(42, 137, 37); /* Blue color for edit icon */
 }
 
 .sort-buttons {
@@ -98,3 +120,35 @@
     background-color: #8e9093;
     border-color: #4a5056;
   }
+
+  .NameInput {
+    background-color: #4a5056;
+  }
+
+  /* SchedulingTile.css */
+#NameInput {
+    top: 0;
+    left: 0;
+    font-size: x-large;
+    color: black;
+    font-weight: 500;
+    background-color: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    outline: none !important;
+    pointer-events: auto; /* Allows clicking */
+    width: 297.38px !important; /* Adjust width to fill the tile */
+    margin-bottom: 0 !important; /* Remove margin at the bottom */
+    text-indent: 10px !important;
+    box-shadow: none !important; /* Remove box shadow */
+  }
+  
+  #TileContainer {
+    position: relative; /* Needed to position the input inside the tile */
+  }
+  
+  #NameOfTable {
+    position: relative;
+    z-index: 3; /* Keeps the text in front */
+  }
+  

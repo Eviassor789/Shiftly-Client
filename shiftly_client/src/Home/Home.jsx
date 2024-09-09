@@ -127,17 +127,37 @@ function Home(props) {
     );
   };
 
-  const handleInputChange = (event) => {
-    setFilterValue(event.target.value);
+  const editTableName = async (id, newName) => {
+    try {
+      const response = await fetch(`http://localhost:5000/update_table_name/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: newName }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to edit table name');
+      }
+  
+      // Update the table name in state
+      setTiles((prevTiles) =>
+        prevTiles.map((tile) =>
+          tile.id === id ? { ...tile, name: newName } : tile
+        )
+      );
+    } catch (error) {
+      console.error('Error editing table name:', error);
+    }
   };
+  
 
   const removeTile = (idToRemove) => {
     setTiles((prevTiles) => prevTiles.filter((tile) => tile.id !== idToRemove));
   };
 
-  const navigateToDetailPage = (tileId) => {
-    navigate(`/detail/${tileId}`);
-  };
 
   
   return (
@@ -181,7 +201,7 @@ function Home(props) {
                     setCurrentTableID={props.setCurrentTableID}
                     onRemove={() => removeTile(tile.id)}
                     onToggleStar={() => toggleStarred(tile.id)}
-                    onNavigate={() => navigateToDetailPage(tile.id)}
+                    onEditName={(newName) => editTableName(tile.id, newName)}
                   />
                 ))
               ) : (

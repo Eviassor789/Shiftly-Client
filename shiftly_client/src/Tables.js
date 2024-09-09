@@ -1,34 +1,34 @@
-class Table {
-    constructor(props) {
-      this.ID = props.ID;
-      this.name = props.name;
-      this.date = props.date;
-      this.starred = props.starred;
-      this.professions = props.professions;
-      this.shifts = props.shifts;
-      this.assignment = props.assignment;
-    }
+// class Table {
+//     constructor(props) {
+//       this.ID = props.ID;
+//       this.name = props.name;
+//       this.date = props.date;
+//       this.starred = props.starred;
+//       this.professions = props.professions;
+//       this.shifts = props.shifts;
+//       this.assignment = props.assignment;
+//     }
   
-    getId() {
-      return this.ID;
-    }
+//     getId() {
+//       return this.ID;
+//     }
   
-    getName() {
-      return this.name;
-    }
+//     getName() {
+//       return this.name;
+//     }
   
-    getDate() {
-      return this.date;
-    }
+//     getDate() {
+//       return this.date;
+//     }
   
-    getStarred() {
-      return this.starred;
-    }
+//     getStarred() {
+//       return this.starred;
+//     }
 
-    getAssignment() {
-        return this.assignment;
-    }
+//     getAssignment() {
+//         return this.assignment;
+//     }
 
-  }
+//   }
   
-  export default Table;
+//   export default Table;

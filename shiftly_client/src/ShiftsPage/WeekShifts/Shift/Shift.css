@@ -1,54 +1,66 @@
-  .shift {
-    position: relative;
-    background-color: blue;
-    opacity: 0.6;
-    height: 100%;
-    top: 0px;
-    left: 0px;
-    z-index: 1; /* Ensure the Shift component is above other content */
+.shift {
+  position: relative;
+  height: 100%;
+  top: 0px;
+  left: 0px;
+  z-index: 1;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 15px 12px;
+  color: #000000;
+  font-size: x-large;
+  font-weight: bold;
+  transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  border-radius: 10px; /* Add rounded corners to match the shift */
+  overflow: hidden; /* Ensures the scrollbar is contained */
+}
 
-    box-shadow:  rgba(0, 0, 0, 0.22) 0px 15px 12px;
+.shift:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  transform: translateY(-7px);
+  /* Larger bottom shadow with softer transition */
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 0px 0px, 
+              rgba(0, 0, 0, 0.2) 0px 20px 18px 0px,  /* Increase blur-radius for softer shadow */
+              rgba(52, 86, 159, 0.561) 0px 0px 5px inset; /* Soften the inset shadow */
+  border: none;
+}
 
-    color: #000000;
-    font-size: x-large;
-    font-weight: bold;
-    
-  }
 
-  .shift:hover{
-    box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
-  }
+.shift:active {
+  transform: translateY(0);
+  /* box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset; */
+}
 
-  .shift:active {
-    box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
-  }
+.shift:hover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* background-color: rgba(0, 0, 0, 0.025); */
+}
   
 
-  .shift-names {
-    position: relative;
-    top: 0; /* Align the list to the top */
-    left: 0; /* Align the list to the left */
-    list-style-type: none; /* Remove bullets from the list */
-    padding: 0;
-    color: rgb(0, 0, 0);
-    font-weight: bold;
-    overflow: hidden; /* Hide overflow content */
-    overflow-y: auto; /* Enable vertical scrolling when needed */
-    height: 100%;
-    font-family: kreon;
-
-
-  }
+.shift-names {
+  position: relative;
+  top: 0;
+  left: 0;
+  list-style-type: none;
+  padding: 10px;
+  opacity: 0.85;
+  color: black;
+  font-weight: bold;
+  overflow-y: auto;
+  height: 100%;
+  font-family: 'Roboto', sans-serif;
+}
   
-  .shift-names li {
-    margin: 5px;
-    padding: 0;
-    white-space: nowrap; /* Prevent line breaks */
-    overflow: hidden; /* Hide overflow content */
-    text-overflow: ellipsis; /* Display ellipsis (...) when text overflows */
-    
-  }
-  
+.shift-names li {
+  margin: 5px;
+  padding: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+} 
   /* Style for the list of names */
 .shift-names ul {
     list-style-type: none; /* Remove bullets */
@@ -67,6 +79,7 @@
 ::-webkit-scrollbar-track {
   background: #949494; 
   border-radius: 10px;
+  display: none;
 }
  
 ::-webkit-scrollbar-thumb {
@@ -76,4 +89,5 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: #000000; 
+  display: none;
 }

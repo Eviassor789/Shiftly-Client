@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react";
-import jsPDF from 'jspdf';
+import jsPDF from "jspdf";
 // import 'jspdf-autotable';
 import { useParams } from "react-router-dom";
 import WeekShifts from "./WeekShifts/WeekShifts";
 import "./ShiftsPage.css";
 import AddShiftWindow from "./AddShiftWindow/AddShiftWindow";
 import { useNavigate } from "react-router-dom";
-import tables_map from "../Data/TableArchive";
 import ScheduleEvaluator from "../ScheduleEvaluator";
 import html2canvas from "html2canvas";
-
+import LoadingPage from "../LoadingPage";
 
 const ShiftsPage = (props) => {
-
   const { tableId } = useParams(); // Extract the table ID from the URL
   const navigate = useNavigate();
 
@@ -41,14 +39,13 @@ const ShiftsPage = (props) => {
     let result = [];
 
     Object.entries(solution).forEach(([shiftId, workerIds]) => {
-        workerIds.forEach(workerId => {
-            result.push([workerId, parseInt(shiftId)]);
-        });
+      workerIds.forEach((workerId) => {
+        result.push([workerId, parseInt(shiftId)]);
+      });
     });
 
-    return result.sort((a, b) => a[1] - b[1]);;
-}
-
+    return result.sort((a, b) => a[1] - b[1]);
+  }
 
   const token = localStorage.getItem("jwtToken");
 
@@ -82,10 +79,17 @@ const ShiftsPage = (props) => {
     }
   }, [token, navigate]);
 
-
   function getDay(shiftDay) {
-    const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  
+    const daysOfWeek = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+
     // Helper function to map a digit to a day
     function mapDigitToDay(digit) {
       if (!isNaN(digit)) {
@@ -94,10 +98,10 @@ const ShiftsPage = (props) => {
         return digit;
       }
     }
-  
+
     // If the input is an array, map each digit to its corresponding day
     if (Array.isArray(shiftDay)) {
-      return shiftDay.map(day => mapDigitToDay(day));
+      return shiftDay.map((day) => mapDigitToDay(day));
     } else {
       // Handle single day input
       return mapDigitToDay(shiftDay);
@@ -108,43 +112,49 @@ const ShiftsPage = (props) => {
     const fetchTableData = async () => {
       try {
         // Fetch table data
-        const tableResponse = await fetch(`http://localhost:5000/table/${tableId}`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-  
+        const tableResponse = await fetch(
+          `http://localhost:5000/table/${tableId}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
         if (!tableResponse.ok) {
           throw new Error("Failed to fetch table data from the server");
         }
-  
+
         const currTable = await tableResponse.json();
         console.log("currTable: ", currTable);
         setCurrentTable(currTable);
-  
+
         if (currTable) {
           const currentAssignment = currTable.assignment;
           setProfessions(currTable.professions || []);
-  
+
           const all_shifts = currTable.shifts;
           const currentAssignmentKeys = new Set(
             Object.keys(currentAssignment).map(Number)
           );
-  
+
           setUnselected_shifts(
-            all_shifts.filter((shift) => !currentAssignmentKeys.has(shift.id)) || []
+            all_shifts.filter(
+              (shift) => !currentAssignmentKeys.has(shift.id)
+            ) || []
           );
-  
+
           const sortedShiftsList =
-            all_shifts.filter((shift) => currentAssignmentKeys.has(shift.id)) || [];
-  
+            all_shifts.filter((shift) => currentAssignmentKeys.has(shift.id)) ||
+            [];
+
           // Create the workers map
           const workersMap = {};
-  
+
           sortedShiftsList.forEach((shift) => {
             shift.idList = currentAssignment[shift.id] || [];
-  
+
             shift.workers.forEach((worker) => {
               if (!workersMap[worker.id]) {
                 workersMap[worker.id] = {
@@ -157,7 +167,7 @@ const ShiftsPage = (props) => {
                   hours_per_week: worker.hours_per_week,
                 };
               }
-  
+
               workersMap[worker.id].shifts.push({
                 shiftId: shift.id,
                 profession: shift.profession,
@@ -167,35 +177,39 @@ const ShiftsPage = (props) => {
                 cost: shift.cost,
                 color: shift.color,
               });
-
             });
           });
-  
+
           const temp_workers = currTable.all_workers.reduce((map, worker) => {
             map[worker.id] = { ...worker, days: getDay(worker.days) };
             return map;
           }, {});
 
-          console.log("temp_workers: ", temp_workers)
-  
+          console.log("temp_workers: ", temp_workers);
+
           setWorkers(temp_workers);
-  
+
           const daysOfWeek = [
-            "Sunday", "Monday", "Tuesday", "Wednesday",
-            "Thursday", "Friday", "Saturday"
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
           ];
-  
+
           sortedShiftsList.sort((a, b) => {
             const dayIndexA = daysOfWeek.indexOf(a.day);
             const dayIndexB = daysOfWeek.indexOf(b.day);
-  
+
             if (a.start_hour !== b.start_hour) {
               return a.start_hour.localeCompare(b.start_hour);
             } else {
               return dayIndexA - dayIndexB;
             }
           });
-  
+
           const color_list = [
             "#6CA1D1",
             "#D1E0F2",
@@ -209,25 +223,28 @@ const ShiftsPage = (props) => {
           sortedShiftsList.forEach((shift) => {
             shift.color = color_list[counter++ % color_list.length];
           });
-  
+
           setShifts(sortedShiftsList);
-  
+
           // Fetch the requirements
-          const requirementsResponse = await fetch(`http://localhost:5000/requirements/${tableId}`, {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-  
+          const requirementsResponse = await fetch(
+            `http://localhost:5000/requirements/${tableId}`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
           if (!requirementsResponse.ok) {
             throw new Error("Failed to fetch requirements from the server");
           }
-  
+
           const fetchedRequirements = await requirementsResponse.json();
           console.log("Fetched Requirements:", fetchedRequirements);
           setrequirements(fetchedRequirements)
-  
+
           // Create the evaluator with fetched requirements
           myEvaluator = new ScheduleEvaluator(sortedShiftsList, workers, fetchedRequirements);
           setevaluator(myEvaluator)
@@ -241,7 +258,7 @@ const ShiftsPage = (props) => {
         navigate("/");
       }
     };
-  
+
     if (tableId && token) {
       fetchTableData();
     }
@@ -303,27 +320,30 @@ const ShiftsPage = (props) => {
     setSuggestionsList([]);
   };
 
-
   const updateAssignment = async (tableId, assignment, token) => {
     try {
-      const response = await fetch('http://localhost:5000/update_assignment', {
-        method: 'POST',
+      const response = await fetch("http://localhost:5000/update_assignment", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ tableId, assignment, shifts:currentTable.shifts })
+        body: JSON.stringify({
+          tableId,
+          assignment,
+          shifts: currentTable.shifts,
+        }),
       });
-  
+
       const data = await response.json();
-  
+
       if (!response.ok) {
-        throw new Error(data.msg || 'Failed to update assignment');
+        throw new Error(data.msg || "Failed to update assignment");
       }
-  
-      console.log('Assignment updated successfully:', data.msg);
+
+      console.log("Assignment updated successfully:", data.msg);
     } catch (error) {
-      console.error('Error updating assignment:', error);
+      console.error("Error updating assignment:", error);
     }
   };
 
@@ -331,31 +351,28 @@ const ShiftsPage = (props) => {
     const assignment = {};
 
     // Iterate over each shift
-  shifts.forEach((shift) => {
-    console.log("shift 111", shift);
+    shifts.forEach((shift) => {
+      console.log("shift 111", shift);
 
-  // Initialize the assignment object for the shift if it doesn't exist
-  if (!assignment[shift.id]) {
-    assignment[shift.id] = [];
-  }
+      // Initialize the assignment object for the shift if it doesn't exist
+      if (!assignment[shift.id]) {
+        assignment[shift.id] = [];
+      }
 
-  // Loop through the idList of the shift (which contains worker IDs)
-  shift.idList.forEach((workerId) => {
-    // Add the worker's ID to the array for the corresponding shiftId
-    assignment[shift.id].push(workerId);
-  });
-});
-  
+      // Loop through the idList of the shift (which contains worker IDs)
+      shift.idList.forEach((workerId) => {
+        // Add the worker's ID to the array for the corresponding shiftId
+        assignment[shift.id].push(workerId);
+      });
+    });
 
-    
     console.log("assignment 111", assignment);
     // Call the function to update the assignment on the server
     await updateAssignment(currentTable.id, assignment, token); // Replace with your actual token
-  
+
     // Navigate to the home page
     navigate(`/home`);
-  };
-
+  }
 
   async function handleDownload() {
     // let content = '<h1>Shift Assignments by worker</h1>';
@@ -369,17 +386,13 @@ const ShiftsPage = (props) => {
     //     if (worker.shifts){        worker.shifts.forEach(shift => {
     //       content += `<li>${shift.day}, ${shift.start_hour} - ${shift.end_hour}, ${shift.profession}</li>`;
     //   });}
-        
-
 
     //     content += '</ul></br></br>';
     // }
-    
+
     // // Generate the PDF content
     // let input = document.createElement('div');
     // input.innerHTML = content;
-
-
 
     // input.style.position = "absolute";
     // input.style.top = "-9999px"; // Move it off-screen
@@ -400,28 +413,27 @@ const ShiftsPage = (props) => {
     //     console.error("Error generating PDF: ", error);
     //   });
 
-      ///////////////////////////////////////////////
+    ///////////////////////////////////////////////
 
-
-      let content = '<h1>Shift Assignments by Shift</h1>';
+    let content = "<h1>Shift Assignments by Shift</h1>";
 
     // Loop through the shifts and list workers for each shift
-    shifts.forEach(shift => {
-        content += `<p>(${shift.profession}, ${shift.day}, ${shift.start_hour} - ${shift.end_hour}):</p><ul>`;
-        
-        // For each worker ID in the shift's idList, get the worker name
-        shift.idList.forEach(workerId => {
-            const worker = workers[workerId];
-            if (worker) {
-                content += `<li>${worker.name}</li>`;
-            }
-        });
+    shifts.forEach((shift) => {
+      content += `<p>(${shift.profession}, ${shift.day}, ${shift.start_hour} - ${shift.end_hour}):</p><ul>`;
 
-        content += '</ul></br>';
+      // For each worker ID in the shift's idList, get the worker name
+      shift.idList.forEach((workerId) => {
+        const worker = workers[workerId];
+        if (worker) {
+          content += `<li>${worker.name}</li>`;
+        }
+      });
+
+      content += "</ul></br>";
     });
 
     // Generate the PDF content
-    let input = document.createElement('div');
+    let input = document.createElement("div");
     input.innerHTML = content;
     document.body.appendChild(input);
 
@@ -472,119 +484,129 @@ const ShiftsPage = (props) => {
   }
 //{myEvaluator? myEvaluator.getFitnessWithMoreInfo(transformSolution(getAssinment())) : ""}
   return (
-    <div className="page-container">
-      <div className="top-panel">
-        <div className="table-name">
-          {tables_map.get(currentTableID) ? tables_map.get(currentTableID).name : "Empty Table"}
-        </div>
-        <div className="buttons">
-        {fitness[0]}
+    <>
+      {currentTable ? (
+        <>
+          <div className="page-container">
+            <div className="top-panel">
+              <div className="table-name">
+                {currentTable ? currentTable.name : "Empty Table"}
+              </div>
+              <div className="buttons">
+              {fitness[0]}
           <button
-            id="PersonalSearch"
-            className="button"
-            onClick={handlePersonalSearchClick}
-          >
-            <i className="bi bi-person-circle"></i>&nbsp;&nbsp;&nbsp;Personal
-            timetable
-          </button>
-          <button className="button">
-            <i className="bi bi-clipboard2-check"></i>&nbsp;&nbsp;&nbsp;Status
-          </button>
-          <button className="button" onClick={handleDownload}>
-            <i className="bi bi-download"></i>&nbsp;&nbsp;&nbsp;Download
-          </button>
-          <button className="button" onClick={handleSave}>
-            <i className="bi bi-floppy"></i>&nbsp;&nbsp;&nbsp;Save
-          </button>
-          <button className="button" onClick={handleBack}>
-            <i className="bi bi-arrow-90deg-left"></i>&nbsp;&nbsp;&nbsp;Cancel
-          </button>
-        </div>
-      </div>
-      <div className="main-container">
-        <div className="left-panel">
-          {professions.map((profession, index) => (
-            <button
-              key={index}
-              className={`profession-button ${
-                selectedProfession === profession ? "selected" : ""
-              }`}
-              onClick={() => handleProfessionClick(profession)}
-            >
-              <span className="profession-text">{profession}</span>
-            </button>
-          ))}
-        </div>
-        <div className="main-panel">
-          {ispersonalSearch ? (
-            <div className="autocomplete-wrapper">
-              <input
-                type="text"
-                value={inputValue}
-                onChange={handleInputChange}
-                placeholder="Type Employee Name..."
-                aria-autocomplete="list"
-                aria-controls="autocomplete-list"
-              />
-              {suggestionsList.length > 0 && (
-                <ul className="suggestions-list">
-                  {suggestionsList.map((suggestion, index) => (
-                    <li
-                      key={index}
-                      onClick={() => handleSuggestionClick(suggestion)}
-                      role="option"
-                    >
-                      {suggestion}
-                    </li>
-                  ))}
-                </ul>
-              )}
+                  id="PersonalSearch"
+                  className="button"
+                  onClick={handlePersonalSearchClick}
+                >
+                  <i className="bi bi-person-circle"></i>
+                  &nbsp;&nbsp;&nbsp;Personal timetable
+                </button>
+                <button className="button">
+                  <i className="bi bi-clipboard2-check"></i>
+                  &nbsp;&nbsp;&nbsp;Status
+                </button>
+                <button className="button" onClick={handleDownload}>
+                  <i className="bi bi-download"></i>&nbsp;&nbsp;&nbsp;Download
+                </button>
+                <button className="button" onClick={handleSave}>
+                  <i className="bi bi-floppy"></i>&nbsp;&nbsp;&nbsp;Save
+                </button>
+                <button className="button" onClick={handleBack}>
+                  <i className="bi bi-arrow-90deg-left"></i>
+                  &nbsp;&nbsp;&nbsp;Cancel
+                </button>
+              </div>
             </div>
-          ) : (
-            <div></div>
-          )}
-          <WeekShifts
-            shifts={shifts}
-            setShifts={setShifts}
-            unselected_shifts={unselected_shifts}
-            setUnselected_shifts={setUnselected_shifts}
-            profession={selectedProfession}
-            workers={workers}
-            setWorkers={setWorkers}
-            ispersonalSearch={ispersonalSearch}
-            inputValue={inputValue}
-            currentTableID={currentTableID}
-            setPersonalSearch={setPersonalSearch}
-            handleProfessionClick={handleProfessionClickGIMIC}
-            render_fun={render_fun}
-            selectedProfession={selectedProfession}
-            setSelectedProfession={setSelectedProfession}
-            currentTable={currentTable}
-            setCurrentTable={setCurrentTable}
-            professions={professions}
-            evaluator={evaluator}
+            <div className="main-container">
+              <div className="left-panel">
+                {professions.map((profession, index) => (
+                  <button
+                    key={index}
+                    className={`profession-button ${
+                      selectedProfession === profession ? "selected" : ""
+                    }`}
+                    onClick={() => handleProfessionClick(profession)}
+                  >
+                    <span className="profession-text">{profession}</span>
+                  </button>
+                ))}
+              </div>
+              <div className="main-panel">
+                {ispersonalSearch ? (
+                  <div className="autocomplete-wrapper">
+                    <input
+                      type="text"
+                      value={inputValue}
+                      onChange={handleInputChange}
+                      placeholder="Type Employee Name..."
+                      aria-autocomplete="list"
+                      aria-controls="autocomplete-list"
+                    />
+                    {suggestionsList.length > 0 && (
+                      <ul className="suggestions-list">
+                        {suggestionsList.map((suggestion, index) => (
+                          <li
+                            key={index}
+                            onClick={() => handleSuggestionClick(suggestion)}
+                            role="option"
+                          >
+                            {suggestion}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ) : (
+                  <div></div>
+                )}
+                <WeekShifts
+                  shifts={shifts}
+                  setShifts={setShifts}
+                  unselected_shifts={unselected_shifts}
+                  setUnselected_shifts={setUnselected_shifts}
+                  profession={selectedProfession}
+                  workers={workers}
+                  setWorkers={setWorkers}
+                  ispersonalSearch={ispersonalSearch}
+                  inputValue={inputValue}
+                  currentTableID={currentTableID}
+                  setPersonalSearch={setPersonalSearch}
+                  handleProfessionClick={handleProfessionClickGIMIC}
+                  render_fun={render_fun}
+                  selectedProfession={selectedProfession}
+                  setSelectedProfession={setSelectedProfession}
+                  currentTable={currentTable}
+                  setCurrentTable={setCurrentTable}
+                  professions={professions}
+                  evaluator={evaluator}
             setfitness={setfitness}
             requirements={requirements}
             
           />
-          <AddShiftWindow
-            shifts={shifts}
-            setShifts={setShifts}
-            unselected_shifts={unselected_shifts}
-            setUnselected_shifts={setUnselected_shifts}
-            profession={selectedProfession}
-            workers={workers}
-            setWorkers={setWorkers}
-            ispersonalSearch={ispersonalSearch}
-            inputValue={inputValue}
-            currentTableID={currentTableID}
-            handleProfessionClick={handleProfessionClickGIMIC}
-            currentTable={currentTable}
-            setCurrentTable={setCurrentTable}
-          />
-        </div>
-      </div>
-    </div>
+                <AddShiftWindow
+                  shifts={shifts}
+                  setShifts={setShifts}
+                  unselected_shifts={unselected_shifts}
+                  setUnselected_shifts={setUnselected_shifts}
+                  profession={selectedProfession}
+                  workers={workers}
+                  setWorkers={setWorkers}
+                  ispersonalSearch={ispersonalSearch}
+                  inputValue={inputValue}
+                  currentTableID={currentTableID}
+                  handleProfessionClick={handleProfessionClickGIMIC}
+                  currentTable={currentTable}
+                  setCurrentTable={setCurrentTable}
+                />
+              </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <LoadingPage msg="Loading your data" />
+      )}
+    </>
   );
 };
 

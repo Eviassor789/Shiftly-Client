@@ -50,29 +50,41 @@ function SettingsPopup({ onClose, loggedUser, userCurrent, initialSettings, isCh
       <div className="settings-content">
         <h2>Settings</h2>
 
-        <div className="objective">
-          <h5>First objective:</h5>
-          <label className="switch">
-            <input
-              type="checkbox"
-              checked={isChecked[0]} // Set checked state from isChecked[0]
-              onChange={handleCheckboxChange(0)} // Bind index to handler
-            />
-            <span className="slider"></span>
-          </label>
-        </div>
-
-        <div className="objective">
-          <h5>Second objective:</h5>
-          <label className="switch">
-            <input
-              type="checkbox"
-              checked={isChecked[1]} // Set checked state from isChecked[1]
-              onChange={handleCheckboxChange(1)} // Bind index to handler
-            />
-            <span className="slider"></span>
-          </label>
-        </div>
+                {/* First Row: min idle workers & max satisfied contracts */}
+                <div className="objective-row">
+                <div className="objective">
+                  <h7>min idle workers</h7>
+                </div>
+                <label className="switch">
+                  <input
+                    type="checkbox"
+                    checked={isChecked[0]} // Set checked state from isChecked[0]
+                    onChange={handleCheckboxChange(0)} // Bind index to handler
+                  />
+                  <span className="slider custom-slider"></span>
+                </label>
+                <div className="objective">
+                  <h7>max satisfied Contracts</h7>
+                </div>
+              </div>
+      
+              {/* Second Row: max satisfied requirement & min cost */}
+              <div className="objective-row">
+                <div className="objective">
+                  <h7>max satisfied requirement</h7>
+                </div>
+                <label className="switch">
+                  <input
+                    type="checkbox"
+                    checked={isChecked[1]} // Set checked state from isChecked[1]
+                    onChange={handleCheckboxChange(1)} // Bind index to handler
+                  />
+                  <span className="slider custom-slider"></span>
+                </label>
+                <div className="objective">
+                  <h7>min cost</h7>
+                </div>
+              </div>
 
         <button
           className="Log-out"

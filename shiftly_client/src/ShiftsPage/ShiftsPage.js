@@ -444,7 +444,7 @@ const ShiftsPage = (props) => {
             pdf.addImage(imgData, 'PNG', 10, 10);
             pdf.save('shift_assignments_by_shift.pdf');
         });
-  
+        document.body.removeChild(input);
   
   
   

@@ -18,6 +18,8 @@ const ShiftWindow = ({
   render_fun,
   selectedProfession,
   setSelectedProfession,
+  evaluator,
+  setfitness
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [currIdList, setCurrIdList] = useState(shiftData.idList);
@@ -97,6 +99,8 @@ const ShiftWindow = ({
   //   console.log("workers_map: ", workers_map);
   // }
 
+  
+
   const handlePlusClick = (id) => {
     var updatedWorkersList = [...currIdList, id];
     var updatedPotencialWorkersList = potencialIdWorkersList.filter(
@@ -145,9 +149,9 @@ const ShiftWindow = ({
     updateShifts(updatedWorkersList);
 
     let temp_workers = workers;
-    console.log("temp_workers: ", temp_workers);
-    console.log("id: ", id);
-    console.log("temp_workers[id]: ", temp_workers[id]);
+    // console.log("temp_workers: ", temp_workers);
+    // console.log("id: ", id);
+    // console.log("temp_workers[id]: ", temp_workers[id]);
 
     if (temp_workers[id].shifts) {
       temp_workers[id].shifts = temp_workers[id].shifts.filter(

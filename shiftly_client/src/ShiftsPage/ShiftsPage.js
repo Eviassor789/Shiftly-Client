@@ -25,6 +25,12 @@ const ShiftsPage = (props) => {
   const [shifts, setShifts] = useState([]);
   const [render, setRender] = useState(false);
   const [loggedUser, setLoggedUser] = useState("");
+  const [fitness, setfitness] = useState("");
+  const [evaluator, setevaluator] = useState("");
+  const [requirements, setrequirements] = useState("");
+
+
+  let myEvaluator = ""
 
   const currentTableID = props.currentTableID;
   const setCurrentTableID = props.setCurrentTableID;
@@ -220,12 +226,15 @@ const ShiftsPage = (props) => {
   
           const fetchedRequirements = await requirementsResponse.json();
           console.log("Fetched Requirements:", fetchedRequirements);
+          setrequirements(fetchedRequirements)
   
           // Create the evaluator with fetched requirements
-          const evaluator = new ScheduleEvaluator(sortedShiftsList, workersMap, fetchedRequirements);
+          myEvaluator = new ScheduleEvaluator(sortedShiftsList, workers, fetchedRequirements);
+          setevaluator(myEvaluator)
           let solution = transformSolution(currentAssignment);
-          const result = evaluator.getFitnessWithMoreInfo(solution);
-          // console.log("result: ", result);
+          let result = myEvaluator.getFitnessWithMoreInfo(solution);
+          console.log("result: ", result);
+          setfitness([result.cost, result.satisfiedContracts, result.satisfiedRequirements])
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -237,6 +246,18 @@ const ShiftsPage = (props) => {
       fetchTableData();
     }
   }, [tableId, loggedUser, navigate, token]);
+
+  useEffect(() => {
+    if(requirements && shifts && workers){
+      myEvaluator = new ScheduleEvaluator(shifts, workers, requirements);
+      setevaluator(myEvaluator)
+      let solution = transformSolution(getAssinment());
+      let result = myEvaluator.getFitnessWithMoreInfo(solution);
+      console.log("result: ", result);
+      setfitness([result.cost, result.satisfiedContracts, result.satisfiedRequirements])
+    }
+
+  }, [shifts]);
   
 
   const handleProfessionClick = (profession) => {
@@ -417,11 +438,39 @@ const ShiftsPage = (props) => {
   
   
   }
+// if(requirements){
+//   let result =  myEvaluator.getFitnessWithMoreInfo(transformSolution(getAssinment()))
+//   //{myEvaluator? myEvaluator.getFitnessWithMoreInfo(transformSolution(getAssinment())) : ""}
+
+
+//   setfitness([result.cost, result.satisfiedContracts, result.satisfiedRequirements])
+// }
 
   const handleBack = () => {
     navigate(`/home`);
   };
 
+  function getAssinment() {
+    let assignment = {};
+
+    // Iterate over each shift
+    shifts.forEach((shift) => {
+      // console.log("shift 111", shift);
+
+      // Initialize the assignment object for the shift if it doesn't exist
+      if (!assignment[shift.id]) {
+        assignment[shift.id] = [];
+      }
+
+      // Loop through the idList of the shift (which contains worker IDs)
+      shift.idList.forEach((workerId) => {
+        // Add the worker's ID to the array for the corresponding shiftId
+        assignment[shift.id].push(workerId);
+      });
+    });
+    return assignment
+  }
+//{myEvaluator? myEvaluator.getFitnessWithMoreInfo(transformSolution(getAssinment())) : ""}
   return (
     <div className="page-container">
       <div className="top-panel">
@@ -429,6 +478,7 @@ const ShiftsPage = (props) => {
           {tables_map.get(currentTableID) ? tables_map.get(currentTableID).name : "Empty Table"}
         </div>
         <div className="buttons">
+        {fitness[0]}
           <button
             id="PersonalSearch"
             className="button"
@@ -447,7 +497,7 @@ const ShiftsPage = (props) => {
             <i className="bi bi-floppy"></i>&nbsp;&nbsp;&nbsp;Save
           </button>
           <button className="button" onClick={handleBack}>
-            <i className="bi bi-arrow-90deg-left"></i>&nbsp;&nbsp;&nbsp;Back
+            <i className="bi bi-arrow-90deg-left"></i>&nbsp;&nbsp;&nbsp;Cancel
           </button>
         </div>
       </div>
@@ -512,6 +562,10 @@ const ShiftsPage = (props) => {
             currentTable={currentTable}
             setCurrentTable={setCurrentTable}
             professions={professions}
+            evaluator={evaluator}
+            setfitness={setfitness}
+            requirements={requirements}
+            
           />
           <AddShiftWindow
             shifts={shifts}

@@ -10,6 +10,7 @@ class ScheduleEvaluator {
         this.workerPossibleShiftsMap = {};
         this.relevantShifts = {};
         this.totalWorkerssNum = 0;
+        this.maxRequirementsMap = {};
 
         this.costWeight = 0;
         this.contractsWeight = 0;
@@ -117,6 +118,20 @@ class ScheduleEvaluator {
         this.requirements.forEach(req => {
             this.requirementsNumMap[req.id] = req.number;
         });
+
+
+
+        // Iterate through each shift in shiftsToRequirementsMap
+        for (const [shiftId, requirements] of Object.entries(this.shiftsToRequirementsMap)) {
+            // Map over the relevant requirement objects and get the corresponding requirement numbers
+            const requirementNumbers = requirements.map(req => this.requirementsNumMap[req.id]); 
+            
+            // Find the maximum requirement number for the current shift
+            const maxRequirementNumber = Math.max(...requirementNumbers);
+            
+            // Store the result in maxRequirementsMap
+            this.maxRequirementsMap[shiftId] = maxRequirementNumber;
+        }
     }
 
     // Calculate the fitness and other metrics for a given solution
@@ -126,7 +141,7 @@ class ScheduleEvaluator {
         let cost = 0;
         let satisfiedContracts = 0;
         let satisfiedRequirements = 0;
-        let idleWorkers = 0;
+        let totalIdleWorkers = 0;
         let totalRequirementsNum = 0;
         let totalWorkerssNum = this.totalWorkerssNum
 
@@ -146,24 +161,38 @@ class ScheduleEvaluator {
             constructs[workerId] -= this.durationOfShift(shiftId);
 
             // Update leftRequirements and idleWorkers
-            let idleFlag = true;
             if(this.getRelevantRequirementsForShift(this.relevantShifts[shiftId])) {
                 this.getRelevantRequirementsForShift(this.relevantShifts[shiftId]).forEach(requirement => {
                     const requirementId = requirement.id;
                     if (leftRequirementsNumMap[requirementId] > 0) {
                         leftRequirementsNumMap[requirementId] -= 1;
-                        idleFlag = false;
                     }
                 });
-            } else {
-                idleFlag = false;
-            }
-            if (idleFlag) {
-                idleWorkers += 1;
-                // console.log("shiftId + workerId: ", shiftId, workerId);
-
             }
         });
+
+
+        // Iterate through the solution array of [worker_id, shift_id]
+        const shiftToWorkerCount = {};
+
+        // Count how many workers are assigned to each shift
+        solution.forEach(([workerId, shiftId]) => {
+        if (!shiftToWorkerCount[shiftId]) {
+            shiftToWorkerCount[shiftId] = 0;
+        }
+        shiftToWorkerCount[shiftId] += 1;
+        });
+
+        // Now calculate idle workers for each shift
+        for (const [shiftId, workerCount] of Object.entries(shiftToWorkerCount)) {
+        const maxRequirement = this.maxRequirementsMap[shiftId]; // Get the max requirement for the shift
+
+        // Calculate idle workers only if workerCount > maxRequirement
+        if (workerCount > maxRequirement) {
+            const idleWorkers = workerCount - maxRequirement;
+            totalIdleWorkers += idleWorkers;
+        }
+        }
 
         // Calculate satisfied contracts
         Object.values(constructs).forEach(remainingHours => {
@@ -179,11 +208,11 @@ class ScheduleEvaluator {
 
         // Lower fitness is better fitness
         fitness += cost * this.costWeight;
-        fitness += idleWorkers * this.idleWorkersWeight;
+        fitness += totalIdleWorkers * this.idleWorkersWeight;
         fitness -= satisfiedContracts * this.contractsWeight;
         fitness -= satisfiedRequirements * this.requirementsWeight;
 
-        return { fitness, cost, satisfiedContracts, satisfiedRequirements, idleWorkers, totalRequirementsNum, totalWorkerssNum };
+        return { fitness, cost, satisfiedContracts, satisfiedRequirements, totalIdleWorkers, totalRequirementsNum, totalWorkerssNum };
     }
 }
 

@@ -21,7 +21,10 @@ const WeekShifts = ({
   setSelectedProfession,
   currentTable,
   setCurrentTable,
-  professions
+  professions,
+  evaluator,
+  setfitness,
+  requirements
 }) => {
 
 
@@ -141,6 +144,30 @@ const WeekShifts = ({
     return maxOverlaps;
 
   }
+
+  // Function to get the largest relevant requirement number for a shift
+function getMaxRelevantRequirement(shiftData, requirements) {
+  console.log("requirements: ", requirements)
+  // Filter requirements based on the shift's day, profession, start_hour, and end_hour
+  const relevantRequirements = requirements.filter(req => {
+      return (
+          req.day == shiftData.day &&
+          req.profession == shiftData.profession
+          && shiftData.start_hour <= req.hour
+          && req.hour < shiftData.end_hour  
+      );
+  });
+  console.log("relevantRequirements: ", relevantRequirements)
+
+
+  // Map over relevant requirements and extract their numbers
+  const requirementNumbers = relevantRequirements.map(req => req.number);
+
+  // Return the largest number from the relevant requirements, or 0 if none found
+  return requirementNumbers.length > 0 ? Math.max(...requirementNumbers) : 0;
+}
+
+
 
 
   function checkOverlap(shift1, shift2) {
@@ -298,14 +325,13 @@ const WeekShifts = ({
           ))}
         </tbody>
       </table>
-  
       {shiftData.showModal && (
         <>
           <div className="overlay"></div>
           <div className="modal-content">
             <ShiftWindow
               shiftData={shiftData}
-              requiredWorkers={3}
+              requiredWorkers={getMaxRelevantRequirement(shiftData, requirements)}
               onClose={handleCloseModal}
               shifts={shifts}
               setShifts={setShifts}
@@ -320,6 +346,8 @@ const WeekShifts = ({
               render_fun={render_fun}
               selectedProfession={selectedProfession}
               setSelectedProfession={setSelectedProfession}
+              evaluator={evaluator}
+              setfitness={setfitness}
             />
           </div>
         </>

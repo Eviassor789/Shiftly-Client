@@ -16,8 +16,14 @@ const AddShiftWindow = ({
   currentTable,
   setCurrentTable,
 }) => {
-  const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
-
+  const color_list = [
+    "#6CA1D1",
+    "#D1E0F2",
+    "#FFAD60",
+    "#F4E285",
+    "#A35C5C",
+    "#5F9EA0",
+  ];
   const handleAddShiftClick = (data) => {
     // Add the new shift to the shifts array
     var updatedShifts = [...shifts, data];

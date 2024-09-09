@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './UploadScreen.css';
 import ResizableWindow from "./ResizableWindow";
 import UploadFile from "./UploadFile";
@@ -37,95 +37,6 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
       return {};
     }
   };
-
-  // const tableData = {
-        //   name: "week 1",
-        //   date: "01/01/2024",
-        //   starred: false,
-        //   professions: ["Doctor", "Teacher", "Nurse"],
-        //   shifts: [
-        //       {
-        //           profession: "Doctor",
-        //           day: "Sunday",
-        //           start_hour: "11:00",
-        //           end_hour: "13:00",
-        //           cost: 50,
-        //           idList: [],
-        //           color: false
-        //       },
-        //       {
-        //           profession: "Teacher",
-        //           day: "Monday",
-        //           start_hour: "08:00",
-        //           end_hour: "10:00",
-        //           cost: 50,
-        //           idList: [],
-        //           color: false
-        //       },
-        //       {
-        //         profession: "Teacher",
-        //         day: "Sunday",
-        //         start_hour: "12:00",
-        //         end_hour: "14:00",
-        //         cost: 50,
-        //         idList: [],
-        //         color: false
-        //     }
-        //   ],
-        //   workers: [
-        //     {
-        //         "name": "_1",
-        //         "professions": ["Doctor", "Teacher"],
-        //         "days": ["Wednesday", "Sunday", "Friday"],
-        //         "shifts": [],
-        //         "relevant_shifts_id": [],
-        //         "hours_per_week": 11
-        //     },
-        //     {
-        //         "name": "_2",
-        //         "professions": ["Doctor", "Teacher"],
-        //         "days": ["Saturday", "Monday", "Tuesday", "Friday"],
-        //         "shifts": [],
-        //         "relevant_shifts_id": [],
-        //         "hours_per_week": 12
-        //     },
-        //     {
-        //         "name": "_3",
-        //         "professions": ["Doctor", "Teacher"],
-        //         "days": ["Sunday", "Friday", "Tuesday", "Monday"],
-        //         "shifts": [],
-        //         "relevant_shifts_id": [],
-        //         "hours_per_week": 20
-        //     },
-        //     {
-        //         "name": "_4",
-        //         "professions": ["Doctor", "Teacher"],
-        //         "days": ["Saturday", "Tuesday", "Thursday", "Monday"],
-        //         "shifts": [],
-        //         "relevant_shifts_id": [],
-        //         "hours_per_week": 11
-        //     },
-        //     {
-        //         "name": "_5",
-        //         "professions": ["Doctor", "Teacher"],
-        //         "days": ["Monday", "Thursday", "Wednesday", "Tuesday"],
-        //         "shifts": [],
-        //         "relevant_shifts_id": [],
-        //         "hours_per_week": 11
-        //     },
-        //     {
-        //         "name": "_6",
-        //         "professions": ["Doctor", "Teacher"],
-        //         "days": ["Saturday", "Tuesday", "Thursday"],
-        //         "shifts": [],
-        //         "relevant_shifts_id": [],
-        //         "hours_per_week": 16
-        //     }
-        //   ],
-        //   assignment: newAssignment
-        // };
-
-        // addTableForUser(jwtToken, tableData);
 
   const handleNext = async () => {
     if (currentStep === 3) {
@@ -308,9 +219,6 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
         console.error("Error while updating user's tablesArr:", error);
     }
 }
-
-
-
 
 
 

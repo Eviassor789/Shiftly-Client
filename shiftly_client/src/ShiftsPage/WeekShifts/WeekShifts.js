@@ -28,14 +28,12 @@ const WeekShifts = ({
   const color_list = [
     "#6CA1D1",
     "#D1E0F2",
-    "#FFAD60",
+    "#FFA96B",
     "#F4E285",
     "#A35C5C",
     "#5F9EA0",
+    "#61A886",
   ];
-
-  let last = 0;
-  let modulo = 0;
 
   if(selectedProfession && selectedProfession.startsWith("@")){
     setSelectedProfession(selectedProfession.slice(1));

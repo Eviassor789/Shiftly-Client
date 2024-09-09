@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 
 function SchedulingTile(props) {
   const [isStarFilled, setIsStarFilled] = useState(props.starred);
+  const [isEditing, setIsEditing] = useState(false);
+  const [newName, setNewName] = useState(props.name);
 
   useEffect(() => {
     setIsStarFilled(props.starred);
@@ -14,6 +16,9 @@ function SchedulingTile(props) {
     
     // Send the star toggle request to the server
     try {
+      // Update the UI state
+      setIsStarFilled(!isStarFilled);
+
       const response = await fetch(`http://localhost:5000/toggle_star/${props.ID}`, {
         method: 'POST',
         headers: {
@@ -27,8 +32,6 @@ function SchedulingTile(props) {
         throw new Error('Failed to toggle star');
       }
 
-      // Update the UI state
-      setIsStarFilled(!isStarFilled);
       props.onToggleStar(props.ID);
     } catch (error) {
       console.error('Error toggling star:', error);
@@ -38,6 +41,9 @@ function SchedulingTile(props) {
   const handleRemoveTile = async (e) => {
     e.stopPropagation(); // Prevent the click event from propagating to the tile's click event
     
+    // Update the UI state
+    props.onRemove(props.ID);
+
     // Send the delete request to the server
     try {
       const response = await fetch(`http://localhost:5000/delete_table/${props.ID}`, {
@@ -51,8 +57,6 @@ function SchedulingTile(props) {
         throw new Error('Failed to delete table');
       }
 
-      // Update the UI state
-      props.onRemove(props.ID);
     } catch (error) {
       console.error('Error deleting table:', error);
     }
@@ -65,10 +69,35 @@ function SchedulingTile(props) {
     navigate(`/page/${props.ID}`); // Navigate to the specific table page
   };
 
+  const handleEditClick = (e) => {
+    e.stopPropagation();
+    setIsEditing(true);
+  };
+
+  const handleSaveEdit = async (e) => {
+    e.stopPropagation();
+    await props.onEditName(newName);  // Trigger the parent edit function
+    setIsEditing(false);  // End editing mode
+  };
+
+  const handleInputChange = (e) => {
+    setNewName(e.target.value);
+  };
+
   return (
     <div id="TileContainer" onClick={handleTileClick}>
       <img src="/SchedualPic.jpg" alt="Logo" />
-      <span id="NameOfTable">{props.name}</span>
+      {isEditing ? (
+        <input
+          id="NameInput"
+          type="text"
+          value={newName}
+          onChange={handleInputChange}
+          onClick={(e) => {e.stopPropagation()}}  // Prevent triggering the tile click
+        />
+      ) : (
+        <span id="NameOfTable">{props.name}</span>
+      )}
       <span id="dateOfTable">{props.date}</span>
       <div className="icons">
         {isStarFilled ? (
@@ -76,9 +105,21 @@ function SchedulingTile(props) {
         ) : (
           <i className="bi bi-star" onClick={toggleStar}></i>
         )}
+
+        {isEditing ? (
+          <button onClick={handleSaveEdit}>
+            <i id="check" className="bi bi-check"></i>  {/* Save icon */}
+          </button>
+        ) : (
+          <button onClick={handleEditClick}>
+            <i id="pencil" className="bi bi-pencil"></i>  {/* Edit icon */}
+          </button>
+        )}
+
         <button onClick={handleRemoveTile}>
           <i className="bi bi-dash-circle"></i>
         </button>
+        
       </div>
     </div>
   );

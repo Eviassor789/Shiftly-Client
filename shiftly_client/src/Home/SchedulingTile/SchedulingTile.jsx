@@ -1,22 +1,28 @@
 import "./SchedulingTile.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
 
 function SchedulingTile(props) {
   const [isStarFilled, setIsStarFilled] = useState(props.starred);
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState(props.name);
+  const inputRef = useRef(null);  // Reference to the input element
 
   useEffect(() => {
     setIsStarFilled(props.starred);
   }, [props.starred]);
 
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus();  // Focus on the input
+      inputRef.current.select();  // Select all the text inside the input
+    }
+  }, [isEditing]);
+
   const toggleStar = async (e) => {
     e.stopPropagation(); // Prevent the click event from propagating to the tile's click event
     
-    // Send the star toggle request to the server
     try {
-      // Update the UI state
       setIsStarFilled(!isStarFilled);
 
       const response = await fetch(`http://localhost:5000/toggle_star/${props.ID}`, {
@@ -39,12 +45,9 @@ function SchedulingTile(props) {
   };
 
   const handleRemoveTile = async (e) => {
-    e.stopPropagation(); // Prevent the click event from propagating to the tile's click event
-    
-    // Update the UI state
+    e.stopPropagation();
     props.onRemove(props.ID);
 
-    // Send the delete request to the server
     try {
       const response = await fetch(`http://localhost:5000/delete_table/${props.ID}`, {
         method: 'DELETE',
@@ -66,7 +69,7 @@ function SchedulingTile(props) {
 
   const handleTileClick = () => {
     props.setCurrentTableID(props.ID);
-    navigate(`/page/${props.ID}`); // Navigate to the specific table page
+    navigate(`/page/${props.ID}`);
   };
 
   const handleEditClick = (e) => {
@@ -76,13 +79,33 @@ function SchedulingTile(props) {
 
   const handleSaveEdit = async (e) => {
     e.stopPropagation();
-    await props.onEditName(newName);  // Trigger the parent edit function
-    setIsEditing(false);  // End editing mode
+    await props.onEditName(newName);
+    setIsEditing(false);
   };
 
   const handleInputChange = (e) => {
     setNewName(e.target.value);
   };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSaveEdit(e);  // Trigger save when Enter is pressed
+    }
+  };
+
+  function formatDateTime(dateTimeString) {
+    // Split the input string by the hyphen (-)
+    const [year, month, day, hour, minute, second] = dateTimeString.split('-');
+  
+    // Format the date as DD/MM/YY
+    const formattedDate = `${day}/${month}/${year.slice(2)}`;
+  
+    // Format the time as HH:MM:SS
+    const formattedTime = `${hour}:${minute}`;
+  
+    // Combine the formatted date and time
+    return `${formattedDate} ${formattedTime}`;
+  }
 
   return (
     <div id="TileContainer" onClick={handleTileClick}>
@@ -92,13 +115,15 @@ function SchedulingTile(props) {
           id="NameInput"
           type="text"
           value={newName}
+          ref={inputRef}  // Attach the reference to the input
           onChange={handleInputChange}
-          onClick={(e) => {e.stopPropagation()}}  // Prevent triggering the tile click
+          onKeyDown={handleKeyDown}  // Listen for Enter key
+          onClick={(e) => { e.stopPropagation() }}  // Prevent triggering the tile click
         />
       ) : (
         <span id="NameOfTable">{props.name}</span>
       )}
-      <span id="dateOfTable">{props.date}</span>
+      <span id="dateOfTable">{formatDateTime(props.date)}</span>
       <div className="icons">
         {isStarFilled ? (
           <i className="bi bi-star-fill" onClick={toggleStar}></i>

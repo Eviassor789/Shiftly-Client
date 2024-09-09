@@ -8,6 +8,8 @@ import AddShiftWindow from "./AddShiftWindow/AddShiftWindow";
 import { useNavigate } from "react-router-dom";
 import tables_map from "../Data/TableArchive";
 import ScheduleEvaluator from "../ScheduleEvaluator";
+import html2canvas from "html2canvas";
+
 
 const ShiftsPage = (props) => {
 
@@ -74,6 +76,28 @@ const ShiftsPage = (props) => {
     }
   }, [token, navigate]);
 
+
+  function getDay(shiftDay) {
+    const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  
+    // Helper function to map a digit to a day
+    function mapDigitToDay(digit) {
+      if (!isNaN(digit)) {
+        return daysOfWeek[parseInt(digit) - 1];
+      } else {
+        return digit;
+      }
+    }
+  
+    // If the input is an array, map each digit to its corresponding day
+    if (Array.isArray(shiftDay)) {
+      return shiftDay.map(day => mapDigitToDay(day));
+    } else {
+      // Handle single day input
+      return mapDigitToDay(shiftDay);
+    }
+  }
+
   useEffect(() => {
     const fetchTableData = async () => {
       try {
@@ -121,7 +145,7 @@ const ShiftsPage = (props) => {
                   id: worker.id,
                   name: worker.name,
                   professions: worker.professions,
-                  days: worker.days,
+                  days: getDay(worker.days),
                   shifts: [],
                   relevant_shifts_id: worker.relevant_shifts_id,
                   hours_per_week: worker.hours_per_week,
@@ -137,13 +161,16 @@ const ShiftsPage = (props) => {
                 cost: shift.cost,
                 color: shift.color,
               });
+
             });
           });
   
           const temp_workers = currTable.all_workers.reduce((map, worker) => {
-            map[worker.id] = worker;
+            map[worker.id] = { ...worker, days: getDay(worker.days) };
             return map;
           }, {});
+
+          console.log("temp_workers: ", temp_workers)
   
           setWorkers(temp_workers);
   
@@ -163,7 +190,15 @@ const ShiftsPage = (props) => {
             }
           });
   
-          const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
+          const color_list = [
+            "#6CA1D1",
+            "#D1E0F2",
+            "#FFAD60",
+            "#F4E285",
+            "#A35C5C",
+            "#5F9EA0",
+          ];
+
           let counter = 0;
           sortedShiftsList.forEach((shift) => {
             shift.color = color_list[counter++ % color_list.length];
@@ -301,21 +336,87 @@ const ShiftsPage = (props) => {
   };
 
 
-  async function handleDownload () {
-    const doc = new jsPDF();
-    const shiftsData = [
-      { worker: "John Doe", shifts: ["Monday 09:00-12:00", "Wednesday 14:00-18:00"] },
-      { worker: "Jane Smith", shifts: ["Tuesday 10:00-13:00", "Friday 09:00-12:00"] }
-  ];
+  async function handleDownload() {
+    // let content = '<h1>Shift Assignments by worker</h1>';
+    // console.log("shifts: ", shifts);
 
-    doc.text('Shift Assignments', 20, 20);
-    shiftsData.forEach((data, index) => {
-        doc.text(`${data.worker}`, 20, 30 + index * 10);
-        doc.text(`${data.shifts.join(", ")}`, 20, 40 + index * 10);
+    // // Loop through the workers and their shifts
+    // for (const workerId in workers) {
+    //     const worker = workers[workerId];
+    //     content += `<p>Worker: ${worker.name}</p><ul>`;
+
+    //     if (worker.shifts){        worker.shifts.forEach(shift => {
+    //       content += `<li>${shift.day}, ${shift.start_hour} - ${shift.end_hour}, ${shift.profession}</li>`;
+    //   });}
+        
+
+
+    //     content += '</ul></br></br>';
+    // }
+    
+    // // Generate the PDF content
+    // let input = document.createElement('div');
+    // input.innerHTML = content;
+
+
+
+    // input.style.position = "absolute";
+    // input.style.top = "-9999px"; // Move it off-screen
+
+    // document.body.appendChild(input);
+
+    // html2canvas(input)
+    //   .then((canvas) => {
+    //     const imgData = canvas.toDataURL("image/png");
+    //     const pdf = new jsPDF();
+    //     pdf.addImage(imgData, "PNG", 10, 10);
+    //     pdf.save("shift_assignments.pdf");
+
+    //     // Remove the temporary div after capturing it
+    //     document.body.removeChild(input);
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error generating PDF: ", error);
+    //   });
+
+      ///////////////////////////////////////////////
+
+
+      let content = '<h1>Shift Assignments by Shift</h1>';
+
+    // Loop through the shifts and list workers for each shift
+    shifts.forEach(shift => {
+        content += `<p>(${shift.profession}, ${shift.day}, ${shift.start_hour} - ${shift.end_hour}):</p><ul>`;
+        
+        // For each worker ID in the shift's idList, get the worker name
+        shift.idList.forEach(workerId => {
+            const worker = workers[workerId];
+            if (worker) {
+                content += `<li>${worker.name}</li>`;
+            }
+        });
+
+        content += '</ul></br>';
     });
 
-    doc.save('shift_assignments.pdf');
-};
+    // Generate the PDF content
+    let input = document.createElement('div');
+    input.innerHTML = content;
+    document.body.appendChild(input);
+
+    html2canvas(input)
+        .then((canvas) => {
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF();
+            pdf.addImage(imgData, 'PNG', 10, 10);
+            pdf.save('shift_assignments_by_shift.pdf');
+        });
+  
+  
+  
+  
+  
+  }
 
   const handleBack = () => {
     navigate(`/home`);
@@ -410,6 +511,7 @@ const ShiftsPage = (props) => {
             setSelectedProfession={setSelectedProfession}
             currentTable={currentTable}
             setCurrentTable={setCurrentTable}
+            professions={professions}
           />
           <AddShiftWindow
             shifts={shifts}

@@ -20,11 +20,20 @@ const WeekShifts = ({
   selectedProfession,
   setSelectedProfession,
   currentTable,
-  setCurrentTable
+  setCurrentTable,
+  professions
 }) => {
 
 
-  const color_list = ["blue", "red", "orange", "yellow", "pink", "brown"];
+  const color_list = [
+    "#6CA1D1",
+    "#D1E0F2",
+    "#FFAD60",
+    "#F4E285",
+    "#A35C5C",
+    "#5F9EA0",
+  ];
+
   let last = 0;
   let modulo = 0;
 
@@ -83,7 +92,6 @@ const WeekShifts = ({
     let professionShift = list.filter(
       (shift) => shift.profession === profession
     );
-    console.log("professionShift: ", professionShift);
 
     let arrayOne = [];
     let arrayTwo = [];
@@ -103,7 +111,6 @@ const WeekShifts = ({
         professionShift.forEach((shift2) => {
           const overlaps = checkOverlap(shift1, shift2);
             if (overlaps) {
-              console.log("stadddddte: ", state);
               temp++;
               arrayTwo.push(shift2)
             }
@@ -115,8 +122,6 @@ const WeekShifts = ({
 
     } while (currOverlaps > maxOverlaps);
 
-    console.log("state: ", state);
-    console.log("maxOverlaps: ", maxOverlaps);
 
 
     //i really dont know if it is better or not...:
@@ -226,25 +231,25 @@ const WeekShifts = ({
                   //   });
                   // });
 
-                  // let temp_workers = workers;
-                  // Object.values(temp_workers).forEach((worker) => {
-                  //   worker.shifts = []
-                  // })
+                  let temp_workers = workers;
+                  Object.values(temp_workers).forEach((worker) => {
+                    worker.shifts = []
+                  })
                 
-                  // shifts.forEach((shift) => {
-                  //   shift.idList.forEach((id) => {
-                  //     temp_workers[id].shifts = [
-                  //       ...temp_workers[id].shifts,
-                  //       {
-                  //         profession: shift.profession,
-                  //         day: shift.day,
-                  //         start_hour: shift.start_hour,
-                  //         end_hour: shift.end_hour,
-                  //       },
-                  //     ];
-                  //   });
-                  // });
-                  // setWorkers(temp_workers)
+                  shifts.forEach((shift) => {
+                    shift.idList.forEach((id) => {
+                      temp_workers[id].shifts = [
+                        ...temp_workers[id].shifts,
+                        {
+                          profession: shift.profession,
+                          day: shift.day,
+                          start_hour: shift.start_hour,
+                          end_hour: shift.end_hour,
+                        },
+                      ];
+                    });
+                  });
+                  setWorkers(temp_workers)
                 }
   
                 return (
@@ -282,6 +287,7 @@ const WeekShifts = ({
                           ispersonalSearch={ispersonalSearch}
                           profession={shift.profession}
                           workers={workers}
+                          professions={professions}
                         />
                       </div>
                     ))}

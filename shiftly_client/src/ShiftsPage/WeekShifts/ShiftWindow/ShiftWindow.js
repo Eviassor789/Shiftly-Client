@@ -58,15 +58,6 @@ const ShiftWindow = ({
       },
     ];
 
-    // const existingAssignment = assignments.get(currentAssignmentID);
-    // // Create a new Assignment object with the updated shifts_list
-    // const updatedAssignment = new Assignment({
-    //   ...existingAssignment, // Spread the existing properties
-    //   shifts_list: updatedShifts, // Override the shifts_list with the new one
-    // });
-    // // Update the assignments map with the new Assignment object
-    // assignments.set(currentAssignmentID, updatedAssignment);
-
     setShifts(updatedShifts);
     console.log("relevant: " + getRelevantIdWorkers());
   };
@@ -245,7 +236,8 @@ const ShiftWindow = ({
             person.shifts.every(
               (shift) =>
                 shift.start_hour >= shiftData.end_hour ||
-                shift.end_hour <= shiftData.start_hour
+                shift.end_hour <= shiftData.start_hour ||
+                shift.day != shiftData.day
             ))
       )
       .map((person) => person.id);

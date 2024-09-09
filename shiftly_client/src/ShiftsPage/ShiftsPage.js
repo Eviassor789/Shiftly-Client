@@ -28,8 +28,6 @@ const ShiftsPage = (props) => {
   const [requirements, setrequirements] = useState("");
 
 
-  let myEvaluator = ""
-
   const currentTableID = props.currentTableID;
   const setCurrentTableID = props.setCurrentTableID;
   const [workers, setWorkers] = useState({});
@@ -246,7 +244,7 @@ const ShiftsPage = (props) => {
           setrequirements(fetchedRequirements)
 
           // Create the evaluator with fetched requirements
-          myEvaluator = new ScheduleEvaluator(sortedShiftsList, workers, fetchedRequirements);
+          let myEvaluator = new ScheduleEvaluator(sortedShiftsList, workers, fetchedRequirements);
           setevaluator(myEvaluator)
           let solution = transformSolution(currentAssignment);
           let result = myEvaluator.getFitnessWithMoreInfo(solution);
@@ -265,8 +263,9 @@ const ShiftsPage = (props) => {
   }, [tableId, loggedUser, navigate, token]);
 
   useEffect(() => {
+    
     if(requirements && shifts && workers){
-      myEvaluator = new ScheduleEvaluator(shifts, workers, requirements);
+      let myEvaluator = new ScheduleEvaluator(shifts, workers, requirements);
       setevaluator(myEvaluator)
       let solution = transformSolution(getAssinment());
       let result = myEvaluator.getFitnessWithMoreInfo(solution);
@@ -438,25 +437,21 @@ const ShiftsPage = (props) => {
     document.body.appendChild(input);
 
     html2canvas(input)
-        .then((canvas) => {
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF();
-            pdf.addImage(imgData, 'PNG', 10, 10);
-            pdf.save('shift_assignments_by_shift.pdf');
-        });
+      .then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF();
+        pdf.addImage(imgData, "PNG", 10, 10);
+        pdf.save("shift_assignments_by_shift.pdf");
         document.body.removeChild(input);
-  
+      })
+      .catch((error) => {
+        console.error("Error generating PDF: ", error);
+      });
   
   
   
   }
-// if(requirements){
-//   let result =  myEvaluator.getFitnessWithMoreInfo(transformSolution(getAssinment()))
-//   //{myEvaluator? myEvaluator.getFitnessWithMoreInfo(transformSolution(getAssinment())) : ""}
 
-
-//   setfitness([result.cost, result.satisfiedContracts, result.satisfiedRequirements])
-// }
 
   const handleBack = () => {
     navigate(`/home`);
@@ -482,7 +477,6 @@ const ShiftsPage = (props) => {
     });
     return assignment
   }
-//{myEvaluator? myEvaluator.getFitnessWithMoreInfo(transformSolution(getAssinment())) : ""}
   return (
     <>
       {currentTable ? (

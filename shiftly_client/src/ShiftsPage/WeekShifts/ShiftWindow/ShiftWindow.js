@@ -259,6 +259,7 @@ const ShiftWindow = ({
 
     shifts.forEach((shift) => {
       if (
+        shift.profession == shiftData.profession &&
         shift.day == shiftData.day &&
         shift.start_hour <= time &&
         shift.end_hour > time
@@ -277,7 +278,6 @@ const ShiftWindow = ({
         <span>
           {shiftData.start_hour} - {shiftData.end_hour}
         </span>
-        <span>Max requirement: {requiredWorkers}</span>
         <span>Cost: {shiftData.cost}</span>
         <i onClick={handleCloseClick} className="bi bi-x-lg"></i>
       </div>

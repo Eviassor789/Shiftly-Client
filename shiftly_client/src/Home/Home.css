@@ -1,7 +1,3 @@
-#welcomeBox {
-    
-}
-
 .CenterDiv {
     position: relative;
     display: flex;
@@ -15,6 +11,11 @@
     height: fit-content;
 }
 
+html, body {
+    height: 100%;
+    overflow-y: auto; /* Enables vertical scrolling */
+    overflow-x: hidden; /* Disables horizontal scrolling */
+  }
 
 #welcomeBox span{
     color: #193C7D;
@@ -101,9 +102,6 @@
 
 }
 
-#HistoryListContainer{
-    
-}
 
 #easterEgg {
     color: #00000000;

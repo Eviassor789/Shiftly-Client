@@ -48,7 +48,7 @@ const Shift = ({
       }}
     >
       {ispersonalSearch ? (
-        profession
+        <ul className="profession">profession</ul>
       ) : (
         <ul className="shift-names">
           {idList.map((id, index) => (

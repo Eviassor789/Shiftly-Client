@@ -98,9 +98,14 @@ function Home(props) {
     const sortedTilesArray = tiles
       .filter((tile) => !showStarredOnly || tile.starred)
       .sort((a, b) => {
-        const dateA = new Date(a.date.split("/").reverse().join("-"));
-        const dateB = new Date(b.date.split("/").reverse().join("-"));
-        return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+        // Directly compare the date strings as they are already in sortable format (YYYY-MM-DD-HH-MM-SS)
+        const dateA = a.date;
+        const dateB = b.date;
+        console.log("dateA, dateB", dateA, dateB);
+        
+        return sortOrder === "desc" 
+          ? dateA.localeCompare(dateB) 
+          : dateB.localeCompare(dateA);  // Use localeCompare to compare date strings
       });
 
     const filteredTilesArray = sortedTilesArray.filter((tile) =>
@@ -157,6 +162,7 @@ function Home(props) {
   const removeTile = (idToRemove) => {
     setTiles((prevTiles) => prevTiles.filter((tile) => tile.id !== idToRemove));
   };
+  
 
 
   
@@ -180,13 +186,13 @@ function Home(props) {
             <div id="HomeMainBox" className="HomeBoxes">
   
               <div className="sort-buttons">
-                <button onClick={handleToggleSort}>
+                <button className="orderTiles" onClick={handleToggleSort}>
                   {sortOrder === "asc"
-                    ? "Order by Oldest First"
-                    : "Order by Newest First"}
+                    ? "Newest First"
+                    : "Oldest First"}
                 </button>
-                <button onClick={handleShowStarred}>
-                  {showStarredOnly ? "Show All Tiles" : "Show Starred Tiles Only"}
+                <button className="orderTiles" onClick={handleShowStarred}>
+                  {showStarredOnly ? "Starred Tiles" : "All Tiles"}
                 </button>
               </div>
               {filteredTiles.length > 0 ? (

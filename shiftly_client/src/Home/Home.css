@@ -60,9 +60,16 @@ html, body {
 
     /* text-align: center; */
 
+}
 
+.sort-buttons {
+    align-items: center;
+    vertical-align: middle;
+    flex-direction: row;
+}
 
-
+.orderTiles {
+    height: 70px;
 }
 
 .input-field {

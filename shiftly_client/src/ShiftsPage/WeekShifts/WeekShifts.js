@@ -38,6 +38,9 @@ const WeekShifts = ({
     "#61A886",
   ];
 
+  let last = 0;
+  let modulo = 0;
+
   if(selectedProfession && selectedProfession.startsWith("@")){
     setSelectedProfession(selectedProfession.slice(1));
   }
@@ -134,8 +137,8 @@ const WeekShifts = ({
     //   }else{
     //     if(maxOverlaps > last)
     //     {last = maxOverlaps;}
-    //     // if(maxOverlaps < last)
-    //     //   {last = 0;}
+    //     if(maxOverlaps < last)
+    //       {last = 0;}
     //   }
     // }
 

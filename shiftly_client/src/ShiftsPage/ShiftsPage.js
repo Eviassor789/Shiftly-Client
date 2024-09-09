@@ -133,6 +133,7 @@ const ShiftsPage = (props) => {
         if (currTable) {
           const currentAssignment = currTable.assignment;
           setProfessions(currTable.professions || []);
+          setSelectedProfession(currTable.professions[0] || null);
 
           const all_shifts = currTable.shifts;
           const currentAssignmentKeys = new Set(
@@ -213,10 +214,11 @@ const ShiftsPage = (props) => {
           const color_list = [
             "#6CA1D1",
             "#D1E0F2",
-            "#FFAD60",
+            "#FFA96B",
             "#F4E285",
             "#A35C5C",
             "#5F9EA0",
+            "#61A886",
           ];
 
           let counter = 0;
@@ -291,8 +293,13 @@ const ShiftsPage = (props) => {
     setPersonalSearch(false);
   }
 
-  const handlePersonalSearchClick = () => {
-    setSelectedProfession(null);
+  const handlePersonalSearchClick = (table) => {
+    if(!ispersonalSearch) {
+      setSelectedProfession(null);
+    }
+    else {
+      setSelectedProfession(table.professions[0] || null);
+    }
     setPersonalSearch(!ispersonalSearch);
   };
 
@@ -497,7 +504,7 @@ const ShiftsPage = (props) => {
           <button
                   id="PersonalSearch"
                   className="button"
-                  onClick={handlePersonalSearchClick}
+                  onClick={() => {handlePersonalSearchClick(currentTable)}}
                 >
                   <i className="bi bi-person-circle"></i>
                   &nbsp;&nbsp;&nbsp;Personal timetable

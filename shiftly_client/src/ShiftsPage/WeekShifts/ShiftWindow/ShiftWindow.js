@@ -63,7 +63,7 @@ const ShiftWindow = ({
     ];
 
     setShifts(updatedShifts);
-    console.log("relevant: " + getRelevantIdWorkers());
+    // console.log("relevant: " + getRelevantIdWorkers());
   };
 
   const handleCloseClick = () => {
@@ -113,7 +113,7 @@ const ShiftWindow = ({
     setpotencialIdWorkersList(updatedPotencialWorkersList);
     updateShifts(updatedWorkersList);
 
-    console.log("plus - workers: ", workers);
+    // console.log("plus - workers: ", workers);
 
     let temp_workers = JSON.parse(JSON.stringify(workers));
     if (!temp_workers[id].shifts) {
@@ -137,7 +137,7 @@ const ShiftWindow = ({
       ];
     }
     // temp_workers[id].shifts = ["a", "b"]
-    console.log("plus - temp_workers[id]: ", temp_workers[id]);
+    // console.log("plus - temp_workers[id]: ", temp_workers[id]);
 
     setWorkers(temp_workers);
   };
@@ -231,7 +231,7 @@ const ShiftWindow = ({
   };
 
   function getRelevantIdWorkers() {
-    console.log(workers);
+    // console.log(workers);
     return Object.values(workers)
       .filter(
         (person) =>
@@ -249,7 +249,7 @@ const ShiftWindow = ({
       .map((person) => person.id);
   }
 
-  console.log("shiftData: ", shiftData);
+  // console.log("shiftData: ", shiftData);
 
   function upHour(time, i) {
     const [hours, minutes] = time.split(":").map(Number);

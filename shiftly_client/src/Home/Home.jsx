@@ -39,7 +39,7 @@ function Home(props) {
         }
     
         const data = await response.json();
-        console.log('Token verification successful:', data);
+        // console.log('Token verification successful:', data);
         setLoggedUser(data.current_user);
     
         // Fetch user-specific tables
@@ -57,7 +57,7 @@ function Home(props) {
         }
     
         const tablesData = await tablesResponse.json();
-        console.log('User tables data:', tablesData);
+        // console.log('User tables data:', tablesData);
         setTiles(tablesData);
     
         // Fetch user current data
@@ -75,7 +75,7 @@ function Home(props) {
         }
     
         const userCurrentJson = await userCurrentResponse.json();
-        console.log('User color:', userCurrentJson);
+        // console.log('User color:', userCurrentJson);
         setUserCurrent(userCurrentJson.user_data);
         setBarLoaded(true); // Indicate that the bar is loaded
     
@@ -101,7 +101,7 @@ function Home(props) {
         // Directly compare the date strings as they are already in sortable format (YYYY-MM-DD-HH-MM-SS)
         const dateA = a.date;
         const dateB = b.date;
-        console.log("dateA, dateB", dateA, dateB);
+        // console.log("dateA, dateB", dateA, dateB);
         
         return sortOrder === "desc" 
           ? dateA.localeCompare(dateB) 

@@ -70,16 +70,16 @@ const UploadFile = (props) => {
       Papa.parse(data, {
         header: false,
         complete: (result) => {
-          console.log("Parsed CSV rows:", result.data);
+          // console.log("Parsed CSV rows:", result.data);
           let rows = result.data;
           let rows1, check;
           [rows1, check] = check_rows(rows, currentStep);
           rows = rows1;
           if (check) {
-            console.log("checkRows passed");
+            // console.log("checkRows passed");
             resolve([rows, true]);
           } else {
-            console.log("checkRows failed");
+            // console.log("checkRows failed");
             resolve([rows, false]);
           }
         },
@@ -420,7 +420,7 @@ const UploadFile = (props) => {
 
               props.setFileUploaded(my_array);
             }
-            console.log("Parsed rows:", rows);
+            // console.log("Parsed rows:", rows);
           } catch (error) {
             console.error("Error parsing CSV file:", error);
           }
@@ -470,14 +470,14 @@ const UploadFile = (props) => {
         alert("Please upload a CSV or Excel file.");
       }
       setRender(!render);
-      console.log("Parsed rows:", rows);
+      // console.log("Parsed rows:", rows);
       
-      console.log("SetParsedRows:", props.rowsList);
+      // console.log("SetParsedRows:", props.rowsList);
 
-      console.log("files list: ");
+      // console.log("files list: ");
       props.filesList.forEach((file) => {
         if(file) {
-          console.log(file.name);
+          // console.log(file.name);
         }
       });
     }

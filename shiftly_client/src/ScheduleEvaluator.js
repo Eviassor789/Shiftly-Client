@@ -64,8 +64,6 @@ class ScheduleEvaluator {
 
     this.shifts.forEach((shift) => {
       // Ensure shift.id exists and is valid
-      // console.log("shift.id relevantShift", shift.id)
-
       if (shift.id) {
         this.relevantShifts[shift.id] = shift;
       } else {

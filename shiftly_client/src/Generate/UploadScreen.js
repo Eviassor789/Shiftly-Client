@@ -32,7 +32,7 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
   
       if (response.ok) {
         const result = await response.json();
-        console.log('Assignment Calculated Successfully:', result);
+        // console.log('Assignment Calculated Successfully:', result);
         return result;
       } else {
         console.error('Failed to add data:', await response.text());
@@ -49,11 +49,11 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
       if (fileUploaded[1] && fileUploaded[0]) { // Check both flags
         const jwtToken = localStorage.getItem('jwtToken');
 
-        console.log("filesList uploaded successfully:");
+        // console.log("filesList uploaded successfully:");
         for (let index = 0; index < filesList.length; index++) {
           const file = filesList[index];
-          console.log("name: ", file.name);
-          console.log("parsed rows: ", rowsList[index]);
+          // console.log("name: ", file.name);
+          // console.log("parsed rows: ", rowsList[index]);
         }
 
         setScreenLoading(true); // Show loading screen
@@ -65,7 +65,7 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
           rowsList[2]
         );
 
-        console.log("newAssignment: ", newAssignment);
+        // console.log("newAssignment: ", newAssignment);
         setScreenLoading(false); // Hide loading screen
 
         navigate(`/home`);

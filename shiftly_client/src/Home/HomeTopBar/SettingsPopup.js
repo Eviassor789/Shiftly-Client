@@ -39,7 +39,7 @@ function SettingsPopup({ onClose, loggedUser, userCurrent, initialSettings, isCh
         throw new Error('Failed to update settings');
       }
       const data = await response.json();
-      console.log("Settings updated successfully", data);
+      // console.log("Settings updated successfully", data);
     } catch (error) {
       console.error("Error updating settings:", error);
     }

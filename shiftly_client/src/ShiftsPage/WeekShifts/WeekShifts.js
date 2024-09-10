@@ -250,7 +250,7 @@ const WeekShifts = ({
 
 // Function to get the largest relevant requirement number for a shift
 function getMaxRelevantRequirement(shiftData, requirements) {
-    console.log("requirements: ", requirements);
+    // console.log("requirements: ", requirements);
     
     // Filter requirements based on the shift's day, profession, start_hour, and end_hour
     const relevantRequirements = requirements.filter(req => {
@@ -262,7 +262,7 @@ function getMaxRelevantRequirement(shiftData, requirements) {
         );
     });
 
-    console.log("relevantRequirements: ", relevantRequirements);
+    // console.log("relevantRequirements: ", relevantRequirements);
 
     // Create an object to sum requirements by hour
     const requirementSumsByHour = {};

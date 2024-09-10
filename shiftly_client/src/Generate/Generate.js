@@ -38,7 +38,6 @@ function Generate(props) {
         }
 
         const data = await response.json();
-        console.log("Token verification successful:", data);
         setLoggedUser(data.current_user);
         setBarLoaded(true);
 
@@ -54,7 +53,6 @@ function Generate(props) {
         }
   
         const userCurrentJson = await userCurrnetResponse.json();
-        console.log('User color:', userCurrentJson);
         setUserCurrent(userCurrentJson.user_data);
 
       } catch (error) {

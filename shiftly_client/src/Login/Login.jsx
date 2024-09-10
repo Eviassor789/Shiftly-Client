@@ -14,9 +14,9 @@ function Login(props) {
 
   const rMessage = async (response) => {
     try {
-      console.log("response:", response);
+      // console.log("response:", response);
       const decodedResponse = jwtDecode(response.credential);
-      console.log("decodedResponse:", decodedResponse);
+      // console.log("decodedResponse:", decodedResponse);
 
       const googleResponse = await fetch("http://localhost:5000/login/google", {
         method: "POST",
@@ -46,7 +46,7 @@ function Login(props) {
       localStorage.setItem("jwtToken", token);
       localStorage.setItem("loggedUser", decodedResponse.name);
 
-      console.log("Google login successful");
+      // console.log("Google login successful");
       navigate("/home");
     } catch (error) {
       console.error(error);
@@ -55,7 +55,7 @@ function Login(props) {
   };
 
   const eMessage = (error) => {
-    console.log(error);
+    // console.log(error);
     setErrorMessage("Google login failed");
   };
 
@@ -87,7 +87,7 @@ function Login(props) {
       localStorage.setItem("jwtToken", access_token);
       localStorage.setItem("loggedUser", username);
 
-      console.log("Login successful");
+      // console.log("Login successful");
       navigate("/home");
     } catch (error) {
       console.error("Error:", error);

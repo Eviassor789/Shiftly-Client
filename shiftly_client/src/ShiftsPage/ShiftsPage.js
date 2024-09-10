@@ -51,11 +51,11 @@ const ShiftsPage = (props) => {
     const handleClickOutside = (event) => {
       if (popupRef.current && !popupRef.current.contains(event.target)) {
         toggleWindow();  // Close the window if click is outside
-        console.log("click outside");
+        // console.log("click outside");
       }
     };
 
-    console.log("isWindowOpen: ", isWindowOpen);
+    // console.log("isWindowOpen: ", isWindowOpen);
 
     if (isWindowOpen) {
       document.addEventListener("mousedown", handleClickOutside);
@@ -152,7 +152,7 @@ const ShiftsPage = (props) => {
         }
 
         const data = await response.json();
-        console.log("Token verification successful:", data);
+        // console.log("Token verification successful:", data);
         setLoggedUser(data.current_user);
       } catch (error) {
         console.error("Error:", error);
@@ -186,7 +186,7 @@ const ShiftsPage = (props) => {
         }
 
         const currTable = await tableResponse.json();
-        console.log("currTable: ", currTable);
+        // console.log("currTable: ", currTable);
         setCurrentTable(currTable);
 
         if (currTable) {
@@ -309,7 +309,7 @@ const ShiftsPage = (props) => {
           setevaluator(myEvaluator)
           let solution = transformSolution(currentAssignment);
           let result = myEvaluator.getFitnessWithMoreInfo(solution);
-          console.log("result: ", result);
+          // console.log("result: ", result);
           setfitness([result.cost, result.satisfiedContracts, result.satisfiedRequirements, result.totalIdleWorkers,  result.totalRequirementsNum])
           setmaxRequirementsMap(result.maxRequirementsMap)
 
@@ -335,7 +335,7 @@ const ShiftsPage = (props) => {
       let tempGrade = getGrade();
       setGrade(tempGrade);
 
-      console.log("result: ", result);
+      // console.log("result: ", result);
       setfitness([result.cost, result.satisfiedContracts, result.satisfiedRequirements, result.totalIdleWorkers, result.totalRequirementsNum])
       setmaxRequirementsMap(result.maxRequirementsMap)
 
@@ -413,7 +413,7 @@ const ShiftsPage = (props) => {
         throw new Error(data.msg || "Failed to update assignment");
       }
 
-      console.log("Assignment updated successfully:", data.msg);
+      // console.log("Assignment updated successfully:", data.msg);
     } catch (error) {
       console.error("Error updating assignment:", error);
     }
@@ -424,7 +424,7 @@ const ShiftsPage = (props) => {
 
     // Iterate over each shift
     shifts.forEach((shift) => {
-      console.log("shift 111", shift);
+      // console.log("shift 111", shift);
 
       // Initialize the assignment object for the shift if it doesn't exist
       if (!assignment[shift.id]) {
@@ -438,7 +438,7 @@ const ShiftsPage = (props) => {
       });
     });
 
-    console.log("assignment 111", assignment);
+    // console.log("assignment 111", assignment);
     // Call the function to update the assignment on the server
     await updateAssignment(currentTable.id, assignment, token); // Replace with your actual token
 
@@ -595,7 +595,7 @@ const ShiftsPage = (props) => {
               });
           }
       }
-      console.log("unsatisfiedContracts: ", unsatisfiedContracts)
+      // console.log("unsatisfiedContracts: ", unsatisfiedContracts)
 
       return unsatisfiedContracts;
   }

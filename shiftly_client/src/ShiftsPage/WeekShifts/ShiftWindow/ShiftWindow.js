@@ -227,7 +227,7 @@ const ShiftWindow = ({
     setShowDeleteModal(false);
     onClose();
 
-    handleProfessionClick("@" + shiftData.profession);
+    // handleProfessionClick("@" + shiftData.profession);
   };
 
   function getRelevantIdWorkers() {

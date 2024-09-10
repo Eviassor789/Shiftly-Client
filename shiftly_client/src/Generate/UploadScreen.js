@@ -181,15 +181,15 @@ return (
                   <div
                     className={currentStep > 0 ? 'elipse elipse-on' : 'elipse'}
                     onClick={() => setCurrentStep(1)}
-                  ><h3>1</h3></div>
+                  ><h3 className='progNum'>1</h3></div>
                   <div
                     className={currentStep > 1 ? 'elipse elipse-on' : 'elipse'}
                     onClick={() => setCurrentStep(2)}
-                  ><h3>2</h3></div>
+                  ><h3 className='progNum'>2</h3></div>
                   <div
                     className={currentStep > 2 ? 'elipse elipse-on' : 'elipse'}
                     onClick={() => setCurrentStep(3)}
-                  ><h3>3</h3></div>
+                  ><h3 className='progNum'>3</h3></div>
               </div>
 
               {/* Add Left and Right Arrows */}

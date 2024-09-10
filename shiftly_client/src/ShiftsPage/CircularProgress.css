@@ -1,5 +1,6 @@
 .circular-progress-container {
     display: flex;
+    margin-top: 5px;
     justify-content: center;
     align-items: center;
     transform: rotate(-90deg); /* Rotate only the progress circle, not the text */

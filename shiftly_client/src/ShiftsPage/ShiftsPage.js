@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import jsPDF from "jspdf";
 // import 'jspdf-autotable';
 import { useParams } from "react-router-dom";
@@ -33,6 +33,9 @@ const ShiftsPage = (props) => {
   const [grade, setGrade] = useState(0);
   const [flag, setFlag] = useState(true);
 
+  const popupRef = useRef(null);
+
+
 
   
 
@@ -42,6 +45,29 @@ const ShiftsPage = (props) => {
   const setCurrentTableID = props.setCurrentTableID;
   const [workers, setWorkers] = useState({});
   const [currentTable, setCurrentTable] = useState(null);
+
+  useEffect(() => {
+    // Detect clicks outside the popup
+    const handleClickOutside = (event) => {
+      if (popupRef.current && !popupRef.current.contains(event.target)) {
+        toggleWindow();  // Close the window if click is outside
+        console.log("click outside");
+      }
+    };
+
+    console.log("isWindowOpen: ", isWindowOpen);
+
+    if (isWindowOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isWindowOpen, toggleWindow]);
+
+
+
 
   function transformSolution(solution) {
     let result = [];
@@ -534,12 +560,17 @@ const ShiftsPage = (props) => {
   }
 
     // Function to handle opening/closing the status window
-    const toggleWindow = () => {
+    function toggleWindow() {
+      if (isWindowOpen) {
+        setIsWindowOpen(false);
+      } else {
       setIsWindowOpen(!isWindowOpen);
+    }
     };
   
     // Function to handle selecting a status
     const handleStatusChange = (status) => {
+
       setSelectedStatus(status);
     };
 
@@ -632,8 +663,8 @@ const ShiftsPage = (props) => {
 
     // Return unsatisfied requirements in JSX format with <span> tags
     return unsatisfiedRequirements.map(req => (
-        <span key={`${req.day}-${req.profession}-${req.hour}`} style={{ display: 'block', margin: '5px 0' }}>
-            {`${req.day}, ${req.profession}, ${req.hour}: ${req.assigned} / ${req.required}`}
+        <span key={`${req.profession}-${req.day}-${req.hour}`} className="reqItem" style={{ display: 'block', margin: '5px 0' }}>
+            {`${req.profession}, ${req.day}, ${req.hour}: ${req.assigned} / ${req.required}`}
         </span>
     ));
 }
@@ -719,7 +750,7 @@ function idleComponent() {
     <>
       {currentTable && fitness ? (
         <>
-          <div className="page-container">
+          <div className="page-container" onScroll={toggleWindow}>
             <div className="top-panel">
               <div className="table-name">
                 {currentTable ? currentTable.name : "Empty Table"}
@@ -735,7 +766,7 @@ function idleComponent() {
                   <i className="bi bi-person-circle"></i>
                   &nbsp;&nbsp;&nbsp;Personal timetable
                 </button>
-                <button className="button" onClick={toggleWindow}>
+                <button className="button" ref={popupRef} onClick={toggleWindow}>
                   <i className="bi bi-clipboard2-check"></i>
                   &nbsp;&nbsp;&nbsp;Status
                 </button>
@@ -786,73 +817,72 @@ function idleComponent() {
               </div>
               <div className="main-panel">
                 {isWindowOpen && (
-                  <div className="status-window">
-                    {/* Radio-like buttons */}
-                    <div className="status-options">
-                      <button
-                        className={selectedStatus === "idle" ? "active" : ""}
-                        onClick={() => handleStatusChange("idle")}
-                      >
-                        Idle
-                      </button>
-                      <button
-                        className={
-                          selectedStatus === "contracts" ? "active" : ""
-                        }
-                        onClick={() => handleStatusChange("contracts")}
-                      >
-                        Contracts
-                      </button>
-                      <button
-                        className={
-                          selectedStatus === "requirments" ? "active" : ""
-                        }
-                        onClick={() => handleStatusChange("requirments")}
-                      >
-                        Requirements
-                      </button>
-                      <button
-                        className={
-                          selectedStatus === "full status" ? "active" : ""
-                        }
-                        onClick={() => handleStatusChange("full status")}
-                      >
-                        full status
-                      </button>
-                    </div>
-
-                    {/* Display data based on the selected button */}
-                    <div className="status-content">
-                      {selectedStatus === "idle" && (
-                        <div>{idleComponent()}</div>
-                      )}
-                      {selectedStatus === "contracts" && (
-                        <div> {UnsatisfiedContractsComponent()}</div>
-                      )}
-                      {selectedStatus === "requirments" && (
-                        <div>{UnsatisfiedRequirementsComponent()}</div>
-                      )}
-                      {selectedStatus === "full status" && (
-                        <div>
-                          <span>Cost: {fitness[0]}</span>
-                          <br />
-                          <span>
-                            contracts:{fitness[1]}/
-                            {Object.values(workers).length}
-                          </span>
-                          <br />
-                          <span>
-                            req:{fitness[2]}/{fitness[4]}
-                          </span>
-                          <br />
-                          <span>
-                            idle:{fitness[3]}/{Object.values(workers).length}
-                          </span>
-                          <br />
-                        </div>
-                      )}
-                    </div>
+                  <div className="status-window" onMouseDown={(e) => {e.stopPropagation()}} onMouseUp={(e) => {e.stopPropagation()}}>
+                  {/* Radio-like buttons */}
+                  <div className="status-options">
+                    <button
+                      className={selectedStatus === "idle" ? "active" : ""}
+                      onClick={() => handleStatusChange("idle")}
+                    >
+                      Idle
+                    </button>
+                    <button
+                      className={selectedStatus === "contracts" ? "active" : ""}
+                      onClick={() => handleStatusChange("contracts")}
+                    >
+                      Contracts
+                    </button>
+                    <button
+                      className={selectedStatus === "requirments" ? "active" : ""}
+                      onClick={() => handleStatusChange("requirments")}
+                    >
+                      Requirements
+                    </button>
+                    <button
+                      className={selectedStatus === "full status" ? "active" : ""}
+                      onClick={() => handleStatusChange("full status")}
+                    >
+                      Full Status
+                    </button>
                   </div>
+                
+                  {/* Display data based on the selected button */}
+                  <div className="status-content">
+                    {selectedStatus === "idle" && (
+                      <div>{idleComponent()}</div>
+                    )}
+                    {selectedStatus === "contracts" && (
+                      <div> {UnsatisfiedContractsComponent()}</div>
+                    )}
+                    {selectedStatus === "requirments" && (
+                      <div>{UnsatisfiedRequirementsComponent()}</div>
+                    )}
+                    {selectedStatus === "full status" && (
+                      <div className="cost-container">
+                        <div className="cost-item">
+                          <span>Cost: {fitness[0]}</span>
+                        </div>
+                        <div className="cost-item">
+                          <span style={{
+                                color: fitness[1] < Object.values(workers).length ? "red" : "green",
+                              }}> Contracts: {fitness[1]}/{Object.values(workers).length}</span>
+                        </div>
+                        <div className="cost-item">
+                          <span style={{
+                                color: fitness[2] < fitness[4] ? "#c90101" : "green",
+                              }}> Requirements: {fitness[2]}/{fitness[4]}</span>
+                        </div>
+                        <div className="cost-item">
+                          <span style={{
+                                color: fitness[3] > 0 ? "red" : "green",
+                              }}>Idle Workers: {fitness[3]}</span>
+                          
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
                 )}
 
                 {ispersonalSearch ? (

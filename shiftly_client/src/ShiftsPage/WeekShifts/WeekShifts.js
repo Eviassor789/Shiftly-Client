@@ -349,6 +349,7 @@ function getMaxRelevantRequirement(shiftData, requirements) {
               setSelectedProfession={setSelectedProfession}
               evaluator={evaluator}
               setfitness={setfitness}
+              requirements={requirements}
             />
           </div>
         </>

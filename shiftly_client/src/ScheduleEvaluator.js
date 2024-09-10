@@ -148,6 +148,7 @@ class ScheduleEvaluator {
 
         let constructs = { ...this.workerConstructMap };
         let leftRequirementsNumMap = { ...this.requirementsNumMap };
+        console.log("constructs: ", constructs)
 
 
         // console.log("solution:", solution);

@@ -26,9 +26,10 @@ const ShiftsPage = (props) => {
   const [fitness, setfitness] = useState("");
   const [evaluator, setevaluator] = useState("");
   const [requirements, setrequirements] = useState("");
+  const [isWindowOpen, setIsWindowOpen] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState('full status');
 
 
-  let myEvaluator = ""
 
   const currentTableID = props.currentTableID;
   const setCurrentTableID = props.setCurrentTableID;
@@ -248,12 +249,12 @@ const ShiftsPage = (props) => {
           setrequirements(fetchedRequirements)
 
           // Create the evaluator with fetched requirements
-          myEvaluator = new ScheduleEvaluator(sortedShiftsList, workers, fetchedRequirements);
+          let myEvaluator = new ScheduleEvaluator(sortedShiftsList, workers, fetchedRequirements);
           setevaluator(myEvaluator)
           let solution = transformSolution(currentAssignment);
           let result = myEvaluator.getFitnessWithMoreInfo(solution);
           console.log("result: ", result);
-          setfitness([result.cost, result.satisfiedContracts, result.satisfiedRequirements])
+          setfitness([result.cost, result.satisfiedContracts, result.satisfiedRequirements, result.totalIdleWorkers])
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -267,16 +268,17 @@ const ShiftsPage = (props) => {
   }, [tableId, loggedUser, navigate, token]);
 
   useEffect(() => {
+    
     if(requirements && shifts && workers){
-      myEvaluator = new ScheduleEvaluator(shifts, workers, requirements);
+      let myEvaluator = new ScheduleEvaluator(shifts, workers, requirements);
       setevaluator(myEvaluator)
       let solution = transformSolution(getAssinment());
       let result = myEvaluator.getFitnessWithMoreInfo(solution);
       console.log("result: ", result);
-      setfitness([result.cost, result.satisfiedContracts, result.satisfiedRequirements])
+      setfitness([result.cost, result.satisfiedContracts, result.satisfiedRequirements, result.totalIdleWorkers])
     }
 
-  }, [shifts]);
+  }, [shifts, selectedProfession]);
   
 
   const handleProfessionClick = (profession) => {
@@ -445,25 +447,21 @@ const ShiftsPage = (props) => {
     document.body.appendChild(input);
 
     html2canvas(input)
-        .then((canvas) => {
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF();
-            pdf.addImage(imgData, 'PNG', 10, 10);
-            pdf.save('shift_assignments_by_shift.pdf');
-        });
+      .then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF();
+        pdf.addImage(imgData, "PNG", 10, 10);
+        pdf.save("shift_assignments_by_shift.pdf");
         document.body.removeChild(input);
-  
+      })
+      .catch((error) => {
+        console.error("Error generating PDF: ", error);
+      });
   
   
   
   }
-// if(requirements){
-//   let result =  myEvaluator.getFitnessWithMoreInfo(transformSolution(getAssinment()))
-//   //{myEvaluator? myEvaluator.getFitnessWithMoreInfo(transformSolution(getAssinment())) : ""}
 
-
-//   setfitness([result.cost, result.satisfiedContracts, result.satisfiedRequirements])
-// }
 
   const handleBack = () => {
     navigate(`/home`);
@@ -489,7 +487,56 @@ const ShiftsPage = (props) => {
     });
     return assignment
   }
-//{myEvaluator? myEvaluator.getFitnessWithMoreInfo(transformSolution(getAssinment())) : ""}
+
+  function getGrade() {
+    let number = (selectedProfession)? (fitness[1]/Object.values(workers).length*50 + fitness[2]/requirements.length*35 + fitness[3]/Object.values(workers).length*15) : ""
+    number = (number * 100)
+    number = Math.round(number)
+    number = number/100
+    return number
+  }
+
+    // Function to handle opening/closing the status window
+    const toggleWindow = () => {
+      setIsWindowOpen(!isWindowOpen);
+    };
+  
+    // Function to handle selecting a status
+    const handleStatusChange = (status) => {
+      setSelectedStatus(status);
+    };
+
+    function getAllIdles() {
+      
+    }
+
+    function getAllUnsatisfyContracts() {
+      const unsatisfiedContracts = [];
+  
+      // Iterate over each worker
+      for (const workerId in workers) {
+          const worker = workers[workerId];
+          const totalHours = worker.shifts.reduce((sum, shift) => {
+              const start = parseInt(shift.start_hour);
+              const end = parseInt(shift.end_hour);
+              return sum + (end - start);
+          }, 0);
+  
+          // Check if the worker's total hours are less than their contract hours
+          if (totalHours < worker.hours_per_week) {
+              unsatisfiedContracts.push({
+                  name: worker.name,
+                  hours_per_week: worker.hours_per_week,
+                  actual_hours: totalHours
+              });
+          }
+      }
+      console.log("unsatisfiedContracts: ", unsatisfiedContracts)
+
+      return unsatisfiedContracts;
+  }
+
+
   return (
     <>
       {currentTable ? (
@@ -500,8 +547,8 @@ const ShiftsPage = (props) => {
                 {currentTable ? currentTable.name : "Empty Table"}
               </div>
               <div className="buttons">
-              {fitness[0]}
-          <button
+                {getGrade()}
+                <button
                   id="PersonalSearch"
                   className="button"
                   onClick={() => {handlePersonalSearchClick(currentTable)}}
@@ -509,7 +556,7 @@ const ShiftsPage = (props) => {
                   <i className="bi bi-person-circle"></i>
                   &nbsp;&nbsp;&nbsp;Personal timetable
                 </button>
-                <button className="button">
+                <button className="button" onClick={toggleWindow}>
                   <i className="bi bi-clipboard2-check"></i>
                   &nbsp;&nbsp;&nbsp;Status
                 </button>
@@ -540,6 +587,82 @@ const ShiftsPage = (props) => {
                 ))}
               </div>
               <div className="main-panel">
+                {isWindowOpen && (
+                  <div className="status-window">
+                    {/* Radio-like buttons */}
+                    <div className="status-options">
+                      <button
+                        className={selectedStatus === "idle" ? "active" : ""}
+                        onClick={() => handleStatusChange("idle")}
+                      >
+                        Idle
+                      </button>
+                      <button
+                        className={
+                          selectedStatus === "contracts" ? "active" : ""
+                        }
+                        onClick={() => handleStatusChange("contracts")}
+                      >
+                        Contracts
+                      </button>
+                      <button
+                        className={
+                          selectedStatus === "requirments" ? "active" : ""
+                        }
+                        onClick={() => handleStatusChange("requirments")}
+                      >
+                        Requirements
+                      </button>
+                      <button
+                        className={
+                          selectedStatus === "full status" ? "active" : ""
+                        }
+                        onClick={() => handleStatusChange("full status")}
+                      >
+                        full status
+                      </button>
+                    </div>
+
+                    {/* Display data based on the selected button */}
+                    <div className="status-content">
+                      {selectedStatus === "idle" && <div>Idle Data</div>}
+                      {selectedStatus === "contracts" && (
+                        <div>
+                          {" "}
+                          {getAllUnsatisfyContracts().map((contract, index) => (
+                            <div><span key={index}>
+                              {contract.name}: {contract.actual_hours}/
+                              {contract.hours_per_week} hours
+                            </span><br></br></div>
+                          ))}
+                        </div>
+                      )}
+                      {selectedStatus === "requirments" && (
+                        <div>Requirements Data</div>
+                      )}
+                      {selectedStatus === "full status" && (
+                        <div>
+                          <span>Cost: {fitness[0]}</span>
+                          <br />
+                          <span>
+                            contracts:{fitness[1]}/
+                            {Object.values(workers).length}
+                          </span>
+                          <br />
+                          <span>
+                            req:{fitness[2]}/{requirements.length}
+                          </span>
+                          <br />
+                          <span>
+                            idle:{fitness[3]}/{Object.values(workers).length}
+                          </span>
+                          <br />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 {ispersonalSearch ? (
                   <div className="autocomplete-wrapper">
                     <input
@@ -587,10 +710,9 @@ const ShiftsPage = (props) => {
                   setCurrentTable={setCurrentTable}
                   professions={professions}
                   evaluator={evaluator}
-            setfitness={setfitness}
-            requirements={requirements}
-            
-          />
+                  setfitness={setfitness}
+                  requirements={requirements}
+                />
                 <AddShiftWindow
                   shifts={shifts}
                   setShifts={setShifts}

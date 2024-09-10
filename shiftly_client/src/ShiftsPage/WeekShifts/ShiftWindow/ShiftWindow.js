@@ -19,7 +19,8 @@ const ShiftWindow = ({
   selectedProfession,
   setSelectedProfession,
   evaluator,
-  setfitness
+  setfitness,
+  requirements
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [currIdList, setCurrIdList] = useState(shiftData.idList);
@@ -42,7 +43,8 @@ const ShiftWindow = ({
       (shift) =>
         shift.day !== shiftData.day ||
         shift.start_hour !== shiftData.start_hour ||
-        shift.end_hour !== shiftData.end_hour
+        shift.end_hour !== shiftData.end_hour ||
+        shift.profession !== shiftData.profession
     );
 
     updatedShifts = [
@@ -275,6 +277,29 @@ const ShiftWindow = ({
     return counter;
   }
 
+
+  function getSumOfRelevantRequirements(shiftData, requirements, hour) {
+    // Filter requirements based on the shift's day, profession, and hour range
+    const relevantRequirements = requirements.filter(req => {
+        return (
+            req.day === shiftData.day &&
+            req.profession === shiftData.profession &&
+            req.hour == hour 
+        );
+    });
+
+    // console.log("relevantRequirements: ", relevantRequirements)
+
+    // Map over relevant requirements and extract their numbers
+    const requirementNumbers = relevantRequirements.map(req => req.number);
+
+    // Sum the numbers of all relevant requirements
+    const totalSum = requirementNumbers.reduce((sum, number) => sum + number, 0);
+    // console.log("totalSum: ", totalSum)
+
+    return totalSum;
+}
+
   return (
     <div className="shift-window">
       <div className="header">
@@ -417,12 +442,12 @@ const ShiftWindow = ({
                 <span
                   className={
                     workersOnHour(upHour(shiftData.start_hour, i)) <
-                    requiredWorkers
+                    getSumOfRelevantRequirements(shiftData, requirements, upHour(shiftData.start_hour, i))
                       ? "capacity insufficient"
                       : "capacity sufficient"
                   }
                 >
-                  {workersOnHour(upHour(shiftData.start_hour, i))}/4
+                  {workersOnHour(upHour(shiftData.start_hour, i))}/{getSumOfRelevantRequirements(shiftData, requirements, upHour(shiftData.start_hour, i))}
                 </span>
               </div>
             )

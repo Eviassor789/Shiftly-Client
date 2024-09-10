@@ -8,7 +8,7 @@
     border: 2px solid black;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    z-index: 2;
+    z-index: 4;
 }
 
 .header {
@@ -205,7 +205,7 @@ ul li button {
     background: rgba(104, 105, 105, 0.5);
   }
   .modal-content {
-    z-index: 4;
+    z-index: 5;
     position: absolute;
     top: 45%;
     left: 50%;

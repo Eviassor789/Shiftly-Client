@@ -23,7 +23,7 @@ body.active-modal {
     background: rgba(49,49,49,0.8);
 }
 .modal-content {
-    z-index: 2;
+    z-index: 4;
     position: absolute;
     top: 40%;
     left: 50%;

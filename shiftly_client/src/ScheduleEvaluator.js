@@ -119,8 +119,6 @@ class ScheduleEvaluator {
     this.requirements.forEach((req) => {
       this.requirementsNumMap[req.day + req.profession + req.hour] = req.number;
     });
-    console.log("this.requirementsNumMap: ", this.requirementsNumMap);
-    console.log("this.requirements: ", this.requirements);
 
     // Iterate through each shift in shiftsToRequirementsMap
     for (const [shiftId, requirements] of Object.entries(
@@ -190,9 +188,6 @@ class ScheduleEvaluator {
     // Now calculate idle workers for each shift
     for (const [shiftId, workerCount] of Object.entries(shiftToWorkerCount)) {
       const maxRequirement = this.maxRequirementsMap[shiftId]; // Get the max requirement for the shift
-
-      console.log("maxRequirement: ", maxRequirement)
-      console.log("workerCount: ", workerCount)
 
 
 

@@ -49,10 +49,6 @@ body {
     overflow: hidden;
   }
 
-  .content-container:not(:nth-child(3)) {
-    /* transition: transform 0.3s ease-in-out; */
-  }
-
 .upload-screen {
     flex: 1;
     min-width: 100%;

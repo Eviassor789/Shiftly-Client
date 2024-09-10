@@ -1,0 +1,25 @@
+.circular-progress-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: rotate(-90deg); /* Rotate only the progress circle, not the text */
+  }
+  
+  .circular-progress-bg {
+    stroke-linecap: butt; /* Make the background circle have a straight cut */
+  }
+  
+  .circular-progress-bar {
+    stroke-linecap: butt; /* Make the green progress line have a straight cut */
+    transition: stroke-dashoffset 0.6s ease; /* Smooth animation */
+  }
+  
+  .gradeScore {
+    position: absolute;
+    fill: #ffffff;
+    bottom: 50px;
+  }
+
+  text {
+    transform: rotate(90deg); /* Rotate the text back to normal */
+  }

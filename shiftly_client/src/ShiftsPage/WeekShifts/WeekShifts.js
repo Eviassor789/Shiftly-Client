@@ -146,6 +146,108 @@ const WeekShifts = ({
 
   }
 
+
+  function call() {
+    return hours.map((hour) => (
+    <tr key={hour}>
+      <td>{hour + " - " + nextHour(hour)}</td>
+      {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].map((day) => {
+        let relevantShifts;
+        if (ispersonalSearch) {
+          relevantShifts = shifts.filter(
+            (s) =>
+              s.day === day &&
+              hour === s.start_hour &&
+              s.idList.some((id) => workers[id].name === inputValue)
+          );
+        } else {
+          relevantShifts = shifts.filter(
+            (s) =>
+              s.day === day &&
+              hour === s.start_hour &&
+              profession === s.profession
+          );
+
+          // relevantShifts.forEach((shift) => {
+          //   shift.idList.forEach((id) => {
+          //     workers[id].shifts = [
+          //       ...workers[id].shifts,
+          //       {
+          //         profession: shift.profession,
+          //         day: shift.day,
+          //         start_hour: shift.start_hour,
+          //         end_hour: shift.end_hour,
+          //       },
+          //     ];
+          //   });
+          // });
+
+          let temp_workers = workers;
+          Object.values(temp_workers).forEach((worker) => {
+            worker.shifts = []
+          })
+        
+          shifts.forEach((shift) => {
+            shift.idList.forEach((id) => {
+              temp_workers[id].shifts = [
+                ...temp_workers[id].shifts,
+                {
+                  profession: shift.profession,
+                  day: shift.day,
+                  start_hour: shift.start_hour,
+                  end_hour: shift.end_hour,
+                },
+              ];
+            });
+          });
+          setWorkers(temp_workers)
+        }
+
+        return (
+          <td key={day}>
+            {relevantShifts.map((shift, index) => ( placed_shifted.push(shift) &&
+              <div
+                key={shift.idList.join('-') + index} // Ensure unique key for each shift
+                onClick={() =>
+                  handleShiftClick({
+                    profession: shift.profession,
+                    color: shift.color,
+                    idList: shift.idList,
+                    start_hour: shift.start_hour,
+                    end_hour: shift.end_hour,
+                    day: day,
+                    showModal: true,
+                    id: shift.id,
+                    workers: shift.workers,
+                    cost:shift.cost
+                  })
+                }
+              >
+                <Shift
+                  key={shift.idList.join('-') + index} // Ensure unique key for each Shift component
+                  start_hour={shift.start_hour}
+                  end_hour={shift.end_hour}
+                  idList={shift.idList}
+                  overlapNum={maxChainOfOverLap(shifts, shift, 1)}
+                  place={maxChainOfOverLap(placed_shifted, shift, 2)}
+                  color={
+                    shift.color
+                      ? shift.color
+                      : color_list[counter++ % color_list.length]
+                  }
+                  ispersonalSearch={ispersonalSearch}
+                  profession={shift.profession}
+                  workers={workers}
+                  professions={professions}
+                />
+              </div>
+            ))}
+          </td>
+        );
+      })}
+    </tr>
+  ))}
+
 // Function to get the largest relevant requirement number for a shift
 function getMaxRelevantRequirement(shiftData, requirements) {
     console.log("requirements: ", requirements);
@@ -229,7 +331,7 @@ function getMaxRelevantRequirement(shiftData, requirements) {
       <table>
         <thead>
           <tr>
-            <th>&#32;</th> {/* Empty cell for spacing */}
+            <th>&#32;</th>
             <th>Sunday</th>
             <th>Monday</th>
             <th>Tuesday</th>
@@ -239,105 +341,7 @@ function getMaxRelevantRequirement(shiftData, requirements) {
           </tr>
         </thead>
         <tbody>
-          {hours.map((hour) => (
-            <tr key={hour}>
-              <td>{hour + " - " + nextHour(hour)}</td>
-              {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].map((day) => {
-                let relevantShifts;
-                if (ispersonalSearch) {
-                  relevantShifts = shifts.filter(
-                    (s) =>
-                      s.day === day &&
-                      hour === s.start_hour &&
-                      s.idList.some((id) => workers[id].name === inputValue)
-                  );
-                } else {
-                  relevantShifts = shifts.filter(
-                    (s) =>
-                      s.day === day &&
-                      hour === s.start_hour &&
-                      profession === s.profession
-                  );
-  
-                  // relevantShifts.forEach((shift) => {
-                  //   shift.idList.forEach((id) => {
-                  //     workers[id].shifts = [
-                  //       ...workers[id].shifts,
-                  //       {
-                  //         profession: shift.profession,
-                  //         day: shift.day,
-                  //         start_hour: shift.start_hour,
-                  //         end_hour: shift.end_hour,
-                  //       },
-                  //     ];
-                  //   });
-                  // });
-
-                  let temp_workers = workers;
-                  Object.values(temp_workers).forEach((worker) => {
-                    worker.shifts = []
-                  })
-                
-                  shifts.forEach((shift) => {
-                    shift.idList.forEach((id) => {
-                      temp_workers[id].shifts = [
-                        ...temp_workers[id].shifts,
-                        {
-                          profession: shift.profession,
-                          day: shift.day,
-                          start_hour: shift.start_hour,
-                          end_hour: shift.end_hour,
-                        },
-                      ];
-                    });
-                  });
-                  setWorkers(temp_workers)
-                }
-  
-                return (
-                  <td key={day}>
-                    {relevantShifts.map((shift, index) => ( placed_shifted.push(shift) &&
-                      <div
-                        key={shift.idList.join('-') + index} // Ensure unique key for each shift
-                        onClick={() =>
-                          handleShiftClick({
-                            profession: shift.profession,
-                            color: shift.color,
-                            idList: shift.idList,
-                            start_hour: shift.start_hour,
-                            end_hour: shift.end_hour,
-                            day: day,
-                            showModal: true,
-                            id: shift.id,
-                            workers: shift.workers,
-                            cost:shift.cost
-                          })
-                        }
-                      >
-                        <Shift
-                          key={shift.idList.join('-') + index} // Ensure unique key for each Shift component
-                          start_hour={shift.start_hour}
-                          end_hour={shift.end_hour}
-                          idList={shift.idList}
-                          overlapNum={maxChainOfOverLap(shifts, shift, 1)}
-                          place={maxChainOfOverLap(placed_shifted, shift, 2)}
-                          color={
-                            shift.color
-                              ? shift.color
-                              : color_list[counter++ % color_list.length]
-                          }
-                          ispersonalSearch={ispersonalSearch}
-                          profession={shift.profession}
-                          workers={workers}
-                          professions={professions}
-                        />
-                      </div>
-                    ))}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
+          {call()}
         </tbody>
       </table>
       {shiftData.showModal && (

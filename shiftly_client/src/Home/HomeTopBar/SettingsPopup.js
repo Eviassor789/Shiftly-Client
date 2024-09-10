@@ -53,7 +53,9 @@ function SettingsPopup({ onClose, loggedUser, userCurrent, initialSettings, isCh
                 {/* First Row: min idle workers & max satisfied contracts */}
                 <div className="objective-row">
                 <div className="objective">
-                  <h7>min idle workers</h7>
+                <div className="centerer">
+                  min idle workers
+                  </div>
                 </div>
                 <label className="switch">
                   <input
@@ -64,14 +66,16 @@ function SettingsPopup({ onClose, loggedUser, userCurrent, initialSettings, isCh
                   <span className="slider custom-slider"></span>
                 </label>
                 <div className="objective">
-                  <h7>max satisfied Contracts</h7>
+                <div className="centerer">
+                  max satisfied Contracts</div>
                 </div>
               </div>
       
               {/* Second Row: max satisfied requirement & min cost */}
               <div className="objective-row">
                 <div className="objective">
-                  <h7>max satisfied requirement</h7>
+                <div className="centerer">
+                  max satisfied requirement</div>
                 </div>
                 <label className="switch">
                   <input
@@ -82,7 +86,8 @@ function SettingsPopup({ onClose, loggedUser, userCurrent, initialSettings, isCh
                   <span className="slider custom-slider"></span>
                 </label>
                 <div className="objective">
-                  <h7>min cost</h7>
+                  <div className="centerer">min cost</div>
+                  
                 </div>
               </div>
 

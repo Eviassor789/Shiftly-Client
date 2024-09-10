@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import ScheduleEvaluator from "../ScheduleEvaluator";
 import html2canvas from "html2canvas";
 import LoadingPage from "../LoadingPage";
+import CircularProgress from "./CircularProgress";
 
 const ShiftsPage = (props) => {
   const { tableId } = useParams(); // Extract the table ID from the URL
@@ -29,6 +30,8 @@ const ShiftsPage = (props) => {
   const [isWindowOpen, setIsWindowOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState('full status');
   const [maxRequirementsMap, setmaxRequirementsMap] = useState("");
+  const [grade, setGrade] = useState(0);
+  const [flag, setFlag] = useState(true);
 
 
   
@@ -79,6 +82,35 @@ const ShiftsPage = (props) => {
 
   const token = localStorage.getItem("jwtToken");
 
+  function getDay(shiftDay) {
+    const daysOfWeek = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+
+    // Helper function to map a digit to a day
+    function mapDigitToDay(digit) {
+      if (!isNaN(digit)) {
+        return daysOfWeek[parseInt(digit) - 1];
+      } else {
+        return digit;
+      }
+    }
+
+    // If the input is an array, map each digit to its corresponding day
+    if (Array.isArray(shiftDay)) {
+      return shiftDay.map((day) => mapDigitToDay(day));
+    } else {
+      // Handle single day input
+      return mapDigitToDay(shiftDay);
+    }
+  }
+
   useEffect(() => {
     const verifyToken = async () => {
       try {
@@ -108,35 +140,6 @@ const ShiftsPage = (props) => {
       navigate("/");
     }
   }, [token, navigate]);
-
-  function getDay(shiftDay) {
-    const daysOfWeek = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
-
-    // Helper function to map a digit to a day
-    function mapDigitToDay(digit) {
-      if (!isNaN(digit)) {
-        return daysOfWeek[parseInt(digit) - 1];
-      } else {
-        return digit;
-      }
-    }
-
-    // If the input is an array, map each digit to its corresponding day
-    if (Array.isArray(shiftDay)) {
-      return shiftDay.map((day) => mapDigitToDay(day));
-    } else {
-      // Handle single day input
-      return mapDigitToDay(shiftDay);
-    }
-  }
 
   useEffect(() => {
     const fetchTableData = async () => {
@@ -216,8 +219,6 @@ const ShiftsPage = (props) => {
             return map;
           }, {});
 
-          console.log("temp_workers: ", temp_workers);
-
           setWorkers(temp_workers);
 
           const daysOfWeek = [
@@ -274,7 +275,6 @@ const ShiftsPage = (props) => {
           }
 
           const fetchedRequirements = await requirementsResponse.json();
-          console.log("Fetched Requirements:", fetchedRequirements);
           let myMergedRequirements = mergeRequirements(fetchedRequirements)
           setrequirements(myMergedRequirements)
 
@@ -286,6 +286,7 @@ const ShiftsPage = (props) => {
           console.log("result: ", result);
           setfitness([result.cost, result.satisfiedContracts, result.satisfiedRequirements, result.totalIdleWorkers,  result.totalRequirementsNum])
           setmaxRequirementsMap(result.maxRequirementsMap)
+
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -305,13 +306,16 @@ const ShiftsPage = (props) => {
       setevaluator(myEvaluator)
       let solution = transformSolution(getAssinment());
       let result = myEvaluator.getFitnessWithMoreInfo(solution);
+      let tempGrade = getGrade();
+      setGrade(tempGrade);
+
       console.log("result: ", result);
       setfitness([result.cost, result.satisfiedContracts, result.satisfiedRequirements, result.totalIdleWorkers, result.totalRequirementsNum])
       setmaxRequirementsMap(result.maxRequirementsMap)
 
     }
 
-  }, [shifts, isWindowOpen]);
+  }, [shifts, isWindowOpen, grade, tableId, workers, requirements, ispersonalSearch]);
   
 
   const handleProfessionClick = (profession) => {
@@ -522,11 +526,11 @@ const ShiftsPage = (props) => {
   }
 
   function getGrade() {
-    let number = (selectedProfession)? (fitness[1]/Object.values(workers).length*50 + fitness[2]/fitness[4]*35 + fitness[3]/Object.values(workers).length*15) : ""
-    number = (number * 100)
-    number = Math.round(number)
-    number = number/100
-    return number
+    let number = (fitness[1]/Object.values(workers).length*45 + fitness[2]/fitness[4]*40 + fitness[3]/Object.values(workers).length*15);
+    number = (number * 100);
+    number = Math.round(number);
+    number = (number/100).toFixed(2);
+    return number;
   }
 
     // Function to handle opening/closing the status window
@@ -713,7 +717,7 @@ function idleComponent() {
 
   return (
     <>
-      {currentTable ? (
+      {currentTable && fitness ? (
         <>
           <div className="page-container">
             <div className="top-panel">
@@ -721,11 +725,12 @@ function idleComponent() {
                 {currentTable ? currentTable.name : "Empty Table"}
               </div>
               <div className="buttons">
-                {getGrade()}
                 <button
                   id="PersonalSearch"
                   className="button"
-                  onClick={() => {handlePersonalSearchClick(currentTable)}}
+                  onClick={() => {
+                    handlePersonalSearchClick(currentTable);
+                  }}
                 >
                   <i className="bi bi-person-circle"></i>
                   &nbsp;&nbsp;&nbsp;Personal timetable
@@ -748,6 +753,25 @@ function idleComponent() {
             </div>
             <div className="main-container">
               <div className="left-panel">
+              <div className="grade">
+                  <CircularProgress id="grade"
+                    score={
+                      grade && !isNaN(grade)
+                        ? (() => {
+                            let t = getGrade();
+                            if (grade != t) {
+                              setGrade(t);
+                              return t;
+                            }
+                            return grade;
+                          })()
+                        : (() => {
+                            setGrade(getGrade());
+                            return "calculating...";
+                          })()
+                    }
+                  ></CircularProgress>
+                </div>
                 {professions.map((profession, index) => (
                   <button
                     key={index}
@@ -799,12 +823,11 @@ function idleComponent() {
 
                     {/* Display data based on the selected button */}
                     <div className="status-content">
-                      {selectedStatus === "idle" && <div>{idleComponent()}</div>}
+                      {selectedStatus === "idle" && (
+                        <div>{idleComponent()}</div>
+                      )}
                       {selectedStatus === "contracts" && (
-                        <div>
-                          {" "}
-                          {UnsatisfiedContractsComponent()}
-                        </div>
+                        <div> {UnsatisfiedContractsComponent()}</div>
                       )}
                       {selectedStatus === "requirments" && (
                         <div>{UnsatisfiedRequirementsComponent()}</div>
@@ -902,7 +925,9 @@ function idleComponent() {
           </div>
         </>
       ) : (
-        <LoadingPage msg="Loading your data" />
+        <>
+          <LoadingPage msg="Loading your data" />
+        </>
       )}
     </>
   );

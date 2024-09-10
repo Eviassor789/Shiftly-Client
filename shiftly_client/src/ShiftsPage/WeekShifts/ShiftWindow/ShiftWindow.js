@@ -43,7 +43,8 @@ const ShiftWindow = ({
       (shift) =>
         shift.day !== shiftData.day ||
         shift.start_hour !== shiftData.start_hour ||
-        shift.end_hour !== shiftData.end_hour
+        shift.end_hour !== shiftData.end_hour ||
+        shift.profession !== shiftData.profession
     );
 
     updatedShifts = [
@@ -287,11 +288,14 @@ const ShiftWindow = ({
         );
     });
 
+    // console.log("relevantRequirements: ", relevantRequirements)
+
     // Map over relevant requirements and extract their numbers
     const requirementNumbers = relevantRequirements.map(req => req.number);
 
     // Sum the numbers of all relevant requirements
     const totalSum = requirementNumbers.reduce((sum, number) => sum + number, 0);
+    // console.log("totalSum: ", totalSum)
 
     return totalSum;
 }

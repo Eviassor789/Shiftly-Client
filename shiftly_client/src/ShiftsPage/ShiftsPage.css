@@ -145,3 +145,26 @@
     background-color: #e9e9e9;
   }
 
+/* status */
+
+.status-window {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 20px;
+    z-index: 3;
+    max-height: 300px;
+  }
+  
+  .status-options button {
+    margin: 5px;
+  }
+  
+  .status-options .active {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .status-content {
+    margin-top: 10px;
+  }

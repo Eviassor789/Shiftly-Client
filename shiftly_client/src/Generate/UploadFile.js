@@ -528,7 +528,7 @@ const UploadFile = (props) => {
         }
         onClick={() => props.handleNext()}
       >
-        Next
+        {currentStep == 3 ? "Generate" : "Next"}
       </button>
     </div>
   );

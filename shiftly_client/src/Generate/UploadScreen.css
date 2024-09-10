@@ -13,19 +13,32 @@
 
 .elipse {
     position: relative;
-    width: 20px;
-    height: 20px;
-    border-radius: 20px;
-    margin-right: 10px;
-    margin-left: 10px;
+    width: 60px;
+    height: 60px;
+    border-radius: 60px;
+    margin-right: 40px;
+    margin-left: 40px;
     background: #D4D4D4;
     cursor: pointer;
     transition: transform 0s ease-in-out;
+    text-align: center;
+    vertical-align: middle;
+    align-items: center;
 
 }
 
+h3 {
+    font-size: 20px;
+    font-weight: 500;
+    color: black;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 .elipse-on {
-    background: linear-gradient(45deg, #0a4c8a, #5aafff);
+    background: #002ec4;
     opacity: 0.9;
 
     border-color:#90c9ff;
@@ -33,10 +46,14 @@
     border-width: 0.2px;
 }
 
+.elipse-on h3 {
+    color: white;
+}
+
 #GenerateProgress {
     margin-top: 35px;
     position: relative;
-    height: 20px;
+    height: 70px;
     display: flex;
     flex-direction: row;
 }
@@ -67,3 +84,34 @@
 .content-container {
     display: inline;
 }
+
+.navigation-arrows {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  .arrow {
+    background-color: transparent;
+    border: none;
+    font-size: 80px;
+  }
+  
+.bi-arrow-left-circle-fill {
+    /* Your styles for the left arrow class here */
+
+    position: relative;
+    left: calc(50% - 500px);
+    top: 0px;
+    bottom: 0px;
+    margin-top: auto;
+    margin-bottom: auto;
+    position: absolute;
+    padding-right: 10px;
+  }
+
+.bi-arrow-left-circle-fill {
+    color: #193C7D !important;
+}
+  

@@ -1,5 +1,5 @@
-import React from 'react';
 import './UploadScreen.css';
+import React, { useState, useEffect } from 'react';
 import ResizableWindow from "./ResizableWindow";
 import UploadFile from "./UploadFile";
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +8,12 @@ import LoadingPage from '../LoadingPage';
 const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFileUploaded, filesList, SetFilesList, rowsList, SetRowsList, screenLoading, setScreenLoading}) => {
 
   const navigate = useNavigate();
+
+  const [uploadStatus, setUploadStatus] = useState({
+    file1Uploaded: fileUploaded[0], // Initialize with initial fileUploaded values
+    file2Uploaded: fileUploaded[1],
+    file3Uploaded: fileUploaded[2],
+  });
 
   const addParsedDataToDatabase = async (jwtToken, workersData, requirementsData, shiftsData) => {
     try {
@@ -40,29 +46,40 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
 
   const handleNext = async () => {
     if (currentStep === 3) {
-      if(fileUploaded[0] === true && fileUploaded[1] === true) {
+      if (fileUploaded[1] && fileUploaded[0]) { // Check both flags
         const jwtToken = localStorage.getItem('jwtToken');
-        
+
         console.log("filesList uploaded successfully:");
         for (let index = 0; index < filesList.length; index++) {
           const file = filesList[index];
           console.log("name: ", file.name);
-          console.log("parsed rows: ", rowsList[index]);  
+          console.log("parsed rows: ", rowsList[index]);
         }
 
         setScreenLoading(true); // Show loading screen
 
-        const newAssignment = await addParsedDataToDatabase(jwtToken, rowsList[0], rowsList[1], rowsList[2]);
+        const newAssignment = await addParsedDataToDatabase(
+          jwtToken,
+          rowsList[0],
+          rowsList[1],
+          rowsList[2]
+        );
 
         console.log("newAssignment: ", newAssignment);
         setScreenLoading(false); // Hide loading screen
 
         navigate(`/home`);
       } else {
-        alert("Please upload the previous files first.");
+        alert("Please upload both files first.");
       }
     } else {
       setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
     }
   };
 
@@ -85,8 +102,8 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
             <h1>Employees Details</h1>
             <p id="FirstWindowDetails">
               The details of the employees include the ID numbers of the
-              employees, as well as the number of hours they are supposed to work
-              per week (according to the contract), and their skills (up to 3
+              employees, the number of hours they are supposed to work
+              per week (by contract), and their skills (up to 3
               skills per employee).
             </p>
           </>
@@ -119,108 +136,19 @@ const UploadScreen = ({ step, currentStep, setCurrentStep, fileUploaded, setFile
     }
   };
 
+// Update uploadStatus based on changes in fileUploaded
+const updateUploadStatus = () => {
+  setUploadStatus({
+    file1Uploaded: fileUploaded[0],
+    file2Uploaded: fileUploaded[1],
+    file3Uploaded: fileUploaded[2], // Include all three flags
+  });
+};
 
-
-  // Function to add a table for a user
-  async function addTableForUser(token, tableData) {
-    try {
-        // Send the table data to the server
-        const response = await fetch('http://localhost:5000/add_table', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}` // Include JWT token in the request headers
-            },
-            body: JSON.stringify(tableData) // Convert tableData to JSON string
-        });
-
-        const result = await response.json();
-        console.log("1");
-
-        if (response.ok) {
-            console.log("Table and shifts added successfully:", result);
-            console.log("2");
-
-            // Update the user's tablesArr with the new table ID
-            // await updateUserTablesArray(token, tableData.name);
-        } else {
-            console.error("Failed to add table:", result.msg);
-            console.log("3");
-        }
-    } catch (error) {
-        console.error("Error while adding table:", error);
-        console.log("4");
-    }
-  }
-
-  // Function to update the user's tablesArr
-  async function updateUserTablesArray(token, tableName) {
-    try {
-        // Fetch the user data
-        const userResponse = await fetch('http://localhost:5000/protected', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-
-        const userData = await userResponse.json();
-        console.log("5");
-
-
-        if (userResponse.ok) {
-            const username = userData.current_user;
-            console.log("6");
-
-
-            // Fetch the user's current data from the server
-            const userDetailsResponse = await fetch(`http://localhost:5000/get_user_data`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ username })
-            });
-
-            const userDetails = await userDetailsResponse.json();
-            console.log("7");
-
-
-            if (userDetailsResponse.ok) {
-                const updatedTablesArr = [...userDetails.tablesArr, tableName];
-                console.log("8");
-
-
-                // Update the user's tablesArr
-                const updateResponse = await fetch(`http://localhost:5000/update_user_tables`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ username, tablesArr: updatedTablesArr })
-                });
-
-                const updateResult = await updateResponse.json();
-
-                if (updateResponse.ok) {
-                    console.log("User's tablesArr updated successfully:", updateResult);
-                } else {
-                    console.error("Failed to update user's tablesArr:", updateResult.msg);
-                }
-            } else {
-                console.error("Failed to fetch user details:", userDetails.msg);
-            }
-        } else {
-            console.error("Failed to fetch user data:", userData.msg);
-        }
-    } catch (error) {
-        console.error("Error while updating user's tablesArr:", error);
-    }
-}
-
-
+// Update uploadStatus whenever fileUploaded changes using useEffect
+useEffect(() => {
+  updateUploadStatus();
+}, [fileUploaded]); // Dependency array ensures update on fileUploaded change
 
 
 return (
@@ -248,22 +176,37 @@ return (
                 rowsList={rowsList}
                 SetRowsList={SetRowsList}
               />
+              {/* Generate Progress Dots */}
               <div id="GenerateProgress">
-                <div
-                  className={` ${step === 1 ? "elipse elipse-on" : "elipse"}`}
-                  onClick={() => setCurrentStep(1)}
-                ></div>
-                <div
-                  className={` ${step === 2 ? "elipse elipse-on" : "elipse"}`}
-                  onClick={() => setCurrentStep(2)}
-                ></div>
-                <div
-                  className={` ${step === 3 ? "elipse elipse-on" : "elipse"}`}
-                  onClick={() => setCurrentStep(3)}
-                ></div>
+                  <div
+                    className={currentStep > 0 ? 'elipse elipse-on' : 'elipse'}
+                    onClick={() => setCurrentStep(1)}
+                  ><h3>1</h3></div>
+                  <div
+                    className={currentStep > 1 ? 'elipse elipse-on' : 'elipse'}
+                    onClick={() => setCurrentStep(2)}
+                  ><h3>2</h3></div>
+                  <div
+                    className={currentStep > 2 ? 'elipse elipse-on' : 'elipse'}
+                    onClick={() => setCurrentStep(3)}
+                  ><h3>3</h3></div>
               </div>
+
+              {/* Add Left and Right Arrows */}
+              
+                  {/* {currentStep < 3 && (
+                    <button className="arrow right-arrow" onClick={handleNext}>
+                      &gt;
+                    </button>
+                  )} */}
+                
+
               <ResizableWindow step={step} />
             </div>
+            {currentStep > 1 && (
+                <button className="arrow  bi-arrow-left-circle-fill text-primary" onClick={handlePrevious}>
+                </button>
+            )}
           </div>
         )}
       </>

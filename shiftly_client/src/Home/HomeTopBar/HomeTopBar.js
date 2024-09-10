@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SettingsPopup from "./SettingsPopup";
 import "./HomeTopBar.css";
@@ -6,18 +6,35 @@ import "./HomeTopBar.css";
 function HomeTopBar(props) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isChecked, setIsChecked] = useState([]);
+  const popupRef = useRef(null);
 
   const navigate = useNavigate();
 
-  // Fetch initial settings or simulate fetching from the server
   useEffect(() => {
     const initialSettings = props.userCurrent.settings && Array.isArray(props.userCurrent.settings)
       ? props.userCurrent.settings
       : [false, false]; // Default settings if no data
-
     setIsChecked(initialSettings);
-
   }, [props.userCurrent]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (popupRef.current && !popupRef.current.contains(event.target)) {
+        setIsSettingsOpen(false);
+        updateSettingsOnServer(); // Update when closing by clicking outside
+      }
+    };
+
+    if (isSettingsOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isSettingsOpen]);
 
   const handleButtonClick = (page) => {
     navigate(`/${page}`);
@@ -48,11 +65,17 @@ function HomeTopBar(props) {
     }
   };
 
-  const handleSettingsClick = () => {
+  const handleSettingsClick = (e) => {
+    e.stopPropagation();
+
     if (isSettingsOpen) {
+      // Close the popup and update settings
       updateSettingsOnServer();
+      setIsSettingsOpen(false);
+    } else {
+      // Open the popup
+      setIsSettingsOpen(true);
     }
-    setIsSettingsOpen(!isSettingsOpen);
   };
 
   return (
@@ -82,21 +105,25 @@ function HomeTopBar(props) {
         </button>
         <button
           id="UserDetailsBtn"
-          onClick={handleSettingsClick}
+          onMouseDown={(e) => handleSettingsClick(e)}
+          onMouseUp={(e) => e.stopPropagation()}
           style={{ background: props.userCurrent.color ? props.userCurrent.color : "gray" }}
         >
           {props.loggedUser ? props.loggedUser[0].toUpperCase() : "U"}
-        </button>{" "}
+        </button>
       </div>
+
       {isSettingsOpen && (
-        <SettingsPopup
-          onClose={() => setIsSettingsOpen(false)}
-          loggedUser={props.loggedUser}
-          userCurrent={props.userCurrent}
-          initialSettings={isChecked}
-          isChecked={isChecked}
-          setIsChecked={setIsChecked}
-        />
+        <div ref={popupRef}>
+          <SettingsPopup
+            onClose={() => setIsSettingsOpen(false)}
+            loggedUser={props.loggedUser}
+            userCurrent={props.userCurrent}
+            initialSettings={isChecked}
+            isChecked={isChecked}
+            setIsChecked={setIsChecked}
+          />
+        </div>
       )}
     </>
   );

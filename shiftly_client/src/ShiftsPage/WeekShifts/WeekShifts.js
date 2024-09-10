@@ -146,26 +146,40 @@ const WeekShifts = ({
 
   }
 
-  // Function to get the largest relevant requirement number for a shift
+// Function to get the largest relevant requirement number for a shift
 function getMaxRelevantRequirement(shiftData, requirements) {
-  console.log("requirements: ", requirements)
-  // Filter requirements based on the shift's day, profession, start_hour, and end_hour
-  const relevantRequirements = requirements.filter(req => {
-      return (
-          req.day == shiftData.day &&
-          req.profession == shiftData.profession
-          && shiftData.start_hour <= req.hour
-          && req.hour < shiftData.end_hour  
-      );
-  });
-  console.log("relevantRequirements: ", relevantRequirements)
+    console.log("requirements: ", requirements);
+    
+    // Filter requirements based on the shift's day, profession, start_hour, and end_hour
+    const relevantRequirements = requirements.filter(req => {
+        return (
+            req.day == shiftData.day &&
+            req.profession == shiftData.profession &&
+            shiftData.start_hour <= req.hour &&
+            req.hour < shiftData.end_hour
+        );
+    });
 
+    console.log("relevantRequirements: ", relevantRequirements);
 
-  // Map over relevant requirements and extract their numbers
-  const requirementNumbers = relevantRequirements.map(req => req.number);
+    // Create an object to sum requirements by hour
+    const requirementSumsByHour = {};
 
-  // Return the largest number from the relevant requirements, or 0 if none found
-  return requirementNumbers.length > 0 ? Math.max(...requirementNumbers) : 0;
+    // Sum the numbers for each unique hour
+    relevantRequirements.forEach(req => {
+        if (requirementSumsByHour[req.hour]) {
+            requirementSumsByHour[req.hour] += req.number;
+        } else {
+            requirementSumsByHour[req.hour] = req.number;
+        }
+    });
+
+    // Get the maximum sum of requirement numbers across hours
+    const maxRequirement = Object.values(requirementSumsByHour).length > 0 
+        ? Math.max(...Object.values(requirementSumsByHour)) 
+        : 0;
+
+    return maxRequirement;
 }
 
 

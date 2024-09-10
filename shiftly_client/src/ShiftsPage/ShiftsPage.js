@@ -28,8 +28,12 @@ const ShiftsPage = (props) => {
   const [requirements, setrequirements] = useState("");
   const [isWindowOpen, setIsWindowOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState('full status');
+  const [maxRequirementsMap, setmaxRequirementsMap] = useState("");
 
 
+  
+
+  
 
   const currentTableID = props.currentTableID;
   const setCurrentTableID = props.setCurrentTableID;
@@ -47,6 +51,31 @@ const ShiftsPage = (props) => {
 
     return result.sort((a, b) => a[1] - b[1]);
   }
+
+  function mergeRequirements(requirements) {
+    const mergedRequirements = {};
+
+    // Iterate through the list of requirements
+    requirements.forEach(req => {
+        const key = `${req.day}-${req.profession}-${req.hour}`; // Create a unique key based on day, profession, and hour
+
+        // If this key already exists, sum the 'number' field
+        if (mergedRequirements[key]) {
+            mergedRequirements[key].number += req.number;
+        } else {
+            // If the key doesn't exist, initialize it
+            mergedRequirements[key] = {
+                day: req.day,
+                profession: req.profession,
+                hour: req.hour,
+                number: req.number
+            };
+        }
+    });
+
+    // Convert the merged object back to an array
+    return Object.values(mergedRequirements);
+}
 
   const token = localStorage.getItem("jwtToken");
 
@@ -246,15 +275,17 @@ const ShiftsPage = (props) => {
 
           const fetchedRequirements = await requirementsResponse.json();
           console.log("Fetched Requirements:", fetchedRequirements);
-          setrequirements(fetchedRequirements)
+          let myMergedRequirements = mergeRequirements(fetchedRequirements)
+          setrequirements(myMergedRequirements)
 
           // Create the evaluator with fetched requirements
-          let myEvaluator = new ScheduleEvaluator(sortedShiftsList, workers, fetchedRequirements);
+          let myEvaluator = new ScheduleEvaluator(sortedShiftsList, workers, myMergedRequirements);
           setevaluator(myEvaluator)
           let solution = transformSolution(currentAssignment);
           let result = myEvaluator.getFitnessWithMoreInfo(solution);
           console.log("result: ", result);
-          setfitness([result.cost, result.satisfiedContracts, result.satisfiedRequirements, result.totalIdleWorkers])
+          setfitness([result.cost, result.satisfiedContracts, result.satisfiedRequirements, result.totalIdleWorkers,  result.totalRequirementsNum])
+          setmaxRequirementsMap(result.maxRequirementsMap)
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -275,10 +306,12 @@ const ShiftsPage = (props) => {
       let solution = transformSolution(getAssinment());
       let result = myEvaluator.getFitnessWithMoreInfo(solution);
       console.log("result: ", result);
-      setfitness([result.cost, result.satisfiedContracts, result.satisfiedRequirements, result.totalIdleWorkers])
+      setfitness([result.cost, result.satisfiedContracts, result.satisfiedRequirements, result.totalIdleWorkers, result.totalRequirementsNum])
+      setmaxRequirementsMap(result.maxRequirementsMap)
+
     }
 
-  }, [shifts, selectedProfession]);
+  }, [shifts, isWindowOpen]);
   
 
   const handleProfessionClick = (profession) => {
@@ -489,7 +522,7 @@ const ShiftsPage = (props) => {
   }
 
   function getGrade() {
-    let number = (selectedProfession)? (fitness[1]/Object.values(workers).length*50 + fitness[2]/requirements.length*35 + fitness[3]/Object.values(workers).length*15) : ""
+    let number = (selectedProfession)? (fitness[1]/Object.values(workers).length*50 + fitness[2]/fitness[4]*35 + fitness[3]/Object.values(workers).length*15) : ""
     number = (number * 100)
     number = Math.round(number)
     number = number/100
@@ -505,10 +538,6 @@ const ShiftsPage = (props) => {
     const handleStatusChange = (status) => {
       setSelectedStatus(status);
     };
-
-    function getAllIdles() {
-      
-    }
 
     function getAllUnsatisfyContracts() {
       const unsatisfiedContracts = [];
@@ -536,6 +565,151 @@ const ShiftsPage = (props) => {
       return unsatisfiedContracts;
   }
 
+  function findUnsatisfiedRequirements() {
+    // Helper function to check if an hour is within a shift's range
+    function isHourInRange(hour, start_hour, end_hour) {
+        const hourInt = parseInt(hour.replace(':', ''), 10);
+        const start_hourInt = parseInt(start_hour.replace(':', ''), 10);
+        const end_hourInt = parseInt(end_hour.replace(':', ''), 10);
+        return start_hourInt <= hourInt && hourInt < end_hourInt;
+    }
+
+    // List to store unsatisfied requirements
+    const unsatisfiedRequirements = [];
+
+    // Iterate over each requirement
+    requirements.forEach(requirement => {
+        const { day, profession, hour, number } = requirement;
+
+        // Filter shifts that match the day and profession, and overlap with the requirement hour
+        const relevantShifts = shifts.filter(shift => {
+            return (
+                shift.day === day &&
+                shift.profession === profession &&
+                isHourInRange(hour, shift.start_hour, shift.end_hour)
+            );
+        });
+
+        // Calculate the total number of workers assigned to the relevant shifts
+        const totalWorkers = relevantShifts.reduce((sum, shift) => {
+            return sum + shift.idList.length; // Sum the number of workers in each shift
+        }, 0);
+
+        // If the total number of workers is less than the required number, add to unsatisfied list
+        if (totalWorkers < number) {
+            unsatisfiedRequirements.push({
+                day,
+                profession,
+                hour,
+                required: number,
+                assigned: totalWorkers
+            });
+        }
+    });
+
+        // Sort the unsatisfied requirements by profession, day, and hour
+        unsatisfiedRequirements.sort((a, b) => {
+          // Sort by profession first
+          if (a.profession !== b.profession) {
+              return a.profession.localeCompare(b.profession);
+          }
+  
+          // Then sort by day
+          if (a.day !== b.day) {
+              const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+              return daysOfWeek.indexOf(a.day) - daysOfWeek.indexOf(b.day);
+          }
+  
+          // Finally, sort by hour
+          const hourA = parseInt(a.hour.replace(':', ''), 10);
+          const hourB = parseInt(b.hour.replace(':', ''), 10);
+          return hourA - hourB;
+      });
+
+    // Return unsatisfied requirements in JSX format with <span> tags
+    return unsatisfiedRequirements.map(req => (
+        <span key={`${req.day}-${req.profession}-${req.hour}`} style={{ display: 'block', margin: '5px 0' }}>
+            {`${req.day}, ${req.profession}, ${req.hour}: ${req.assigned} / ${req.required}`}
+        </span>
+    ));
+}
+
+function UnsatisfiedRequirementsComponent() {
+  const unsatisfiedElements = findUnsatisfiedRequirements();
+
+  return (
+      <div>
+          <h3>Unsatisfied Requirements:</h3>
+          {unsatisfiedElements.length > 0 ? (
+              unsatisfiedElements
+          ) : (
+              <span>All requirements are satisfied!</span>
+          )}
+      </div>
+  );
+}
+
+function UnsatisfiedContractsComponent() {
+  const UnsatisfiedContracts = getAllUnsatisfyContracts().map((contract, index) => (
+    <div><span key={index}>
+      {contract.name}: {contract.actual_hours}/
+      {contract.hours_per_week} hours
+    </span><br></br></div>
+  ));
+
+  return (
+      <div>
+          <h3>Unsatisfied Contracts:</h3>
+          {UnsatisfiedContracts.length > 0 ? (
+            UnsatisfiedContracts
+          ) : (
+              <span>All Contracts are satisfied!</span>
+          )}
+      </div>
+  );
+}
+
+function findShiftsWithIdleWorkersHTML() {
+  // Array to store HTML strings for shifts with idle workers
+  const shiftsWithIdleWorkers = [];
+
+  // Iterate over each shift
+  shifts.forEach(shift => {
+      const maxRequirement = maxRequirementsMap[shift.id]; // Get the max requirement for the shift
+
+      // Check if the number of workers in the shift exceeds the maximum requirement
+      if (shift.idList.length > maxRequirement) {
+          const idleWorkers = shift.idList.length - maxRequirement; // Calculate idle workers
+
+            // Add the shift with idle workers to the result
+            shiftsWithIdleWorkers.push({
+              ...shift,
+              idleWorkers // Add the number of idle workers
+          });
+      }
+  });
+
+  return shiftsWithIdleWorkers.map(shift => (
+    <span key={`${shift.day}-${shift.profession}-${shift.start_hour}-${shift.end_hour}`} style={{ display: 'block', margin: '5px 0' }}>
+        {` ${shift.profession}, ${shift.day}, ${shift.start_hour} - ${shift.end_hour}: ${shift.idleWorkers} idle workers`}
+    </span>
+));
+}
+
+function idleComponent() {
+  const idle_workers = findShiftsWithIdleWorkersHTML();
+
+  return (
+      <div>
+          <h3> shifts with idle workers:</h3>
+          {idle_workers.length > 0 ? (
+            idle_workers
+          ) : (
+              <span>There are no idle workers!</span>
+          )}
+      </div>
+  );
+}
 
   return (
     <>
@@ -625,20 +799,15 @@ const ShiftsPage = (props) => {
 
                     {/* Display data based on the selected button */}
                     <div className="status-content">
-                      {selectedStatus === "idle" && <div>Idle Data</div>}
+                      {selectedStatus === "idle" && <div>{idleComponent()}</div>}
                       {selectedStatus === "contracts" && (
                         <div>
                           {" "}
-                          {getAllUnsatisfyContracts().map((contract, index) => (
-                            <div><span key={index}>
-                              {contract.name}: {contract.actual_hours}/
-                              {contract.hours_per_week} hours
-                            </span><br></br></div>
-                          ))}
+                          {UnsatisfiedContractsComponent()}
                         </div>
                       )}
                       {selectedStatus === "requirments" && (
-                        <div>Requirements Data</div>
+                        <div>{UnsatisfiedRequirementsComponent()}</div>
                       )}
                       {selectedStatus === "full status" && (
                         <div>
@@ -650,7 +819,7 @@ const ShiftsPage = (props) => {
                           </span>
                           <br />
                           <span>
-                            req:{fitness[2]}/{requirements.length}
+                            req:{fitness[2]}/{fitness[4]}
                           </span>
                           <br />
                           <span>

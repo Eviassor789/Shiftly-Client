@@ -446,84 +446,176 @@ const ShiftsPage = (props) => {
     navigate(`/home`);
   }
 
-  async function handleDownload() {
-    // let content = '<h1>Shift Assignments by worker</h1>';
-    // console.log("shifts: ", shifts);
+  async function DownloadByWorker() {
+    let content = '<h1>Shift Assignments by Worker</h1>';
+    let all_content_list = [];
+    let i = 0;
+  
+    // Loop through the workers and their shifts
+    for (const workerId in workers) {
+      const worker = workers[workerId];
+      let worker_content = `<p>Worker: ${worker.name}</p><ul>`;
+  
+      if (worker.shifts) {
+        worker.shifts.forEach(shift => {
+          i += 1;
+          worker_content += `<li>${shift.day}, ${shift.start_hour} - ${shift.end_hour}, ${shift.profession}</li>`;
+        });
+      }
+  
+      worker_content += '</ul></br></br>';
+  
+      // Push content every time after 20 items or at the end of the worker list
+      if (i > 17) {
+        i = worker.shifts.length;
+        all_content_list.push(content);
+        content = "";
+      }
+  
+      content += worker_content;
+    }
+  
+    // Add any remaining content
+    all_content_list.push(content);
+  
+    const pdf = new jsPDF();
+  
+    // Process each content chunk asynchronously
+    for (const content of all_content_list) {
+      let input = document.createElement('div');
+      input.innerHTML = content;
+  
+      input.style.position = "absolute";
+      input.style.top = "-9999px"; // Move it off-screen
+  
+      document.body.appendChild(input);
+  
+      try {
+        const canvas = await html2canvas(input);
+        const imgData = canvas.toDataURL("image/png");
+  
+        // Add content as a page in the PDF
+        pdf.addImage(imgData, "PNG", 10, 10);
+  
+        // If not the last page, add a new page
+        if (content !== all_content_list[all_content_list.length - 1]) {
+          pdf.addPage();
+        }
+  
+        // Remove the temporary div after capturing it
+        document.body.removeChild(input);
+      } catch (error) {
+        console.error("Error generating PDF: ", error);
+      }
+    }
+  
+    // Save the PDF after all pages have been added
+    pdf.save("shift_assignments_by_worker.pdf");
 
-    // // Loop through the workers and their shifts
-    // for (const workerId in workers) {
-    //     const worker = workers[workerId];
-    //     content += `<p>Worker: ${worker.name}</p><ul>`;
 
-    //     if (worker.shifts){        worker.shifts.forEach(shift => {
-    //       content += `<li>${shift.day}, ${shift.start_hour} - ${shift.end_hour}, ${shift.profession}</li>`;
-    //   });}
+  }
 
-    //     content += '</ul></br></br>';
-    // }
-
-    // // Generate the PDF content
-    // let input = document.createElement('div');
-    // input.innerHTML = content;
-
-    // input.style.position = "absolute";
-    // input.style.top = "-9999px"; // Move it off-screen
-
-    // document.body.appendChild(input);
-
-    // html2canvas(input)
-    //   .then((canvas) => {
-    //     const imgData = canvas.toDataURL("image/png");
-    //     const pdf = new jsPDF();
-    //     pdf.addImage(imgData, "PNG", 10, 10);
-    //     pdf.save("shift_assignments.pdf");
-
-    //     // Remove the temporary div after capturing it
-    //     document.body.removeChild(input);
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error generating PDF: ", error);
-    //   });
-
-    ///////////////////////////////////////////////
-
+  async function DownloadByShift() {
+    const pdf = new jsPDF();
+    let all_content_list = [];
     let content = "<h1>Shift Assignments by Shift</h1>";
+    let i = 0;
 
+    let sortedShifts = [...shifts].sort((a, b) => {
+      const dayOrder = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+      // Compare profession first
+      if (a.profession < b.profession) return -1;
+      if (a.profession > b.profession) return 1;
+    
+      // If professions are the same, compare day using dayOrder
+      const dayA = dayOrder.indexOf(a.day);
+      const dayB = dayOrder.indexOf(b.day);
+      if (dayA < dayB) return -1;
+      if (dayA > dayB) return 1;
+    
+      // If both profession and day are the same, compare start_hour
+      if (a.start_hour < b.start_hour) return -1;
+      if (a.start_hour > b.start_hour) return 1;
+    
+      // If everything is the same
+      return 0;
+    });
+  
     // Loop through the shifts and list workers for each shift
-    shifts.forEach((shift) => {
-      content += `<p>(${shift.profession}, ${shift.day}, ${shift.start_hour} - ${shift.end_hour}):</p><ul>`;
-
+    sortedShifts.forEach((shift) => {
+      
+      
+      let shift_content = `<p>(${shift.profession}, ${shift.day}, ${shift.start_hour} - ${shift.end_hour}):</p><ul>`;
+  
       // For each worker ID in the shift's idList, get the worker name
       shift.idList.forEach((workerId) => {
+        i += 1;
         const worker = workers[workerId];
         if (worker) {
-          content += `<li>${worker.name}</li>`;
+          shift_content += `<li>${worker.name}</li>`;
         }
       });
-
-      content += "</ul></br>";
+  
+      shift_content += "</ul></br>";
+  
+      // When i > 20, add the current content to the list and reset it
+      if (i > 20) {
+        i = shift.idList.length;
+        all_content_list.push(content);
+        content = "";      
+      }
+  
+      content += shift_content;
     });
-
-    // Generate the PDF content
-    let input = document.createElement("div");
-    input.innerHTML = content;
-    document.body.appendChild(input);
-
-    html2canvas(input)
-      .then((canvas) => {
+  
+    // Push the last content if there's any remaining
+    all_content_list.push(content);
+  
+    // Process each content asynchronously
+    for (const content of all_content_list) {
+      let input = document.createElement("div");
+      input.innerHTML = content;
+      document.body.appendChild(input);
+  
+      try {
+        const canvas = await html2canvas(input);
         const imgData = canvas.toDataURL("image/png");
-        const pdf = new jsPDF();
+  
+        // Add content as a page in the PDF
         pdf.addImage(imgData, "PNG", 10, 10);
-        pdf.save("shift_assignments_by_shift.pdf");
+  
+        // If not the last page, add a new page
+        if (content !== all_content_list[all_content_list.length - 1]) {
+          pdf.addPage();
+        }
+        
+        // Clean up the DOM element
         document.body.removeChild(input);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error generating PDF: ", error);
-      });
+      }
+    }
   
-  
+    // Save the PDF after all pages have been added
+    pdf.save("shift_assignments_by_shift.pdf");
+
+
+  }
+
+  async function handleDownload() {
+
+    DownloadByWorker();
+
+    DownloadByShift()
+
+
   
   }
+
+
+
+
 
 
   const handleBack = () => {

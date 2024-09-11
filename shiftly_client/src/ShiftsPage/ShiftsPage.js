@@ -552,7 +552,7 @@ const ShiftsPage = (props) => {
   }
 
   function getGrade() {
-    let number = (fitness[1]/Object.values(workers).length*45 + fitness[2]/fitness[4]*40 + fitness[3]/Object.values(workers).length*15);
+    let number = (fitness[1]/Object.values(workers).length*55 + fitness[2]/fitness[4]*25 + (1-(fitness[3]/Object.values(workers).length))*20);
     number = (number * 100);
     number = Math.round(number);
     number = (number/100).toFixed(2);

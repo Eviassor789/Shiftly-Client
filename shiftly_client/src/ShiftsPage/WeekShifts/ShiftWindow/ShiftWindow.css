@@ -101,6 +101,11 @@ ul {
     list-style: none;
     padding: 0;
     margin: 0;
+
+    height: 180px; /* Set the desired fixed height */
+    overflow-y: scroll; /* Enable vertical scrolling */
+    list-style-type: none; /* Remove bullet points */
+    /* direction: rtl; */
 }
 
 ul i {

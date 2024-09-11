@@ -105,17 +105,19 @@
     height: 180px; /* Set the desired fixed height */
     overflow-y: scroll; /* Enable vertical scrolling */
     list-style-type: none; /* Remove bullet points */
-    /* direction: rtl; */
+    direction: rtl;
+    
 }
 
-ul i {
-    position: absolute;
-    right: 10px;
-}
+
 
 ul li {
     /* margin-bottom: 5px; */
     font-size: small;
+    position: relative;
+    direction: ltr;
+    text-align: left; 
+    margin-left: 5px;
 }
 
 ul li button {
@@ -269,8 +271,8 @@ ul li button {
 
 
 ul i {
-    position: absolute;
-    right: 10px;
+    position:absolute;
+    right: 0px;
     cursor: pointer;
 /* 
     border-radius: 3px;

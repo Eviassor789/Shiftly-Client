@@ -713,7 +713,7 @@ function findShiftsWithIdleWorkersHTML() {
       const maxRequirement = maxRequirementsMap[shift.id]; // Get the max requirement for the shift
 
       // Check if the number of workers in the shift exceeds the maximum requirement
-      if (shift.idList.length > maxRequirement) {
+      if (shift.idList.length > maxRequirement && shift.idList > 0) {
           const idleWorkers = shift.idList.length - maxRequirement; // Calculate idle workers
 
             // Add the shift with idle workers to the result

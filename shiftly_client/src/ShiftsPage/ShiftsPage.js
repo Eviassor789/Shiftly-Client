@@ -359,6 +359,7 @@ const ShiftsPage = (props) => {
   }
 
   const handlePersonalSearchClick = (table) => {
+    setSuggestionsList([]);
     if(!ispersonalSearch) {
       setSelectedProfession(null);
     }
@@ -385,6 +386,19 @@ const ShiftsPage = (props) => {
     } else {
       setSuggestionsList([]);
     }
+  };
+
+  const handleInputClick = () => {
+    if(suggestionsList.length > 0){
+      setSuggestionsList([]);
+      return;
+    }
+    setSuggestionsList(
+      Object.values(workers)
+        .map((person) => person.name)
+    );
+    return;
+
   };
 
   const handleSuggestionClick = (value) => {
@@ -983,6 +997,8 @@ function idleComponent() {
                       type="text"
                       value={inputValue}
                       onChange={handleInputChange}
+                      onClick={handleInputClick}
+
                       placeholder="Type Employee Name..."
                       aria-autocomplete="list"
                       aria-controls="autocomplete-list"

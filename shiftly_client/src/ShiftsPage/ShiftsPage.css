@@ -124,7 +124,7 @@
   }
   
   .suggestions-list {
-    z-index: 1;
+    z-index: 3;
     position: absolute;
     top: 100%;
     left: 0;

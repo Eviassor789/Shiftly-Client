@@ -815,26 +815,56 @@ function findShiftsWithIdleWorkersHTML() {
   const shiftsWithIdleWorkers = [];
 
   // Iterate over each shift
-  shifts.forEach(shift => {
-      const maxRequirement = maxRequirementsMap[shift.id]; // Get the max requirement for the shift
+  shifts.forEach((shift) => {
+    const maxRequirement = maxRequirementsMap[shift.id]; // Get the max requirement for the shift
 
-      // Check if the number of workers in the shift exceeds the maximum requirement
-      if (shift.idList.length > maxRequirement && shift.idList > 0) {
-          const idleWorkers = shift.idList.length - maxRequirement; // Calculate idle workers
+    // Check if the number of workers in the shift exceeds the maximum requirement
+    if (shift.idList.length > maxRequirement && shift.idList.length > 0) {
+      const idleWorkers = shift.idList.length - maxRequirement; // Calculate idle workers
 
-            // Add the shift with idle workers to the result
-            shiftsWithIdleWorkers.push({
-              ...shift,
-              idleWorkers // Add the number of idle workers
-          });
-      }
+      // Add the shift with idle workers to the result
+      shiftsWithIdleWorkers.push({
+        ...shift,
+        idleWorkers, // Add the number of idle workers
+      });
+    }
   });
 
-  return shiftsWithIdleWorkers.map(shift => (
-    <span key={`${shift.day}-${shift.profession}-${shift.start_hour}-${shift.end_hour}`} style={{ display: 'block', margin: '5px 0' }}>
-        {` ${shift.profession}, ${shift.day}, ${shift.start_hour} - ${shift.end_hour}: ${shift.idleWorkers} idle workers`}
+  // Sort the unsatisfied requirements by profession, day, and hour
+  shiftsWithIdleWorkers.sort((a, b) => {
+    // Sort by profession first
+    if (a.profession !== b.profession) {
+      return a.profession.localeCompare(b.profession);
+    }
+
+    // Then sort by day
+    if (a.day !== b.day) {
+      const daysOfWeek = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
+      return daysOfWeek.indexOf(a.day) - daysOfWeek.indexOf(b.day);
+    }
+
+    // Finally, sort by hour
+    const hourA = parseInt(a.start_hour.replace(":", ""), 10);
+    const hourB = parseInt(b.start_hour.replace(":", ""), 10);
+    return hourA - hourB;
+  });
+
+  return shiftsWithIdleWorkers.map((shift) => (
+    <span
+      key={`${shift.day}-${shift.profession}-${shift.start_hour}-${shift.end_hour}`}
+      style={{ display: "block", margin: "5px 0" }}
+    >
+      {` ${shift.profession}, ${shift.day}, ${shift.start_hour} - ${shift.end_hour}: ${shift.idleWorkers} idle workers`}
     </span>
-));
+  ));
 }
 
 function idleComponent() {

@@ -658,7 +658,13 @@ const ShiftsPage = (props) => {
   }
 
   function getGrade() {
-    let number = (fitness[1]/Object.values(workers).length*55 + fitness[2]/fitness[4]*25 + (1-(fitness[3]/Object.values(workers).length))*20);
+
+    let idle_relation = fitness[3]/Object.values(workers).length;
+    if (idle_relation > 1.5){
+      idle_relation = 1.5
+    }
+
+    let number = (fitness[1]/Object.values(workers).length*55 + fitness[2]/fitness[4]*25 + (1-(idle_relation))*20);
     number = (number * 100);
     number = Math.round(number);
     number = (number/100).toFixed(2);

@@ -126,7 +126,7 @@ class ScheduleEvaluator {
       const requirementNumbers = requirements.map((req) => req.number);
 
       // Find the maximum requirement number for the current shift
-      const maxRequirementNumber = Math.max(...requirementNumbers);
+      const maxRequirementNumber = Math.max(...requirementNumbers, 0);
 
       // Store the result in maxRequirementsMap
       this.maxRequirementsMap[shiftId] = maxRequirementNumber;

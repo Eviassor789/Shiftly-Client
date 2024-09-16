@@ -23,6 +23,7 @@ and manage shifts through a web interface. The client is built using **React**.
 To start the client, navigate to the shiftly_client folder and run:
    ```bash
    npm start
+```
 
 This will start the development server, and you can view the application by opening http://localhost:3000 in your browser.
 

@@ -216,7 +216,8 @@ const ShiftWindow = ({
       (shift) =>
         shift.day !== shiftData.day ||
         shift.start_hour !== shiftData.start_hour ||
-        shift.end_hour !== shiftData.end_hour
+        shift.end_hour !== shiftData.end_hour ||
+        shift.profession !== shiftData.profession
     );
 
     // Update the state with the new shifts and other_shifts arrays
